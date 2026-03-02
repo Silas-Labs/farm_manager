@@ -1,0 +1,548 @@
+[
+  {
+    "company": "Kenya Seed Company",
+    "plants": [
+      {
+        "Maize": {
+          "varieties": {
+            "Highland": [
+              {
+                "H614D": {
+                  "altitude_m": "1500-2800",
+                  "maturity_days": "160-210",
+                  "yield_bags_per_acre": 38,
+                  "attributes": [
+                    "Sweet tasting variety",
+                    "Has good density",
+                    "Has long storage period",
+                    "Resistant to GLS and Blight"
+                  ]
+                },
+                "H628": {
+                  "altitude_m": "1500-2800",
+                  "maturity_days": "150-210",
+                  "yield_bags_per_acre": 46,
+                  "attributes": [
+                    "Has heavy white grains",
+                    "High yield",
+                    "Resistant to blight and GLS",
+                    "Flint type"
+                  ]
+                },
+                "H629": {
+                  "altitude_m": "1500-2800",
+                  "maturity_days": "160-210",
+                  "yield_bags_per_acre": 48,
+                  "attributes": [
+                    "Resistant to lodging",
+                    "Has good husk cover",
+                    "Good storage quality",
+                    "Resistant to GLS and ear rot"
+                  ]
+                },
+                "H9401": {
+                  "altitude_m": "1500-2800",
+                  "maturity_days": "160-190",
+                  "yield_bags_per_acre": 50,
+                  "attributes": [
+                    "High-yielder",
+                    "Good storage qualities",
+                    "Resistant to lodging, ear rot, rust, GLS stem and leaf blight",
+                    "Good for silage"
+                  ]
+                },
+                "H6213": {
+                  "altitude_m": "1500-2800",
+                  "maturity_days": "160-210",
+                  "yield_bags_per_acre": 54,
+                  "attributes": [
+                    "High-yielder",
+                    "Excellent milling qualities",
+                    "Resistant to lodging, ear rot, rust, GLS stem and leaf blight"
+                  ]
+                }
+              }
+            ],
+            "Transitional": [
+              {
+                "H520": {
+                  "altitude_m": "1000-1800",
+                  "maturity_days": "120-150",
+                  "yield_bags_per_acre": 34,
+                  "attributes": [
+                    "Double cobbing variety",
+                    "Very sweet tasting",
+                    "GLS and MSV tolerant"
+                  ]
+                },
+                "H624": {
+                  "altitude_m": "1000-1800",
+                  "maturity_days": "120-150",
+                  "yield_bags_per_acre": 36,
+                  "attributes": ["Double cobbing variety", "Very sweet tasting"]
+                }
+              }
+            ],
+            "Medium Maturity": [
+              {
+                "H513": {
+                  "altitude_m": "900-1500",
+                  "maturity_days": "110-130",
+                  "yield_bags_per_acre": 26,
+                  "attributes": ["Very sweet tasting", "Good stand ability"]
+                },
+                "H516": {
+                  "altitude_m": "900-1500",
+                  "maturity_days": "120-150",
+                  "yield_bags_per_acre": 30,
+                  "attributes": [
+                    "Very sweet tasting",
+                    "Resistant to blight, rust, and lodging"
+                  ]
+                },
+                "H517": {
+                  "altitude_m": "900-1500",
+                  "maturity_days": "120-150",
+                  "yield_bags_per_acre": 32,
+                  "attributes": [
+                    "Tolerant to foliar diseases and pests",
+                    "Has better husk cover, tolerant to cob rot and MSV",
+                    "Ideal for irrigation"
+                  ]
+                }
+              }
+            ],
+            "Lowland/Pwani": [
+              {
+                "PH1": {
+                  "altitude_m": "0-1200",
+                  "maturity_days": "75-100",
+                  "yield_bags_per_acre": 20,
+                  "attributes": [
+                    "Early maturity",
+                    "Heat tolerant",
+                    "Drought resistant"
+                  ]
+                },
+                "PH4": {
+                  "altitude_m": "0-1200",
+                  "maturity_days": "100-120",
+                  "yield_bags_per_acre": 26,
+                  "attributes": [
+                    "Heat tolerant",
+                    "Very sweet tasting",
+                    "Good standability",
+                    "Adapted to coastal conditions"
+                  ]
+                }
+              }
+            ],
+            "Dryland": [
+              {
+                "DH01": {
+                  "altitude_m": "900-1400",
+                  "maturity_days": "70",
+                  "yield_bags_per_acre": 15,
+                  "attributes": [
+                    "Early and stay green",
+                    "Tolerant to blight and rust"
+                  ]
+                },
+                "DH02": {
+                  "altitude_m": "900-1400",
+                  "maturity_days": "70-100",
+                  "yield_bags_per_acre": 18,
+                  "attributes": [
+                    "Suitable for arid and semi-arid areas",
+                    "Tolerant to moisture stress and MSV"
+                  ]
+                },
+                "DH04": {
+                  "altitude_m": "900-1700",
+                  "maturity_days": "75-100",
+                  "yield_bags_per_acre": 24,
+                  "attributes": [
+                    "Short drought tolerance",
+                    "Good husk cover and stand-ability"
+                  ]
+                },
+                "DH08": {
+                  "altitude_m": "900-1700",
+                  "maturity_days": "100-120",
+                  "yield_bags_per_acre": 26,
+                  "attributes": [
+                    "Semi-dent",
+                    "Good stand ability",
+                    "Tolerant to ear rots"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "Wheat": {
+          "varieties": [
+            {
+              "KS Farasi": {
+                "altitude_m": "1800-2400",
+                "maturity_days": "119",
+                "yield_bags_per_acre": "10-22",
+                "attributes": [
+                  "Tolerant to most foliar diseases",
+                  "Good baking quality",
+                  "High yielding",
+                  "Hard red wheat highly recommended for Mount Kenya, Samburu, Laikipia West, Narok, Subukia, Rongai, Nyandarua, Nakuru, Trans-Nzoia, Kericho, Bomet, and Uasin-Gishu areas"
+                ]
+              },
+              "KS Chui": {
+                "altitude_m": "1800-2400",
+                "maturity_days": "120",
+                "yield_bags_per_acre": "15-31",
+                "attributes": [
+                  "Good tolerance to foliar diseases",
+                  "Adapted to high potential and marginal environments",
+                  "High tillering ability, high yields",
+                  "Hard red wheat"
+                ]
+              },
+              "KS Simba": {
+                "altitude_m": "1500-2400",
+                "maturity_days": "116-120",
+                "yield_bags_per_acre": "10-22",
+                "attributes": [
+                  "Good baking qualities",
+                  "Suitable for both marginal and high potential areas of Samburu, Laikipia West, Narok, Subukia, Rongai, Nyandarua, Nakuru, Trans-Nzoia, Kericho, Bomet, and Uasin-Gishu",
+                  "Hard red wheat",
+                  "Good tillering ability"
+                ]
+              },
+              "KS Mwamba": {
+                "altitude_m": "1800-2400",
+                "maturity_days": "120-130",
+                "yield_bags_per_acre": "9-25",
+                "attributes": [
+                  "Widely adapted to East Africa conditions (especially in Trans-Nzoia, Uasin-Gishu, Laikipia, Narok, and Mt. Kenya areas)",
+                  "Tolerant to field stress conditions",
+                  "High yielding",
+                  "Wide adaptability",
+                  "Tolerant to stem, ear, and yellow rust",
+                  "Tolerant to lodging and sprouting"
+                ]
+              },
+              "KS Ndume": {
+                "altitude_m": "1800-2400",
+                "maturity_days": "100-110",
+                "yield_bags_per_acre": "12-31",
+                "attributes": [
+                  "High yielding",
+                  "Good tillering ability",
+                  "Resistant to sprouting and lodging",
+                  "Tolerant to foliar diseases",
+                  "Good baking qualities"
+                ]
+              },
+              "KS Nyota": {
+                "altitude_m": "1800-2500",
+                "maturity_days": "120-130",
+                "yield_bags_per_acre": "12-31",
+                "attributes": [
+                  "Newly released with moderate resistance to stem rust Ug99",
+                  "High yielding",
+                  "Good tillering ability",
+                  "Bred for sprouting tolerance",
+                  "Makes a very stable dough"
+                ]
+              },
+              "KS Kanga": {
+                "altitude_m": "1800-2500",
+                "maturity_days": "120-130",
+                "yield_bags_per_acre": "22-36",
+                "attributes": [
+                  "Product of KSCo-CIMMYT collaboration",
+                  "Newly released with adult plant resistance to stem rust Ug99 (slow rusting)",
+                  "Tolerant to most foliar diseases",
+                  "Good tillering ability",
+                  "Good baking and milling qualities"
+                ]
+              },
+              "Fahari": {
+                "altitude_m": "1800-2400",
+                "maturity_days": "122",
+                "yield_bags_per_acre": "18-26",
+                "attributes": [
+                  "Tolerance to stem rust but poor to ear and yellow rust",
+                  "Good tolerance to lodging but fairly to sprouting"
+                ]
+              },
+              "Kwale": {
+                "altitude_m": "1800-2400",
+                "maturity_days": "145",
+                "yield_bags_per_acre": "20-22",
+                "attributes": [
+                  "High yielding",
+                  "Has good density",
+                  "Suitable for mid to high altitude",
+                  "Good tolerance to stem, ear and yellow rust",
+                  "Fair tolerance to lodging but good to sprouting"
+                ]
+              }
+            }
+          ]
+        },
+        "Sunflower": {
+          "varieties": [
+            {
+              "name": "H 8998",
+              "maturity": "4 months",
+              "yield_bags_per_acre": 12,
+              "attributes": [
+                "High oil content",
+                "Uniform in plant height and maturity",
+                "Excellent tolerance to diseases"
+              ]
+            },
+            {
+              "name": "Kenya Fedha",
+              "maturity": "4-5 months",
+              "yield_bags_per_acre": "10-12",
+              "attributes": [
+                "High oil content",
+                "Suited to medium to high altitude areas"
+              ]
+            },
+            {
+              "name": "Hungarian White",
+              "maturity": "5-6 months",
+              "yield_bags_per_acre": 15,
+              "attributes": [
+                "Long white grains for bird feed",
+                "Average oil content",
+                "Open-pollinated variety"
+              ]
+            }
+          ]
+        },
+        "Sorghum": {
+          "varieties": [
+            {
+              "name": "Serena Sorghum",
+              "maturity": "3-4 months",
+              "yield_bags_per_acre": 12,
+              "attributes": [
+                "Brown grain type",
+                "Tall plant with good root system",
+                "Fairly tolerant to common sorghum diseases",
+                "Performs well in mid altitude region and the semi-arid lowland"
+              ]
+            },
+            {
+              "name": "Seredo Sorghum",
+              "maturity": "3-4 months",
+              "yield_bags_per_acre": 12,
+              "attributes": [
+                "Brown grain type",
+                "Tall with good tolerance to lodging",
+                "Widely adaptable"
+              ]
+            },
+            {
+              "name": "Gadam Sorghum",
+              "maturity": "3 months",
+              "yield_bags_per_acre": 8,
+              "attributes": [
+                "White grain colour",
+                "Tolerant to common sorghum diseases and pests",
+                "Has excellent malting qualities",
+                "Performs well in the coastal strip and semi-arid areas"
+              ]
+            },
+            {
+              "name": "Sorghum E 1291",
+              "maturity": "5 months",
+              "yield_bags_per_acre": "15-20",
+              "attributes": [
+                "Brown grain type",
+                "Dual purpose variety with good malting and milling quality",
+                "Widely adaptable"
+              ]
+            }
+          ]
+        },
+        "Finger Millet": {
+          "varieties": [
+            {
+              "name": "Finger Millet P 224",
+              "maturity": "3-4 months",
+              "yield_bags_per_acre": "10-15",
+              "attributes": [
+                "Brown grain type",
+                "Tall type with uniform plant height",
+                "Tolerant to lodging and blast",
+                "Excellent milling quality"
+              ]
+            },
+            {
+              "name": "Finger Millet Katumani",
+              "maturity": "3 months",
+              "yield_bags_per_acre": "7-10",
+              "attributes": [
+                "Reddish grain type",
+                "Dwarf variety",
+                "Drought tolerant",
+                "Widely adaptable"
+              ]
+            }
+          ]
+        },
+        "Beans": {
+          "varieties": [
+            {
+              "name": "GLP 2 (Rosecoco/ Nyayo)",
+              "maturity": "75-90 days",
+              "yield_bags_per_acre": 10,
+              "attributes": [
+                "Dwarf bean with flat pods",
+                "Prefers medium altitude zones",
+                "Tolerant to common bean diseases",
+                "Vigorous variety with high yields",
+                "Most popular in the market"
+              ]
+            },
+            {
+              "name": "GLP 92 (Mwitemania/ Sura Mbaya)",
+              "maturity": "90-95 days",
+              "yield_bags_per_acre": 8,
+              "attributes": [
+                "Spreading growth habit with oval shaped grains",
+                "Prefers medium altitude zones",
+                "Good tolerance to heat and common diseases",
+                "Vigorous variety with high yields"
+              ]
+            },
+            {
+              "name": "GLP 1127 (Mwezi Moja)",
+              "maturity": "85-90 days",
+              "yield_bags_per_acre": 8,
+              "attributes": [
+                "Kidney shaped bean with very high potential",
+                "Performs well in medium and dryland areas",
+                "Flowers within a month",
+                "Does not cause flatulence"
+              ]
+            },
+            {
+              "name": "Wairimu Dwarf",
+              "maturity": "70 days",
+              "yield_bags_per_acre": 6,
+              "attributes": [
+                "Performs well in medium and highland areas",
+                "Dark red kidney shaped bean with very high potential",
+                "Vigorous growing dwarf variety"
+              ]
+            }
+          ]
+        },
+        "Peas": {
+          "varieties": [
+            {
+              "name": "Greenfeast (Kagoci)",
+              "maturity": "55-60 days",
+              "yield_bags_per_acre": 10,
+              "attributes": [
+                "Dual purpose climbing pea (fresh and dry)",
+                "Preferred for medium and high altitude",
+                "Good tolerance to mildew",
+                "Maturity of 55-60 days",
+                "Can yield upto 10 bags of 90kg"
+              ]
+            },
+            {
+              "name": "Kelvedon (Kigondoro)",
+              "maturity": "55-60 days",
+              "yield_bags_per_acre": 10,
+              "attributes": [
+                "Dual purpose dwarf pea (fresh and dry)",
+                "Prefers medium to high altitudes",
+                "Good tolerance to mildew",
+                "First harvest in 65-70 days",
+                "High yielding potential of upto 1.8 tons an acre"
+              ]
+            },
+            {
+              "name": "Plum (Gikuyu/ Kikuyu)",
+              "maturity": "55-60 days",
+              "yield_bags_per_acre": 10,
+              "attributes": [
+                "Fresh purpose pea",
+                "Suitable for highland altitude",
+                "Climber pea",
+                "Maturity of 55-60 days",
+                "High yielding potential of upto 1.8 tons an acre"
+              ]
+            }
+          ]
+        },
+        "Greengrams": {
+          "varieties": [
+            {
+              "name": "KS20 (Makueni)",
+              "maturity": "45-60 days",
+              "yield_bags_per_acre": 6,
+              "attributes": [
+                "Dull green colour with rough skin",
+                "Excellent cooking qualities",
+                "Drought tolerant",
+                "Early maturity of 55 days"
+              ]
+            }
+          ]
+        },
+        "Cowpeas": {
+          "varieties": [
+            {
+              "name": "KK1",
+              "maturity": "75-90 days",
+              "yield_bags_per_acre": 7,
+              "attributes": [
+                "Dual purpose variety (grain and leaf)",
+                "Drought tolerant",
+                "Widely adapted",
+                "Matures in 65-85 days"
+              ]
+            }
+          ]
+        },
+        "Cabbages": {
+          "varieties": {
+            "Gloria Star F1": {},
+            "Pruktor F1": {},
+            "Imani F1": {},
+            "Queen F1": {},
+            "Chairman F1": {},
+            "Pak Choi Green": {},
+            "Chinese Cabbage (Michihili)": {}
+          }
+        },
+        "Brassicas": {
+          "varieties": {
+            "Cauliflower Snowball": {},
+            "Broccoli Calabrese": {},
+            "Cauliflower Smilla F1": {},
+            "Collards Simlaw Select": {},
+            "Curly Kale": {},
+            "Ethiopian Kale (Kanzera)": {}
+          }
+        },
+        "Onions/Leeks": {
+          "varieties": {
+            "Improved Red Creole": {},
+            "Spring Bunching Onion": {},
+            "Bombay Red": {},
+            "Red Summit F1": {},
+            "Leeks Carentan": {}
+          }
+        }
+      }
+    ]
+  }
+]
