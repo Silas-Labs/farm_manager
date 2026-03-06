@@ -1,11 +1,15 @@
 //backend/server.js
 const express = require("express");
-const router = require("./routes/plants");
+const plants = require("./routes/plants");
+const expenses =  require("./routes/expenses");
+const { configDotenv } = require("dotenv");
 
-
+configDotenv()
 const app = express();
-const PORT = 3000;
+app.use(express.json())
 
-app.use("/api/store/plants", router);
 
-app.listen(PORT, () => console.log(`Running on http://localhost:${PORT}`));
+app.use("/api/store/plants", plants);
+app.use("/api/store/expenses", expenses);
+
+app.listen(process.env.PORT, () => console.log(`Running on http://localhost:${process.env.PORT}`));
