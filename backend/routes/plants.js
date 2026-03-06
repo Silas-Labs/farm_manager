@@ -17,7 +17,7 @@ router.get("/:plant", (req, res) => {
 
   if (matchKey) return res.status(200).json(plants[matchKey]);
 
-  return res.status(400).json({ error: "Plant not found" });
+  return res.status(404).json({ error: "Plant not found" });
 });
 
 router.get("/:plant/varieties", (req, res) => {
@@ -30,7 +30,7 @@ router.get("/:plant/varieties", (req, res) => {
 
   if (matchKey) return res.status(200).json(plants[matchKey]["varieties"]);
 
-  return res.status(400).json({ error: "No such plant or varieties" });
+  return res.status(404).json({ error: "No such plant or varieties" });
 });
 
 router.get("/:plant", (req, res) => {
@@ -43,7 +43,7 @@ router.get("/:plant", (req, res) => {
 
   if (matchKey) return res.status(200).json(plants[matchKey]);
 
-  return res.status(400).json({ error: "Plant not found" });
+  return res.status(404).json({ error: "Plant not found" });
 });
 
 router.get("/:plant/varieties", (req, res) => {
