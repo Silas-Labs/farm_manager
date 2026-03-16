@@ -26,7 +26,7 @@ router.get("/:id", (req, res) => {
   if (exp.length == 0)
     return res.status(404).json({ error: "no such expense" });
 
-  return res.status(200).send(exp);
+  return res.status(200).json(exp);
 });
 
 router.post("/", async (req, res) => {
