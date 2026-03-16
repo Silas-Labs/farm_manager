@@ -80,6 +80,7 @@ Development period: 2 months
 Phases: Requirement analysis → Design → Development → Testing → Documentation
 
 ## 📂 Project Structure
+```
 Farm-Manager/
  |── frontend/
  |── backend/
@@ -87,6 +88,7 @@ Farm-Manager/
  |── docs/
  |── assets/
  |── README.md
+```
 
 ## 🤝 Contributing
 
