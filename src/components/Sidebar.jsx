@@ -39,51 +39,49 @@ export const SideBar = () => {
         <SidebarHeader />
         <SidebarContent>
           <SidebarGroup>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <LayoutDashboard />
-                  <span>
-                    <a href="#">Dashboard</a>
-                  </span>
-                </SidebarMenuButton>
-                <SidebarMenuButton>
-                  <Sprout />
-                  <span>
-                    <a href="#">Crop Management</a>
-                  </span>
-                </SidebarMenuButton>
-                <SidebarMenuButton>
-                  <CloudSun />
-                  <span>
-                    <a href="#">Weather</a>
-                  </span>
-                </SidebarMenuButton>
-                <SidebarMenuButton>
-                  <Tractor />
-                  <span>
-                    <a href="#">Equipment</a>
-                  </span>
-                </SidebarMenuButton>
-                <SidebarMenuButton>
-                  <BicepsFlexed />
-                  <span>
-                    <a href="#">Labor Management</a>
-                  </span>
-                </SidebarMenuButton>
-                <SidebarMenuButton>
-                  <ChartNoAxesCombined />
-                  <span>
-                    <a href="#">Reports and Analytics</a>
-                  </span>
-                </SidebarMenuButton>
+            <SidebarMenu className="gap-5">
+              <SidebarMenuItem className="flex border p-1 gap-2">
+                <LayoutDashboard size={30} />
+                <span>
+                  <a href="#">Dashboard</a>
+                </span>
+              </SidebarMenuItem>
+              <SidebarMenuItem className="flex border p-1 gap-2">
+                <Sprout size={30} />
+                <span>
+                  <a href="#">Crop Management</a>
+                </span>
+              </SidebarMenuItem>
+              <SidebarMenuItem className="flex border p-1 gap-2">
+                <CloudSun size={30} />
+                <span>
+                  <a href="#">Weather</a>
+                </span>
+              </SidebarMenuItem>
+              <SidebarMenuItem className="flex border p-1 gap-2">
+                <Tractor size={30} />
+                <span>
+                  <a href="#">Equipment</a>
+                </span>
+              </SidebarMenuItem>
+              <SidebarMenuItem className="flex border p-1 gap-2">
+                <BicepsFlexed size={30} />
+                <span>
+                  <a href="#">Labor Management</a>
+                </span>
+              </SidebarMenuItem>
+              <SidebarMenuItem className="flex border p-1 gap-2">
+                <ChartNoAxesCombined size={30} />
+                <span>
+                  <a href="#">Reports and Analytics</a>
+                </span>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
           <SidebarMenu>
-            <SidebarMenuItem>
+            <SidebarMenuItem className="flex">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton>
