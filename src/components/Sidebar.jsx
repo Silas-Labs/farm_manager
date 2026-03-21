@@ -22,6 +22,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarTrigger,
+  useSidebar
 } from "@/components/ui/sidebar";
 
 import {
@@ -32,47 +33,49 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const SideBar = () => {
+  const {open} = useSidebar()
   return (
-    <SidebarProvider>
+    
       <Sidebar collapsible="icon">
         <SidebarTrigger />
         <SidebarHeader />
         <SidebarContent>
           <SidebarGroup>
-            <SidebarMenu className="gap-5">
-              <SidebarMenuItem className="flex border p-1 gap-2">
+            <SidebarMenu className="gap-4 ">
+              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
                 <LayoutDashboard size={30} />
-                <span>
+                <span className={open ? "" : "hidden"}>
                   <a href="#">Dashboard</a>
                 </span>
               </SidebarMenuItem>
-              <SidebarMenuItem className="flex border p-1 gap-2">
+              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
                 <Sprout size={30} />
-                <span>
+                <span  className={open ? "" : "hidden"}>
                   <a href="#">Crop Management</a>
                 </span>
               </SidebarMenuItem>
-              <SidebarMenuItem className="flex border p-1 gap-2">
+              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
                 <CloudSun size={30} />
-                <span>
+                <span  className={open ? "" : "hidden"}>
                   <a href="#">Weather</a>
                 </span>
               </SidebarMenuItem>
-              <SidebarMenuItem className="flex border p-1 gap-2">
+              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
                 <Tractor size={30} />
-                <span>
+                <span  className={open ? "" : "hidden"}>
                   <a href="#">Equipment</a>
                 </span>
               </SidebarMenuItem>
-              <SidebarMenuItem className="flex border p-1 gap-2">
+              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
                 <BicepsFlexed size={30} />
-                <span>
+                <span  className={open ? "" : "hidden"}>
                   <a href="#">Labor Management</a>
                 </span>
+                
               </SidebarMenuItem>
-              <SidebarMenuItem className="flex border p-1 gap-2">
+              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
                 <ChartNoAxesCombined size={30} />
-                <span>
+                <span  className={open ? "font-normal" : "hidden"}>
                   <a href="#">Reports and Analytics</a>
                 </span>
               </SidebarMenuItem>
@@ -102,6 +105,5 @@ export const SideBar = () => {
           </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
-    </SidebarProvider>
   );
 };

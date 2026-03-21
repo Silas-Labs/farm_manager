@@ -3,9 +3,10 @@ import { SideBar } from "../Sidebar";
 import Header from "../Header";
 import { WeatheCard } from "../WeatherCard";
 import { WeatherHighlight } from "../WeatherHighlight";
-
+import {SidebarProvider} from '@/components/ui/sidebar'
 export const Layout = () => {
   return (
+    <SidebarProvider>
     <div className="flex w-screen">
       <SideBar />
       <div>
@@ -16,5 +17,6 @@ export const Layout = () => {
         </div>
       </div>
     </div>
+    </SidebarProvider>
   );
 };
