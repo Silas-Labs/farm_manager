@@ -4,6 +4,7 @@ import Header from "../Header";
 import { WeatheCard } from "../WeatherCard";
 import { WeatherHighlight } from "../WeatherHighlight";
 import {SidebarProvider} from '@/components/ui/sidebar'
+import { Forecast } from "../Forecast";
 export const Layout = () => {
   return (
     <SidebarProvider>
@@ -11,9 +12,11 @@ export const Layout = () => {
       <SideBar className="flex-1"/>
       <div className="flex-1">
         <Header />
-        <div className="border border-blue-950 w-full flex justify-items-start p-4">
+        <div className="border border-blue-950 w-full flex flex-wrap justify-items-start gap-2 p-2">
           <WeatheCard />
           <WeatherHighlight/>
+          <div className="flex-1"></div>
+          <Forecast/>
         </div>
       </div>
     </div>

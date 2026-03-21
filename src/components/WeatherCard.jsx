@@ -21,7 +21,7 @@ export function WeatheCard() {
   return (
     <Card
       size="md"
-      className="w-[300px] max-h-[150px] flex flex-row justify-evenly "
+      className="w-75 max-h-37.5 flex flex-row justify-evenly "
     >
       <CardHeader className="flex flex-1">
         <CardDescription>
