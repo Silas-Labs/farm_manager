@@ -41,41 +41,41 @@ export const SideBar = () => {
         <SidebarHeader />
         <SidebarContent>
           <SidebarGroup>
-            <SidebarMenu className="gap-4 ">
-              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
-                <LayoutDashboard size={30} />
-                <span className={open ? "" : "hidden"}>
+            <SidebarMenu className="gap-4 text-sm">
+              <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+                <LayoutDashboard size={24} />
+                <span className={open ? " text-[12px]" : "hidden"}>
                   <a href="#">Dashboard</a>
                 </span>
               </SidebarMenuItem>
-              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
-                <Sprout size={30} />
-                <span  className={open ? "" : "hidden"}>
+              <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+                <Sprout size={24} />
+                <span  className={open ? " text-[12px]" : "hidden"}>
                   <a href="#">Crop Management</a>
                 </span>
               </SidebarMenuItem>
-              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
-                <CloudSun size={30} />
-                <span  className={open ? "" : "hidden"}>
+              <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+                <CloudSun size={24} />
+                <span  className={open ? " text-[12px]" : "hidden"}>
                   <a href="#">Weather</a>
                 </span>
               </SidebarMenuItem>
-              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
-                <Tractor size={30} />
-                <span  className={open ? "" : "hidden"}>
+              <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+                <Tractor size={24} />
+                <span  className={open ? " text-[12px]" : "hidden"}>
                   <a href="#">Equipment</a>
                 </span>
               </SidebarMenuItem>
-              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
-                <BicepsFlexed size={30} />
-                <span  className={open ? "" : "hidden"}>
+              <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+                <BicepsFlexed size={24} />
+                <span  className={open ? " text-[12px]" : "hidden"}>
                   <a href="#">Labor Management</a>
                 </span>
                 
               </SidebarMenuItem>
-              <SidebarMenuItem className="flex p-1 gap-2 rounded-full hover:bg-green-600/20">
-                <ChartNoAxesCombined size={30} />
-                <span  className={open ? "font-normal" : "hidden"}>
+              <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+                <ChartNoAxesCombined size={24} />
+                <span  className={open ? "font-normal text-[12px]" : "hidden"}>
                   <a href="#">Reports and Analytics</a>
                 </span>
               </SidebarMenuItem>
