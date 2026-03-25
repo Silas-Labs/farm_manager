@@ -30,7 +30,7 @@ export function WeatherHighlight() {
         Today's Highlight
       </CardTitle>
       <CardContent className="flex gap-2">
-        <div className="gap-2 flex-1">
+        <div className="gap-2 flex-1 flex flex-col justify-between">
             <Card>
                  <CardTitle>Wind status</CardTitle>
                  <CardContent>
@@ -50,7 +50,7 @@ export function WeatherHighlight() {
                  </CardContent>
             </Card>
         </div>
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col justify-between">
            <Card>
                  <CardTitle>Humidity</CardTitle>
                  <CardContent>
@@ -71,7 +71,7 @@ export function WeatherHighlight() {
             </Card>
 
         </div>
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col justify-between">
            <Card className="w-44">
             <CardContent>
                 <CardDescription>
