@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter,Link } from "react-router";
+import { BrowserRouter,Link, useLocation } from "react-router";
 
 import {
   BicepsFlexed,
@@ -35,6 +35,8 @@ import {
 
 export const SideBar = () => {
   const { open } = useSidebar();
+
+  const url = useLocation()
   return (
     <Sidebar collapsible="icon">
       <SidebarTrigger />
@@ -42,42 +44,54 @@ export const SideBar = () => {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu className="gap-4 text-sm">
-            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+             <Link to="/" className={location.pathname == "/" ? "bg-green-900/20 cursor-default" :"rounded-full hover:bg-green-600/20"}>
+            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center ">
               <LayoutDashboard size={24} />
               <span className={open ? " text-[12px]" : "hidden"}>
-                <Link to="/dashboard">Dashboard</Link>
+                Dashboard
               </span>
             </SidebarMenuItem>
-            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+            </Link>
+             <Link to="/crops" className={location.pathname == "/crops" ? "bg-green-900/20 cursor-default" :"rounded-full hover:bg-green-600/20"}>
+            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center ">
               <Sprout size={24} />
               <span className={open ? " text-[12px]" : "hidden"}>
-                <Link to="/crops">Crop Management</Link>
+               Crop Management
               </span>
             </SidebarMenuItem>
-            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+            </Link>
+            <Link to="/weather" className={location.pathname == "/weather" ? "bg-green-900/20 cursor-default" :"rounded-full hover:bg-green-600/20"}>
+            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center ">
               <CloudSun size={24} />
               <span className={open ? " text-[12px]" : "hidden"}>
-                <Link to="/weather">Weather</Link>
+                Weather
               </span>
             </SidebarMenuItem>
-            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+            </Link>
+            <Link to="/equipment" className={location.pathname == "/equipment" ? "bg-green-900/20 cursor-default" :"rounded-full hover:bg-green-600/20"}>
+            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center ">
               <Tractor size={24} />
               <span className={open ? " text-[12px]" : "hidden"}>
-                <Link to="/equipment">Equipment</Link>
+                Equipment
               </span>
             </SidebarMenuItem>
-            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+                </Link>
+                <Link to="/labor" className={location.pathname == "/labor" ? "bg-green-900/20 cursor-default" :"rounded-full hover:bg-green-600/20"}>
+            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center ">
               <BicepsFlexed size={24} />
               <span className={open ? " text-[12px]" : "hidden"}>
-                <Link to="/labor">Labor Management</Link>
+                Labor Management
               </span>
             </SidebarMenuItem>
-            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center rounded-full hover:bg-green-600/20">
+            </Link>
+            <Link to="/reports" className={location.pathname == "/reports" ? "bg-green-900/20 cursor-default" :"rounded-full hover:bg-green-600/20"}>
+            <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center ">
               <ChartNoAxesCombined size={24} />
               <span className={open ? "font-normal text-[12px]" : "hidden"}>
-                <Link to="/reports">Reports and Analytics</Link>
+                Reports and Analytics
               </span>
             </SidebarMenuItem>
+            </Link>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

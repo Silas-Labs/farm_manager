@@ -1,5 +1,5 @@
 import React from "react";
-import {BrowserRouter} from 'react-router'
+import {BrowserRouter, Outlet} from 'react-router'
 import { SideBar } from "../Sidebar";
 import Header from "../Header";
 import {SidebarProvider} from '@/components/ui/sidebar'
@@ -12,7 +12,7 @@ export const Layout = () => {
       <SideBar className="flex-1"/>
       <div className="flex-1">
         <Header />
-       <Weather/>
+       <Outlet/>
       </div>
     </div>
     </SidebarProvider>
