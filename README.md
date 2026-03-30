@@ -48,6 +48,27 @@ This project aims to address these challenges by developing a comprehensive and 
 
 ## 🛠️ Tech Stack
 
+### Frontend:
+
+* React.js – For building a dynamic and responsive user interface
+* Tailwind CSS – For modern, utility-first styling and fast UI development
+
+### Backend:
+
+* Node.js / Express.js – For handling API requests and server-side logic
+
+### Database:
+
+* MongoDB / MySQL – For storing farm records, activities, and financial data
+
+### Data Visualization:
+
+* Chart.js / Recharts – For generating interactive charts and analytics dashboards
+
+### Version Control & Tools:
+
+* Git & GitHub – For source code management and collaboration
+
 
 ## 📊 System Output & Visualizations
 
