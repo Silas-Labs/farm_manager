@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
-import { TableDisplay } from '../components/Table' // You can create a crop table component
+import { TableDisplay } from '../components/Table'
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
 
 export const Crops = () => {
