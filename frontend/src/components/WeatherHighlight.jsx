@@ -1,96 +1,79 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { CloudSunRain } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function WeatherHighlight() {
   const weather = {
-    wind: "7.9km/h",
-    wind_sub:"9.00 AM",
+    wind: "7.9 km/h",
+    wind_sub: "9.00 AM",
     humidity: "85%",
-    humidity_sub:"Humidity is good",
+    humidity_sub: "Humidity is good",
     uv_index: "4 UV",
-    uv_index_sub:"Moderate UV",
+    uv_index_sub: "Moderate UV",
     visibility: "5 km",
-    visibility_sub:"9.00 AM",
-    date: "21 Mar 2026",
-    condition: "Heavy Rain",
+    visibility_sub: "9.00 AM",
+    sunrise: "4:50 AM",
+    sunset: "6:45 PM",
   };
-  return (
-    <Card
-      size="md"
-      className="w-125 max-h-87.5"
-    >
-      <CardTitle className="flex flex-1 ">
-        Today's Highlight
-      </CardTitle>
-      <CardContent className="flex gap-2">
-        <div className="gap-2 flex-1 flex flex-col justify-between">
-            <Card>
-                 <CardTitle>Wind status</CardTitle>
-                 <CardContent>
-                       <p> {weather.wind}</p>
-                    <CardDescription>
-                       <span>{weather.wind_sub}</span>
-                    </CardDescription>
-                 </CardContent>
-            </Card>
-            <Card>
-                 <CardTitle>UV Index</CardTitle>
-                  <CardContent>
-                       <p> {weather.uv_index}</p>
-                    <CardDescription>
-                       <span>{weather.uv_index_sub}</span>
-                    </CardDescription>
-                 </CardContent>
-            </Card>
-        </div>
-        <div className="flex-1 flex flex-col justify-between">
-           <Card>
-                 <CardTitle>Humidity</CardTitle>
-                 <CardContent>
-                       <p> {weather.humidity}</p>
-                    <CardDescription>
-                       <span>{weather.humidity_sub}</span>
-                    </CardDescription>
-                 </CardContent>
-            </Card>
-            <Card>
-                 <CardTitle>Visibility</CardTitle>
-                  <CardContent>
-                       <p> {weather.visibility}</p>
-                    <CardDescription>
-                       <span>{weather.visibility_sub}</span>
-                    </CardDescription>
-                 </CardContent>
-            </Card>
 
-        </div>
-        <div className="flex-1 flex flex-col justify-between">
-           <Card className="w-44">
+  return (
+    <Card className="w-full md:w-[700px] p-4">
+      <CardTitle className="text-lg font-bold mb-2">Today's Highlights</CardTitle>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Column 1: Wind & UV */}
+        <div className="flex flex-col gap-4">
+          <Card className="p-2">
+            <CardHeader>Wind Status</CardHeader>
             <CardContent>
-                <CardDescription>
-                    Sunrise
-                </CardDescription>
+              <p className="font-bold">{weather.wind}</p>
+              <CardDescription>{weather.wind_sub}</CardDescription>
             </CardContent>
-            <CardHeader>4.50 AM</CardHeader>
-           </Card>
-            <Card className="w-44">
+          </Card>
+
+          <Card className="p-2">
+            <CardHeader>UV Index</CardHeader>
             <CardContent>
-                <CardDescription>
-                    Sunset
-                </CardDescription>
+              <p className="font-bold">{weather.uv_index}</p>
+              <CardDescription>{weather.uv_index_sub}</CardDescription>
             </CardContent>
-            <CardHeader>6.45 PM</CardHeader>
-           </Card>
+          </Card>
         </div>
-      </CardContent>
-      
+
+        {/* Column 2: Humidity & Visibility */}
+        <div className="flex flex-col gap-4">
+          <Card className="p-2">
+            <CardHeader>Humidity</CardHeader>
+            <CardContent>
+              <p className="font-bold">{weather.humidity}</p>
+              <CardDescription>{weather.humidity_sub}</CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="p-2">
+            <CardHeader>Visibility</CardHeader>
+            <CardContent>
+              <p className="font-bold">{weather.visibility}</p>
+              <CardDescription>{weather.visibility_sub}</CardDescription>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Column 3: Sunrise & Sunset */}
+        <div className="flex flex-col gap-4">
+          <Card className="p-2 text-center">
+            <CardHeader>Sunrise</CardHeader>
+            <CardContent>
+              <p className="font-bold">{weather.sunrise}</p>
+            </CardContent>
+          </Card>
+
+          <Card className="p-2 text-center">
+            <CardHeader>Sunset</CardHeader>
+            <CardContent>
+              <p className="font-bold">{weather.sunset}</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </Card>
   );
 }
