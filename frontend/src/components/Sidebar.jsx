@@ -44,7 +44,7 @@ export const SideBar = () => {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu className="gap-4 text-sm">
-             <Link to="/" className={location.pathname == "/" ? "bg-green-900/20 cursor-default" :"rounded-full hover:bg-green-600/20"}>
+             <Link to="/dashboard" className={location.pathname == "/dashboard" ? "bg-green-900/20 cursor-default" :"rounded-full hover:bg-green-600/20"}>
             <SidebarMenuItem className="flex px-2 py-1 gap-2 items-center ">
               <LayoutDashboard size={24} />
               <span className={open ? " text-[12px]" : "hidden"}>

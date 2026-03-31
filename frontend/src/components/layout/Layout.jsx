@@ -8,9 +8,9 @@ export const Layout = () => {
   return (
     
     <SidebarProvider>
-    <div className="flex w-screen max-w-5xl">
-      <SideBar className="flex-1"/>
-      <div className="flex-1">
+    <div className="flex w-screen ">
+      <SideBar />
+      <div className="flex-1 w-full">
         <Header />
        <Outlet/>
       </div>

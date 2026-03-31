@@ -1,7 +1,7 @@
 import React from "react";
 
 const Header = () => {
-  return <div className="max-w-5xl border border-blue-400">Header</div>;
+  return <div className="w-full min-h-12 border">Header</div>;
 };
 
 export default Header;
