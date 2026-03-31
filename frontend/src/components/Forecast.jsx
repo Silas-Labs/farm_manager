@@ -1,67 +1,33 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CloudLightning, CloudRain, CloudRainWind, CloudSun, CloudSunRain, Cloudy } from "lucide-react";
 
 export function Forecast() {
-  const weather = {
-    wind: "7.9km/h",
-    wind_sub:"9.00 AM",
-    humidity: "85%",
-    humidity_sub:"Humidity is good",
-    uv_index: "4 UV",
-    uv_index_sub:"Moderate UV",
-    visibility: "5 km",
-    visibility_sub:"9.00 AM",
-    date: "21 Mar 2026",
-    condition: "Heavy Rain",
-  };
+  // Example 6-day forecast data
+  const forecastData = [
+    { day: "Mon", icon: <CloudLightning />, temp: "24ºC" },
+    { day: "Tue", icon: <CloudSun />, temp: "26ºC" },
+    { day: "Wed", icon: <CloudRain />, temp: "22ºC" },
+    { day: "Thu", icon: <CloudRainWind />, temp: "23ºC" },
+    { day: "Fri", icon: <Cloudy />, temp: "25ºC" },
+    { day: "Sat", icon: <CloudRain />, temp: "24ºC" },
+  ];
+
   return (
-    <Card
-      size="md"
-      className="w-125 max-h-87.5 px-2"
-    >
-      <CardTitle className="flex flex-1 ">
-        Forecast
-      </CardTitle>
-      <CardContent className="flex gap-3">
-        <Card className="flex-1 min-h-25 text-center">
-            <CardHeader className="font-bold font-sans">Day</CardHeader>
-            <CardContent><CloudLightning/></CardContent>
-            <CardDescription className="font-bold">24ºC</CardDescription>
-        </Card>
-        <Card className="flex-1 min-h-25 text-center">
-            <CardHeader className="font-bold font-sans">Day</CardHeader>
-            <CardContent><CloudSun/></CardContent>
-            <CardDescription className="font-bold">24ºC</CardDescription>
-        </Card>
-        <Card className="flex-1 min-h-25 text-center">
-            <CardHeader className="font-bold font-sans">Day</CardHeader>
-            <CardContent><CloudRain/></CardContent>
-            <CardDescription className="font-bold">24ºC</CardDescription>
-        </Card>
-        <Card className="flex-1 min-h-25 text-center">
-            <CardHeader className="font-bold font-sans">Day</CardHeader>
-            <CardContent><CloudRainWind/></CardContent>
-            <CardDescription className="font-bold">24ºC</CardDescription>
-        </Card>
-        <Card className="flex-1 min-h-25 text-center">
-            <CardHeader className="font-bold font-sans">Day</CardHeader>
-            <CardContent><Cloudy/></CardContent>
-            <CardDescription className="font-bold">24ºC</CardDescription>
-        </Card>
-        <Card className="flex-1 min-h-25 text-center">
-            <CardHeader className="font-bold font-sans">Day</CardHeader>
-            <CardContent><CloudRain/></CardContent>
-            <CardDescription className="font-bold">24ºC</CardDescription>
-        </Card>
-      </CardContent>
-      
+    <Card className="w-full p-4">
+      <CardTitle className="text-lg font-bold mb-2">Forecast</CardTitle>
+
+      {/* Scrollable row for small screens */}
+      <div className="flex gap-3 overflow-x-auto">
+        {forecastData.map((day, index) => (
+          <Card key={index} className="flex-shrink-0 w-20 text-center p-2">
+            <CardHeader className="font-bold">{day.day}</CardHeader>
+            <CardContent className="flex justify-center my-2 text-blue-500">
+              {day.icon}
+            </CardContent>
+            <CardDescription className="font-bold">{day.temp}</CardDescription>
+          </Card>
+        ))}
+      </div>
     </Card>
   );
 }

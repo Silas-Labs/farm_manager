@@ -1,15 +1,7 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CloudSunRain } from "lucide-react";
 
-export function WeatheCard() {
+export function WeatherCard() {
   const weather = {
     temp: "30ºC",
     temp_approx: "Feels like 26ºC",
@@ -18,32 +10,35 @@ export function WeatheCard() {
     date: "21 Mar 2026",
     condition: "Heavy Rain",
   };
+
   return (
-    <Card
-      size="md"
-      className="w-75 max-h-37.5 flex flex-row justify-evenly "
-    >
-      <CardHeader className="flex flex-1">
+    <Card className="w-full md:w-80 p-4 flex flex-col md:flex-col gap-4">
+      
+      {/* Left Side: Date & Location */}
+      <CardHeader className="w-full flex flex-col items-start gap-1">
         <CardDescription>
-          <p className="text-[10px] bg-green-600 rounded-lg text-center text-white p-1">
+          <p className="text-xs bg-green-600 rounded-lg text-white px-2 py-1 text-center">
             {weather.location}
           </p>
-          <CardTitle>
-            <p className="font-bold text-black">{weather.day}</p>
-            <span className="text-[11px] text-slate-400">{weather.date}</span>
-          </CardTitle>
         </CardDescription>
+        <CardTitle className="flex flex-col">
+          <span className="font-bold text-black">{weather.day}</span>
+          <span className="text-xs text-slate-400">{weather.date}</span>
+        </CardTitle>
       </CardHeader>
-      <div className="flex flex-1 items-center">
-        <CloudSunRain size={64} />
+
+      {/* Middle: Weather Icon */}
+      <div className="flex items-center justify-center">
+        <CloudSunRain size={48} className="text-blue-500" />
       </div>
-      <CardContent className="flex  flex-col justify-between items-center">
-        <p className="text-[20px] font-bold">{weather.temp}</p>
-        <span>
-          <p className="text-[13px] font-bold">{weather.condition}</p>
-          <p className="text-[10px] text-slate-400">{weather.temp_approx}</p>
-        </span>
+
+      {/* Right Side: Temperature & Condition */}
+      <CardContent className="flex flex-col items-center gap-1">
+        <p className="text-2xl font-bold">{weather.temp}</p>
+        <p className="text-sm font-semibold">{weather.condition}</p>
+        <p className="text-xs text-slate-400">{weather.temp_approx}</p>
       </CardContent>
+
     </Card>
   );
 }
