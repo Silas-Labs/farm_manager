@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { TableDisplay } from '../components/Table'
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { AddCropModal } from '../components/AddCropModal'
 
 export const Crops = () => {
+  const[showCropModal,setshowCropModal] = useState(false)
   // Example: State to hold crop data
   const [crops, setCrops] = useState([
     {
@@ -31,7 +33,7 @@ export const Crops = () => {
 
       {/* Top Actions */}
       <div className='flex gap-2 justify-end'>
-        <Button variant='outline'>Add Crop</Button>
+        <Button variant='outline' onClick={()=>setshowCropModal((prev)=>!prev)}>Add Crop</Button>
       </div>
 
       {/* Crop Overview Cards */}
@@ -70,6 +72,8 @@ export const Crops = () => {
           </CardContent>
         </Card>
       </div>
+
+      {showCropModal && <AddCropModal onClose={()=>setshowCropModal(false)}/>}
 
       {/* Crop Table */}
       <Card className='p-4'>
