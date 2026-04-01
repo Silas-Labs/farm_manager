@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import {Button} from "@/components/ui/button"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { AddLaborModal } from '../components/AddLaborModal'
 
 export const Labour = () => {
+  const[showLaborModal, setshowLaborModal] = useState(false)
   return (
     <div className='w-full flex flex-col p-1'>
           <div className='w-full flex justify-end border border-blue-200'>
-            <Button variant='outline'>Add Labor</Button>
+            <Button variant='outline' onClick={()=>setshowLaborModal((prev)=>!prev)}>Add Labor</Button>
           </div>
           <div className="p-4">
   {/* Summary Cards */}
@@ -29,6 +31,8 @@ export const Labour = () => {
       <CardContent>8%</CardContent>
     </Card>
   </div>
+
+  {showLaborModal && <AddLaborModal onClose={()=>setshowLaborModal(false)}/>}
 
   {/* Personnel Table */}
   <div className="overflow-x-auto">
