@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import {Button} from "@/components/ui/button"
 
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { AddEquipmentModal } from '../components/AddEquipmentModal'
 
 export const Equipment = () => {
+  const[showAddEquipmentModal,setshowAdEquipmentModal] = useState(false)
+
+
   return (
     <div className='w-full flex  flex-col p-1'>
       <div className='flex justify-end'>
-        <Button variant='outline' >Add Equipment</Button>
+        <Button variant='outline' onClick={()=>setshowAdEquipmentModal(true)} >Add Equipment</Button>
       </div>
       <div className="p-4">
   {/* Summary Cards */}
@@ -26,6 +30,7 @@ export const Equipment = () => {
       <CardContent>5</CardContent>
     </Card>
   </div>
+  {showAddEquipmentModal && <AddEquipmentModal onClose={()=>setshowAdEquipmentModal(false)}/>}
 
   {/* Equipment Table */}
   <div className="overflow-x-auto">
