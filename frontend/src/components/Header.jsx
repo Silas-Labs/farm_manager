@@ -32,7 +32,7 @@ const Header = () => {
     }
   }
   
-  return <div className="w-full min-h-12 border flex items-center p-2 text-4xl font-medium text-green-800/90">{page}</div>;
+  return <div className="w-full min-h-12 border flex items-center p-2 text-4xl font-[roboto] font-medium text-green-800/90">{page}</div>;
 };
 
 export default Header;

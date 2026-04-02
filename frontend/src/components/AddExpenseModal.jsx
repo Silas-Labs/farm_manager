@@ -2,40 +2,43 @@ import React from "react";
 
 import {
   Card,
-  CardTitle,
   CardDescription,
   CardFooter,
+  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-export const AddEquipmentModal = ({ onClose }) => {
+
+export const AddExpenseModal = ({ onClose }) => {
   return (
     <form
-      className="fixed inset-0  flex justify-center items-center z-99 shadow-xl"
+      className="fixed inset-0  flex justify-center items-center z-99"
       onClick={onClose}
     >
       <Card className="w-1/3  p-4" onClick={(e) => e.stopPropagation()}>
-        <CardTitle>Add Equipment</CardTitle>
+        <CardTitle>Add Expense</CardTitle>
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
-            <Input className="min-h-13" placeholder="Equipment Name" />
-            <Input className="min-h-13" placeholder="Type" />
-            <Input className="min-h-13" placeholder="Model" />
-            <Input className="min-h-13" placeholder="Description" />
-            <Input className="min-h-13" placeholder="Status" />
-            <Input className="min-h-13" placeholder="Quantity" />
+            <Input className="min-h-13" placeholder="ID Number" />
+            <Input className="min-h-13" placeholder="Name" />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                label="Select date"
+                label="Date of Birth"
                 slotProps={{
                   textField: { fullWidth: true },
                 }}
               />
             </LocalizationProvider>
-            <Input className="min-h-13" placeholder="Price" />
+            <Input className="min-h-13" placeholder="Phone Number" />
+            <Input className="min-h-13" placeholder="Location" />
+            <Input className="min-h-13" placeholder="Home" />
+            <Input className="min-h-13" placeholder="Next of Kin" />
+            <Input className="min-h-13" placeholder="Phone Number" />
+            <Input className="min-h-13" placeholder="Role" />
+            <Input className="min-h-13" placeholder="Status" />
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
