@@ -32,7 +32,8 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
       date,
       category,
       notes,
-      cropType: category === "crop" ? cropType : "equipment" ? "equipment":undefined,
+      cropType:
+        category === "crop" ? cropType : "equipment" ? "equipment" : undefined,
       brand: category === "crop" ? brand : undefined,
       quantity: category === "crop" ? parseFloat(quantity) : undefined,
       unitPrice: category === "crop" ? parseFloat(unitPrice) : undefined,
@@ -82,12 +83,6 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
               <option value="labor">Labor</option>
               <option value="other">Other</option>
             </select>
-            <Input
-              className="min-h-13"
-              placeholder="Notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-            />
 
             {/* Crop-specific fields */}
             {category === "crop" && (
@@ -161,6 +156,12 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
                 />
               </div>
             )}
+            <Input
+              className="min-h-13"
+              placeholder="Notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
