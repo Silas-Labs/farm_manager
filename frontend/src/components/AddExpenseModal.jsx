@@ -19,24 +19,60 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
 
-  // Crop-specific fields
-  const [cropType, setCropType] = useState("");
+  // Category-specific fields
+  const [expenseType, setExpenseType] = useState("");
   const [brand, setBrand] = useState("");
   const [quantity, setQuantity] = useState("");
   const [unitPrice, setUnitPrice] = useState("");
 
+  // Validation state
+  const [errors, setErrors] = useState({});
+
+  const inputClass = (hasError) =>
+    `min-h-13 border rounded p-2 ${hasError ? "border-red-500" : "border-gray-300"}`;
+
+  const validate = () => {
+    const newErrors = {};
+
+    // Core validation
+    if (!title.trim()) newErrors.title = true;
+    if (!amount || parseFloat(amount) <= 0) newErrors.amount = true;
+    if (!date) newErrors.date = true;
+    if (!category) newErrors.category = true;
+
+    // Crop-specific validation
+    if (category === "crop") {
+      if (!expenseType) newErrors.expenseType = true;
+      if (!brand.trim()) newErrors.brand = true;
+      if (!quantity || parseFloat(quantity) <= 0) newErrors.quantity = true;
+      if (!unitPrice || parseFloat(unitPrice) <= 0) newErrors.unitPrice = true;
+    }
+
+    // Equipment-specific validation
+    if (category === "equipment") {
+      if (!expenseType) newErrors.expenseType = true;
+      if (!brand.trim()) newErrors.brand = true;
+      if (!quantity || parseFloat(quantity) <= 0) newErrors.quantity = true;
+      if (!unitPrice || parseFloat(unitPrice) <= 0) newErrors.unitPrice = true;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSave = () => {
+    if (!validate()) return;
+
     onSave({
       title,
       amount: parseFloat(amount),
       date,
       category,
       notes,
-      cropType:
-        category === "crop" ? cropType : "equipment" ? "equipment" : undefined,
-      brand: category === "crop" ? brand : undefined,
-      quantity: category === "crop" ? parseFloat(quantity) : undefined,
-      unitPrice: category === "crop" ? parseFloat(unitPrice) : undefined,
+      expenseType: category ? expenseType : undefined,
+      brand: category ? brand : undefined,
+      quantity: category ? parseFloat(quantity) : undefined,
+      unitPrice: category ? parseFloat(unitPrice) : undefined,
     });
     onClose();
   };
@@ -52,13 +88,13 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
           <div className="h-full flex flex-col gap-4">
             {/* Core fields */}
             <Input
-              className="min-h-13"
+              className={inputClass(errors.title)}
               placeholder="Title / Description"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
             <Input
-              className="min-h-13"
+              className={inputClass(errors.amount)}
               placeholder="Amount"
               type="number"
               value={amount}
@@ -69,11 +105,16 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
                 label="Date"
                 value={date}
                 onChange={(newDate) => setDate(newDate)}
-                slotProps={{ textField: { fullWidth: true } }}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    className: inputClass(errors.date),
+                  },
+                }}
               />
             </LocalizationProvider>
             <select
-              className="border rounded p-2 min-h-13"
+              className={inputClass(errors.category)}
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
@@ -84,13 +125,13 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
               <option value="other">Other</option>
             </select>
 
-            {/* Crop-specific fields */}
+            {/* Crop fields */}
             {category === "crop" && (
               <div className="flex flex-col gap-4 mt-2 border-t pt-2">
                 <select
-                  className="border rounded p-2 min-h-13"
-                  value={cropType}
-                  onChange={(e) => setCropType(e.target.value)}
+                  className={inputClass(errors.expenseType)}
+                  value={expenseType}
+                  onChange={(e) => setExpenseType(e.target.value)}
                 >
                   <option value="">Select Crop Expense Type</option>
                   <option value="seeds">Seeds</option>
@@ -99,20 +140,20 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
                   <option value="other">Other</option>
                 </select>
                 <Input
-                  className="min-h-13"
+                  className={inputClass(errors.brand)}
                   placeholder="Brand / Supplier"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                 />
                 <Input
-                  className="min-h-13"
+                  className={inputClass(errors.quantity)}
                   placeholder="Quantity"
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                 />
                 <Input
-                  className="min-h-13"
+                  className={inputClass(errors.unitPrice)}
                   placeholder="Unit Price"
                   type="number"
                   value={unitPrice}
@@ -121,13 +162,13 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
               </div>
             )}
 
-            {/* Equipment Specific fields*/}
+            {/* Equipment fields */}
             {category === "equipment" && (
               <div className="flex flex-col gap-4 mt-2 border-t pt-2">
                 <select
-                  className="border rounded p-2 min-h-13"
-                  value={cropType}
-                  onChange={(e) => setCropType(e.target.value)}
+                  className={inputClass(errors.expenseType)}
+                  value={expenseType}
+                  onChange={(e) => setExpenseType(e.target.value)}
                 >
                   <option value="">Select Equipment Expense Type</option>
                   <option value="purchase">Purchase</option>
@@ -135,20 +176,20 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
                   <option value="repair">Repair/Service</option>
                 </select>
                 <Input
-                  className="min-h-13"
+                  className={inputClass(errors.brand)}
                   placeholder="Brand / Supplier"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                 />
                 <Input
-                  className="min-h-13"
+                  className={inputClass(errors.quantity)}
                   placeholder="Quantity"
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                 />
                 <Input
-                  className="min-h-13"
+                  className={inputClass(errors.unitPrice)}
                   placeholder="Unit Price"
                   type="number"
                   value={unitPrice}
@@ -156,8 +197,9 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
                 />
               </div>
             )}
+
             <Input
-              className="min-h-13"
+              className={inputClass(errors.notes)}
               placeholder="Notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
