@@ -32,7 +32,7 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
       date,
       category,
       notes,
-      cropType: category === "crop" ? cropType : undefined,
+      cropType: category === "crop" ? cropType : "equipment" ? "equipment":undefined,
       brand: category === "crop" ? brand : undefined,
       quantity: category === "crop" ? parseFloat(quantity) : undefined,
       unitPrice: category === "crop" ? parseFloat(unitPrice) : undefined,
@@ -102,6 +102,42 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
                   <option value="fertilizer">Fertilizer</option>
                   <option value="pesticide">Pesticide</option>
                   <option value="other">Other</option>
+                </select>
+                <Input
+                  className="min-h-13"
+                  placeholder="Brand / Supplier"
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value)}
+                />
+                <Input
+                  className="min-h-13"
+                  placeholder="Quantity"
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
+                <Input
+                  className="min-h-13"
+                  placeholder="Unit Price"
+                  type="number"
+                  value={unitPrice}
+                  onChange={(e) => setUnitPrice(e.target.value)}
+                />
+              </div>
+            )}
+
+            {/* Equipment Specific fields*/}
+            {category === "equipment" && (
+              <div className="flex flex-col gap-4 mt-2 border-t pt-2">
+                <select
+                  className="border rounded p-2 min-h-13"
+                  value={cropType}
+                  onChange={(e) => setCropType(e.target.value)}
+                >
+                  <option value="">Select Equipment Expense Type</option>
+                  <option value="purchase">Purchase</option>
+                  <option value="hire">Hire</option>
+                  <option value="repair">Repair/Service</option>
                 </select>
                 <Input
                   className="min-h-13"
