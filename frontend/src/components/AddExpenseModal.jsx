@@ -12,11 +12,18 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 export const AddExpenseModal = ({ onClose, onSave }) => {
+  // Core fields
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(null);
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
+
+  // Crop-specific fields
+  const [cropType, setCropType] = useState("");
+  const [brand, setBrand] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [unitPrice, setUnitPrice] = useState("");
 
   const handleSave = () => {
     onSave({
@@ -25,6 +32,10 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
       date,
       category,
       notes,
+      cropType: category === "crop" ? cropType : undefined,
+      brand: category === "crop" ? brand : undefined,
+      quantity: category === "crop" ? parseFloat(quantity) : undefined,
+      unitPrice: category === "crop" ? parseFloat(unitPrice) : undefined,
     });
     onClose();
   };
@@ -38,6 +49,7 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
         <CardTitle>Add Expense</CardTitle>
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
+            {/* Core fields */}
             <Input
               className="min-h-13"
               placeholder="Title / Description"
@@ -76,6 +88,43 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
+
+            {/* Crop-specific fields */}
+            {category === "crop" && (
+              <div className="flex flex-col gap-4 mt-2 border-t pt-2">
+                <select
+                  className="border rounded p-2 min-h-13"
+                  value={cropType}
+                  onChange={(e) => setCropType(e.target.value)}
+                >
+                  <option value="">Select Crop Expense Type</option>
+                  <option value="seeds">Seeds</option>
+                  <option value="fertilizer">Fertilizer</option>
+                  <option value="pesticide">Pesticide</option>
+                  <option value="other">Other</option>
+                </select>
+                <Input
+                  className="min-h-13"
+                  placeholder="Brand / Supplier"
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value)}
+                />
+                <Input
+                  className="min-h-13"
+                  placeholder="Quantity"
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
+                <Input
+                  className="min-h-13"
+                  placeholder="Unit Price"
+                  type="number"
+                  value={unitPrice}
+                  onChange={(e) => setUnitPrice(e.target.value)}
+                />
+              </div>
+            )}
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
