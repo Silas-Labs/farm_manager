@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { toast, Toaster } from "sonner";
 
 export const AddExpenseModal = ({ onClose, onSave }) => {
   // Core fields
@@ -83,6 +84,7 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
       onClick={onClose}
     >
       <Card className="w-1/3 p-4" onClick={(e) => e.stopPropagation()}>
+        {Object.keys(errors).length > 0  ? toast.error("Highlighted fields are required"): undefined}
         <CardTitle>Add Expense</CardTitle>
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
