@@ -18,7 +18,17 @@ export const AddCropModal = ({ onClose }) => {
       className="fixed inset-0  flex justify-center items-center z-99  shadow-xl"
       onClick={onClose}
     >
-      <Card className="w-1/3  p-4" onClick={(e) => e.stopPropagation()}>
+      <Card
+        className="w-full 
+    max-w-lg 
+    sm:max-w-xl 
+    md:max-w-2xl
+    max-h-[90vh]
+    overflow-y-auto
+    p-4
+    rounded-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <CardTitle>Plant Crop</CardTitle>
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
