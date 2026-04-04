@@ -82,7 +82,9 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
     <form
       className="fixed inset-0 flex justify-center items-center z-99 bg-black/30"
       onClick={onClose}
-    >
+      >
+      {Object.keys(errors).length > 0
+            && toast.error("Highlighted fields are required")}
       <Card
         className="w-full 
     max-w-lg 
@@ -92,11 +94,8 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
     overflow-y-auto
     p-4
     rounded-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {Object.keys(errors).length > 0
-          ? toast.error("Highlighted fields are required")
-          : undefined}
+    onClick={(e) => e.stopPropagation()}
+    >
         <CardTitle>Add Expense</CardTitle>
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
