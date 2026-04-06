@@ -21,7 +21,22 @@ export const AddCropModal = ({ onClose }) => {
   const [date, setDate] = useState(dayjs(new Date()).format("DD/MM/YYYY"));
   const [errors, setErrors] = useState({});
 
-  console.log(date);
+  //validate fields
+  const validate=()=>{
+    const newErrors = {}
+    if (!crop) newErrors.crop = true
+    if (!brand) newErrors.brand = true;
+    if (!variety) newErrors.variety = true;
+    if (!duration) newErrors.duration = true;
+
+    setErrors(newErrors)
+    return Object.keys(errors).length === 0
+  }
+
+  //save
+  const handleSave = ()=> {
+
+  }
   return (
     <form
       className="fixed inset-0  flex justify-center items-center z-99  shadow-xl"
