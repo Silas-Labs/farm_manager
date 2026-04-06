@@ -103,7 +103,13 @@ export const AddCropModal = ({ onSave, onClose }) => {
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
-          <Button className="min-h-12 min-w-18" onClick={handleSave}>
+          <Button
+            className="min-h-12 min-w-18"
+            onClick={(e) => {
+              e.preventDefault();
+              handleSave();
+            }}
+          >
             Save
           </Button>
           <Button
