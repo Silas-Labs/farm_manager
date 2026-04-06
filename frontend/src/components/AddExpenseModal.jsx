@@ -17,7 +17,7 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
   // Core fields
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
-  const [date, setDate] = useState(dayjs());
+  const [date, setDate] = useState(dayjs(new Date()).format("DD/MM/YYYY"));
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
 
@@ -83,9 +83,9 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
     <form
       className="fixed inset-0 flex justify-center items-center z-99 bg-black/30"
       onClick={onClose}
-      >
-      {Object.keys(errors).length > 0
-            && toast.error("Highlighted fields are required")}
+    >
+      {Object.keys(errors).length > 0 &&
+        toast.error("Highlighted fields are required")}
       <Card
         className="w-full 
     max-w-lg 
@@ -95,8 +95,8 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
     overflow-y-auto
     p-4
     rounded-2xl"
-    onClick={(e) => e.stopPropagation()}
-    >
+        onClick={(e) => e.stopPropagation()}
+      >
         <CardTitle>Add Expense</CardTitle>
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
