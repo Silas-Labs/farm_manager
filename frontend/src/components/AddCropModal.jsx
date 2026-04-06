@@ -13,7 +13,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 
-export const AddCropModal = ({ onClose }) => {
+export const AddCropModal = ({ onSave, onClose }) => {
   const [crop, setCrop] = useState("");
   const [brand, setBrand] = useState("");
   const [variety, setVariety] = useState("");
@@ -35,6 +35,18 @@ export const AddCropModal = ({ onClose }) => {
 
   //save
   const handleSave = ()=> {
+    if (!validate) return;
+
+    onSave({
+      crop: crop,
+      brand: brand,
+      variety:variety,
+      duration: duration,
+      date: date
+    })
+
+    onClose()
+
 
   }
   return (
@@ -93,8 +105,22 @@ export const AddCropModal = ({ onClose }) => {
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
-          <Button className="min-h-12 min-w-18">Save</Button>
-          <Button className="min-h-12 min-w-18" onClick={onClose}>
+          <Button
+            className="min-h-12 min-w-18"
+            onClick={(e) => {
+              e.preventDefault();
+              onSave();
+            }}
+          >
+            Save
+          </Button>
+          <Button
+            className="min-h-12 min-w-18"
+            onClick={(e) => {
+              e.preventDefault();
+              onClose();
+            }}
+          >
             Cancel
           </Button>
         </CardFooter>

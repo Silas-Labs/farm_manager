@@ -30,6 +30,10 @@ export const Crops = () => {
     },
   ]);
 
+  const onSave = () => {
+    console.log("Saving...");
+  };
+
   return (
     <div className="w-full flex flex-col gap-4 p-4">
       {/* Top Actions */}
@@ -86,10 +90,13 @@ export const Crops = () => {
       </div>
 
       {showCropModal && (
-        <AddCropModal onClose={() => setshowCropModal(false)} />
+        <AddCropModal onClose={() => setshowCropModal(false)} onSave={onSave} />
       )}
       {showExpenseModal && (
-        <AddExpenseModal onClose={() => setshowExpenseModal(false)} />
+        <AddExpenseModal
+          onClose={() => setshowExpenseModal(false)}
+          onSave={onSave}
+        />
       )}
 
       {/* Crop Table */}
