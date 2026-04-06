@@ -33,6 +33,8 @@ export const AddCropModal = ({ onClose }) => {
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
             <Input className="min-h-13" placeholder="Crop e.g maize" />
+            <Input className="min-h-13" placeholder="Brand" />
+            <Input className="min-h-13" placeholder="Variety" />
             <Input className="min-h-13" placeholder="Duration in months" />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
