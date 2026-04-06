@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 
 import {
   Card,
@@ -14,14 +14,14 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 
 export const AddCropModal = ({ onClose }) => {
-  const [crop, setCrop] = useState("")
+  const [crop, setCrop] = useState("");
   const [brand, setBrand] = useState("");
-  const [vaariety, setVariety] = useState("");
+  const [variety, setVariety] = useState("");
   const [duration, setDuration] = useState("");
   const [date, setDate] = useState(dayjs(new Date()).format("DD/MM/YYYY"));
   const [errors, setErrors] = useState({});
 
-  console.log(date)
+  console.log(date);
   return (
     <form
       className="fixed inset-0  flex justify-center items-center z-99  shadow-xl"
@@ -41,10 +41,30 @@ export const AddCropModal = ({ onClose }) => {
         <CardTitle>Plant Crop</CardTitle>
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
-            <Input className="min-h-13" placeholder="Crop e.g maize" />
-            <Input className="min-h-13" placeholder="Brand" />
-            <Input className="min-h-13" placeholder="Variety" />
-            <Input className="min-h-13" placeholder="Duration in months" />
+            <Input
+              className="min-h-13"
+              placeholder="Crop e.g maize"
+              value={crop}
+              onChange={(e) => setCrop(e.target.value)}
+            />
+            <Input
+              className="min-h-13"
+              placeholder="Brand"
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+            />
+            <Input
+              className="min-h-13"
+              placeholder="Variety"
+              value={variety}
+              onChange={(e) => setVariety(e.target.value)}
+            />
+            <Input
+              className="min-h-13"
+              placeholder="Duration in months"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+            />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Select date"
@@ -52,14 +72,16 @@ export const AddCropModal = ({ onClose }) => {
                   textField: { fullWidth: true },
                 }}
                 value={dayjs(date)}
-                onChange={(newValue)=> setDate(newValue)}
+                onChange={(newValue) => setDate(newValue)}
               />
             </LocalizationProvider>
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
           <Button className="min-h-12 min-w-18">Save</Button>
-          <Button className="min-h-12 min-w-18" onClick={onClose}>Cancel</Button>
+          <Button className="min-h-12 min-w-18" onClick={onClose}>
+            Cancel
+          </Button>
         </CardFooter>
       </Card>
     </form>
