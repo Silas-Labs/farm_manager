@@ -12,6 +12,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { toast } from "sonner";
 
 export const AddCropModal = ({ onSave, onClose }) => {
   const [crop, setCrop] = useState("");
@@ -38,7 +39,10 @@ export const AddCropModal = ({ onSave, onClose }) => {
 
   //save
   const handleSave = () => {
-    if (!validate()) return;
+    if (!validate()){ 
+      toast.error("Fill in the required fields")
+      return;
+    }
 
     onSave({
       crop: crop,
@@ -66,7 +70,8 @@ export const AddCropModal = ({ onSave, onClose }) => {
     rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <CardTitle>Plant Crop</CardTitle>
+        <CardTitle>Plant Crop
+        </CardTitle>
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
             <Input
