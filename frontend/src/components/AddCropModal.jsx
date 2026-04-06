@@ -33,6 +33,9 @@ export const AddCropModal = ({ onSave, onClose }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const inputClass = (hasError) =>
+    `min-h-13 border rounded p-2 ${hasError ? "border-red-500" : "border-gray-300"}`;
+
   //save
   const handleSave = () => {
     if (!validate()) return;
@@ -67,25 +70,25 @@ export const AddCropModal = ({ onSave, onClose }) => {
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
             <Input
-              className="min-h-13"
+              className={inputClass(errors.crop)}
               placeholder="Crop e.g maize"
               value={crop}
               onChange={(e) => setCrop(e.target.value)}
             />
             <Input
-              className="min-h-13"
+              className={inputClass(errors.brand)}
               placeholder="Brand"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
             />
             <Input
-              className="min-h-13"
+              className={inputClass(errors.variety)}
               placeholder="Variety"
               value={variety}
               onChange={(e) => setVariety(e.target.value)}
             />
             <Input
-              className="min-h-13"
+              className={inputClass(errors.duration)}
               placeholder="Duration in months"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
