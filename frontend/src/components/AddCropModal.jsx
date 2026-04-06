@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 
 import {
   Card,
@@ -11,8 +11,17 @@ import { Input } from "@/components/ui/input";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 export const AddCropModal = ({ onClose }) => {
+  const [crop, setCrop] = useState("")
+  const [brand, setBrand] = useState("");
+  const [vaariety, setVariety] = useState("");
+  const [duration, setDuration] = useState("");
+  const [date, setDate] = useState(dayjs(new Date()).format("DD/MM/YYYY"));
+  const [errors, setErrors] = useState({});
+
+  console.log(date)
   return (
     <form
       className="fixed inset-0  flex justify-center items-center z-99  shadow-xl"
@@ -42,13 +51,15 @@ export const AddCropModal = ({ onClose }) => {
                 slotProps={{
                   textField: { fullWidth: true },
                 }}
+                value={dayjs(date)}
+                onChange={(newValue)=> setDate(newValue)}
               />
             </LocalizationProvider>
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
           <Button className="min-h-12 min-w-18">Save</Button>
-          <Button className="min-h-12 min-w-18">Cancel</Button>
+          <Button className="min-h-12 min-w-18" onClick={onClose}>Cancel</Button>
         </CardFooter>
       </Card>
     </form>
