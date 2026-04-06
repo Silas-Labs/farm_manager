@@ -117,7 +117,7 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Date"
-                value={date}
+                value={dayjs(date)}
                 onChange={(newDate) => setDate(newDate)}
                 slotProps={{
                   textField: {
