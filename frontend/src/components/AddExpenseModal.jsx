@@ -11,12 +11,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { toast, Toaster } from "sonner";
+import dayjs from "dayjs";
 
 export const AddExpenseModal = ({ onClose, onSave }) => {
   // Core fields
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState(dayjs());
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
 
