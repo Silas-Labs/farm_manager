@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Card,
@@ -11,7 +11,16 @@ import { Input } from "@/components/ui/input";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 export const AddEquipmentModal = ({ onClose }) => {
+  const [name,setName] = useState("")
+  const [type, setType] = useState("");
+  const [model, setModel] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [date, setDate] = useState(dayjs(new Date()).format("DD-MM-YYYY"));
+  const [price, setPrice] = useState("");
   return (
     <form
       className="fixed inset-0  flex justify-center items-center z-99 shadow-xl"
