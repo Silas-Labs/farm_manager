@@ -13,7 +13,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 export const AddEquipmentModal = ({ onClose }) => {
-  const [name,setName] = useState("")
+  const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [model, setModel] = useState("");
   const [description, setDescription] = useState("");
@@ -52,6 +52,8 @@ export const AddEquipmentModal = ({ onClose }) => {
                 slotProps={{
                   textField: { fullWidth: true },
                 }}
+                value={dayjs(date)}
+                onChange={() => setDate(() => (newDate) => newDate)}
               />
             </LocalizationProvider>
             <Input className="min-h-13" placeholder="Price" />
