@@ -86,6 +86,8 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
             <Input
               className={inputClass(errors.name)}
               placeholder="Equipment Name"
+              value={name}
+              onChange={(e) => setName(e.target.name)}
             />
             <Input
               className={inputClass(errors.type)}
