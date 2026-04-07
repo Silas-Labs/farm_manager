@@ -41,8 +41,9 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
-    if (validate()) return
+  const handleSave = (e) => {
+    e.preventDefault()
+    if (validate()) return;
 
     //save logic
     onSave({
@@ -54,10 +55,11 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
       quantity: quantity,
       date: date,
       price: price,
-    })
+    });
 
     //close modal
-    onClose()
+    onClose();
+  };
   return (
     <form
       className="fixed inset-0  flex justify-center items-center z-99 shadow-xl"
@@ -77,12 +79,21 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
         <CardTitle>Add Equipment</CardTitle>
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
-            <Input className="min-h-13" placeholder="Equipment Name" />
-            <Input className="min-h-13" placeholder="Type" />
-            <Input className="min-h-13" placeholder="Model" />
-            <Input className="min-h-13" placeholder="Description" />
-            <Input className="min-h-13" placeholder="Status" />
-            <Input className="min-h-13" placeholder="Quantity" />
+            <Input
+              className={inputClass(errors.name)}
+              placeholder="Equipment Name"
+            />
+            <Input className={inputClass(errors.type)} placeholder="Type" />
+            <Input className={inputClass(errors.model)} placeholder="Model" />
+            <Input
+              className={inputClass(errors.description)}
+              placeholder="Description"
+            />
+            <Input className={inputClass(errors.status)} placeholder="Status" />
+            <Input
+              className={inputClass(errors.quantity)}
+              placeholder="Quantity"
+            />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Select date"
@@ -93,7 +104,7 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
                 onChange={() => setDate(() => (newDate) => newDate)}
               />
             </LocalizationProvider>
-            <Input className="min-h-13" placeholder="Price" />
+            <Input className={inputClass(errors.price)} placeholder="Price" />
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
