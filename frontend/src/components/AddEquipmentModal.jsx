@@ -87,13 +87,28 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
               className={inputClass(errors.name)}
               placeholder="Equipment Name"
             />
-            <Input className={inputClass(errors.type)} placeholder="Type" />
-            <Input className={inputClass(errors.model)} placeholder="Model" />
+            <Input
+              className={inputClass(errors.type)}
+              placeholder="Type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+            />
+            <Input
+              className={inputClass(errors.model)}
+              placeholder="Model"
+              value={model}
+              onChange={(e) => setType(e.target.model)}
+            />
             <Input
               className={inputClass(errors.description)}
               placeholder="Description"
             />
-            <Input className={inputClass(errors.status)} placeholder="Status" />
+            <Input
+              className={inputClass(errors.status)}
+              placeholder="Status"
+              value={status}
+              onChange={(e) => setType(e.target.status)}
+            />
             <Input
               className={inputClass(errors.quantity)}
               placeholder="Quantity"
@@ -108,7 +123,12 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
                 onChange={() => setDate(() => (newDate) => newDate)}
               />
             </LocalizationProvider>
-            <Input className={inputClass(errors.price)} placeholder="Price" />
+            <Input
+              className={inputClass(errors.price)}
+              placeholder="Price"
+              value={price}
+              onChange={(e) => setType(e.target.price)}
+            />
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
