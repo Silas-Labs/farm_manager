@@ -12,7 +12,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-export const AddEquipmentModal = ({ onClose }) => {
+export const AddEquipmentModal = ({ onClose, onSave }) => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [model, setModel] = useState("");
@@ -41,6 +41,23 @@ export const AddEquipmentModal = ({ onClose }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleSave = () => {
+    if (validate()) return
+
+    //save logic
+    onSave({
+      name: name,
+      type: type,
+      model: model,
+      description: description,
+      status: status,
+      quantity: quantity,
+      date: date,
+      price: price,
+    })
+
+    //close modal
+    onClose()
   return (
     <form
       className="fixed inset-0  flex justify-center items-center z-99 shadow-xl"
