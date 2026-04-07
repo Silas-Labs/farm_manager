@@ -12,7 +12,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-export const AddEquipmentModal = ({ onClose }) => {
+import { toast } from "sonner";
+
+export const AddEquipmentModal = ({ onClose, onSave }) => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [model, setModel] = useState("");
@@ -21,6 +23,47 @@ export const AddEquipmentModal = ({ onClose }) => {
   const [quantity, setQuantity] = useState("");
   const [date, setDate] = useState(dayjs(new Date()).format("DD-MM-YYYY"));
   const [price, setPrice] = useState("");
+  const [errors, setErrors] = useState({});
+
+  const inputClass = (hasError) =>
+    `min-h-13 border rounded p-2 ${hasError ? "border-red-500" : "border-gray-300"}`;
+
+  const validate = () => {
+    const newErrors = {};
+    if (!name.trim()) newErrors.name = true;
+    if (!type.trim()) newErrors.type = true;
+    if (!model.trim()) newErrors.model = true;
+    if (!description.trim()) newErrors.description = true;
+    if (!status.trim()) newErrors.status = true;
+    if (!quantity || parseInt(quantity) <= 0) newErrors.quantity = true;
+    if (!date) newErrors.date = true;
+    if (!price || parseFloat(price) <= 0) newErrors.price = true;
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSave = () => {
+    if (!validate()) {
+      toast.error("Fill in the required fields");
+      return;
+    }
+
+    //save logic
+    onSave({
+      name: name,
+      type: type,
+      model: model,
+      description: description,
+      status: status,
+      quantity: quantity,
+      date: date,
+      price: price,
+    });
+
+    //close modal
+    onClose();
+  };
   return (
     <form
       className="fixed inset-0  flex justify-center items-center z-99 shadow-xl"
@@ -40,12 +83,42 @@ export const AddEquipmentModal = ({ onClose }) => {
         <CardTitle>Add Equipment</CardTitle>
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
-            <Input className="min-h-13" placeholder="Equipment Name" />
-            <Input className="min-h-13" placeholder="Type" />
-            <Input className="min-h-13" placeholder="Model" />
-            <Input className="min-h-13" placeholder="Description" />
-            <Input className="min-h-13" placeholder="Status" />
-            <Input className="min-h-13" placeholder="Quantity" />
+            <Input
+              className={inputClass(errors.name)}
+              placeholder="Equipment Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <Input
+              className={inputClass(errors.type)}
+              placeholder="Type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+            />
+            <Input
+              className={inputClass(errors.model)}
+              placeholder="Model"
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+            />
+            <Input
+              className={inputClass(errors.description)}
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <Input
+              className={inputClass(errors.status)}
+              placeholder="Status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            />
+            <Input
+              className={inputClass(errors.quantity)}
+              placeholder="Quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+            />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Select date"
@@ -56,12 +129,33 @@ export const AddEquipmentModal = ({ onClose }) => {
                 onChange={() => setDate(() => (newDate) => newDate)}
               />
             </LocalizationProvider>
-            <Input className="min-h-13" placeholder="Price" />
+            <Input
+              className={inputClass(errors.price)}
+              placeholder="Price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+            />
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
-          <Button className="min-h-12 min-w-18">Save</Button>
-          <Button className="min-h-12 min-w-18">Cancel</Button>
+          <Button
+            className="min-h-12 min-w-18"
+            onClick={(e) => {
+              e.preventDefault();
+              handleSave();
+            }}
+          >
+            Save
+          </Button>
+          <Button
+            className="min-h-12 min-w-18"
+            onClick={(e) => {
+              e.preventDefault();
+              onClose();
+            }}
+          >
+            Cancel
+          </Button>
         </CardFooter>
       </Card>
     </form>
