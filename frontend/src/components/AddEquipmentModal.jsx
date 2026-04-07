@@ -87,7 +87,7 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
               className={inputClass(errors.name)}
               placeholder="Equipment Name"
               value={name}
-              onChange={(e) => setName(e.target.name)}
+              onChange={(e) => setName(e.target.value)}
             />
             <Input
               className={inputClass(errors.type)}
@@ -99,21 +99,25 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
               className={inputClass(errors.model)}
               placeholder="Model"
               value={model}
-              onChange={(e) => setType(e.target.model)}
+              onChange={(e) => setModel(e.target.value)}
             />
             <Input
               className={inputClass(errors.description)}
               placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
             <Input
               className={inputClass(errors.status)}
               placeholder="Status"
               value={status}
-              onChange={(e) => setType(e.target.status)}
+              onChange={(e) => setStatus(e.target.value)}
             />
             <Input
               className={inputClass(errors.quantity)}
               placeholder="Quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
@@ -129,7 +133,7 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
               className={inputClass(errors.price)}
               placeholder="Price"
               value={price}
-              onChange={(e) => setType(e.target.price)}
+              onChange={(e) => setPrice(e.target.value)}
             />
           </div>
         </CardDescription>
