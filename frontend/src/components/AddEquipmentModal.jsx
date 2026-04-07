@@ -21,6 +21,10 @@ export const AddEquipmentModal = ({ onClose }) => {
   const [quantity, setQuantity] = useState("");
   const [date, setDate] = useState(dayjs(new Date()).format("DD-MM-YYYY"));
   const [price, setPrice] = useState("");
+
+  const inputClass = (hasError) =>
+    `min-h-13 border rounded p-2 ${hasError ? "border-red-500" : "border-gray-300"}`;
+
   return (
     <form
       className="fixed inset-0  flex justify-center items-center z-99 shadow-xl"
