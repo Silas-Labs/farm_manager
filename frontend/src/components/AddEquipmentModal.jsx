@@ -21,9 +21,25 @@ export const AddEquipmentModal = ({ onClose }) => {
   const [quantity, setQuantity] = useState("");
   const [date, setDate] = useState(dayjs(new Date()).format("DD-MM-YYYY"));
   const [price, setPrice] = useState("");
+  const [errors, setErrors] = useState({});
 
   const inputClass = (hasError) =>
     `min-h-13 border rounded p-2 ${hasError ? "border-red-500" : "border-gray-300"}`;
+
+  const validate = () => {
+    const newErrors = {};
+    if (!name.trim()) newErrors.name = true;
+    if (!type.trim()) newErrors.type = true;
+    if (!model.trim()) newErrors.model = true;
+    if (!description.trim()) newErrors.description = true;
+    if (!status.trim()) newErrors.status = true;
+    if (!quantity || parseInt(quantity) <= 0) newErrors.quantity = true;
+    if (!date) newErrors.date = true;
+    if (!price || parseFloat(price) <= 0) newErrors.price = true;
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   return (
     <form
