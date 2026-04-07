@@ -12,6 +12,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { toast } from "sonner";
+
 export const AddEquipmentModal = ({ onClose, onSave }) => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
@@ -41,9 +43,11 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = (e) => {
-    e.preventDefault()
-    if (validate()) return;
+  const handleSave = () => {
+    if (!validate()) {
+      toast.error("Fill in the required fields");
+      return;
+    }
 
     //save logic
     onSave({
@@ -108,8 +112,24 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
-          <Button className="min-h-12 min-w-18">Save</Button>
-          <Button className="min-h-12 min-w-18">Cancel</Button>
+          <Button
+            className="min-h-12 min-w-18"
+            onClick={(e) => {
+              e.preventDefault();
+              handleSave();
+            }}
+          >
+            Save
+          </Button>
+          <Button
+            className="min-h-12 min-w-18"
+            onClick={(e) => {
+              e.preventDefault();
+              onClose();
+            }}
+          >
+            Cancel
+          </Button>
         </CardFooter>
       </Card>
     </form>
