@@ -17,7 +17,7 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
   // Core fields
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
-  const [date, setDate] = useState(dayjs(new Date()).format("DD/MM/YYYY"));
+  const [date, setDate] = useState(dayjs());
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
 
@@ -118,14 +118,14 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
               <DatePicker
                 label="Date"
                 value={dayjs(date)}
+                maxDate={dayjs()}
                 onChange={(newDate) => setDate(newDate)}
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    className: inputClass(errors.date),
                   },
-                }}
-                maxDate={dayjs()}
+                }
+              }
               />
             </LocalizationProvider>
             <select
