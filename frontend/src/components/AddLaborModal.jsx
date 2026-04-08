@@ -27,10 +27,13 @@ export const AddLaborModal = ({ onClose, onSave }) => {
   const [status, setStatus] = useState("");
   const [errors, setErrors] = useState({});
 
+  const inputClass = (hasError) =>
+    `min-h-13 border rounded p-2 ${hasError ? "border-red-500" : "border-gray-300"}`;
+
   const validate = () => {
     const newErrors = {};
 
-    if (!id.trim()) newErrors.id = true
+    if (!id.trim()) newErrors.id = true;
     if (!name.trim()) newErrors.name = true;
     if (!phone.trim()) newErrors.phone = true;
     if (!location.trim()) newErrors.location = true;
@@ -47,12 +50,12 @@ export const AddLaborModal = ({ onClose, onSave }) => {
   const handleSave = () => {
     if (!validate()) {
       toast.error("Highlighted fields are required");
-      return
+      return;
     }
 
     onSave({
       id: id,
-      name:name,
+      name: name,
       doB: doB,
       phone: phone,
       location: location,
@@ -60,8 +63,8 @@ export const AddLaborModal = ({ onClose, onSave }) => {
       kin: kin,
       kinPhone: kinPhone,
       role: role,
-      status: status
-    })
+      status: status,
+    });
   };
 
   return (
@@ -84,13 +87,13 @@ export const AddLaborModal = ({ onClose, onSave }) => {
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
             <Input
-              className="min-h-13"
+              className={inputClass(errors.id)}
               placeholder="ID Number"
               value={id}
               onChange={(e) => setId(e.target.value)}
             />
             <Input
-              className="min-h-13"
+              className={inputClass(errors.name)}
               placeholder="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -107,43 +110,43 @@ export const AddLaborModal = ({ onClose, onSave }) => {
               />
             </LocalizationProvider>
             <Input
-              className="min-h-13"
+              className={inputClass(errors.phone)}
               placeholder="Phone Number"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
             <Input
-              className="min-h-13"
+              className={inputClass(errors.location)}
               placeholder="Location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
             />
             <Input
-              className="min-h-13"
+              className={inputClass(errors.home)}
               placeholder="Home"
               value={home}
               onChange={(e) => setHome(e.target.value)}
             />
             <Input
-              className="min-h-13"
+              className={inputClass(errors.kin)}
               placeholder="Next of Kin"
               value={kin}
               onChange={(e) => setKin(e.target.value)}
             />
             <Input
-              className="min-h-13"
+              className={inputClass(errors.kinPhone)}
               placeholder="Phone Number"
               value={kinPhone}
               onChange={(e) => setKinPhone(e.target.value)}
             />
             <Input
-              className="min-h-13"
+              className={inputClass(errors.role)}
               placeholder="Role"
               value={role}
               onChange={(e) => setRole(e.target.value)}
             />
             <Input
-              className="min-h-13"
+              className={inputClass(errors.status)}
               placeholder="Status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
