@@ -54,8 +54,24 @@ export const AddLaborModal = ({ onClose }) => {
           </div>
         </CardDescription>
         <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
-          <Button className="min-h-12 min-w-18">Save</Button>
-          <Button className="min-h-12 min-w-18">Cancel</Button>
+          <Button
+            className="min-h-12 min-w-18"
+            onClick={(e) => {
+              e.preventDefault();
+              handleSave();
+            }}
+          >
+            Save
+          </Button>
+          <Button
+            className="min-h-12 min-w-18"
+            onClick={(e) => {
+              e.preventDefault();
+              onClose();
+            }}
+          >
+            Cancel
+          </Button>
         </CardFooter>
       </Card>
     </form>
