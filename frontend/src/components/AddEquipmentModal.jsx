@@ -45,7 +45,7 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
 
   const handleSave = () => {
     if (!validate()) {
-      toast.error("Fill in the required fields");
+      toast.error("Highlighted fields are required");
       return;
     }
 

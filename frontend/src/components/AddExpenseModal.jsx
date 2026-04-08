@@ -63,7 +63,10 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
   };
 
   const handleSave = () => {
-    if (!validate()) return;
+    if (!validate()) {
+      toast.error("Highlighted fields are required");
+      return;
+    }
 
     onSave({
       title,
@@ -84,8 +87,6 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
       className="fixed inset-0 flex justify-center items-center z-99 bg-black/30"
       onClick={onClose}
     >
-      {Object.keys(errors).length > 0 &&
-        toast.error("Highlighted fields are required")}
       <Card
         className="w-full 
     max-w-lg 
@@ -124,8 +125,7 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
                   textField: {
                     fullWidth: true,
                   },
-                }
-              }
+                }}
               />
             </LocalizationProvider>
             <select
