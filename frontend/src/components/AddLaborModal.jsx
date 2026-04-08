@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 export const AddLaborModal = ({ onClose }) => {
   return (
@@ -40,6 +41,7 @@ export const AddLaborModal = ({ onClose }) => {
                 slotProps={{
                   textField: { fullWidth: true },
                 }}
+                maxDate={dayjs()}
               />
             </LocalizationProvider>
             <Input className="min-h-13" placeholder="Phone Number" />

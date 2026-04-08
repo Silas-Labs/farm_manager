@@ -125,6 +125,7 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
                     className: inputClass(errors.date),
                   },
                 }}
+                maxDate={dayjs()}
               />
             </LocalizationProvider>
             <select

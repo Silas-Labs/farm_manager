@@ -125,6 +125,7 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
                 slotProps={{
                   textField: { fullWidth: true },
                 }}
+                maxDate={dayjs()}
                 value={dayjs(date)}
                 onChange={() => setDate(() => (newDate) => newDate)}
               />
