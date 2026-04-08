@@ -17,7 +17,7 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
   // Core fields
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
-  const [date, setDate] = useState(dayjs(new Date()).format("DD/MM/YYYY"));
+  const [date, setDate] = useState(dayjs());
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
 
@@ -63,7 +63,10 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
   };
 
   const handleSave = () => {
-    if (!validate()) return;
+    if (!validate()) {
+      toast.error("Highlighted fields are required");
+      return;
+    }
 
     onSave({
       title,
@@ -84,8 +87,6 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
       className="fixed inset-0 flex justify-center items-center z-99 bg-black/30"
       onClick={onClose}
     >
-      {Object.keys(errors).length > 0 &&
-        toast.error("Highlighted fields are required")}
       <Card
         className="w-full 
     max-w-lg 
@@ -118,11 +119,11 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
               <DatePicker
                 label="Date"
                 value={dayjs(date)}
+                maxDate={dayjs()}
                 onChange={(newDate) => setDate(newDate)}
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    className: inputClass(errors.date),
                   },
                 }}
               />

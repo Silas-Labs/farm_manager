@@ -1,13 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
-import {Button} from "@/components/ui/button"
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
-import { AddLaborModal } from '../components/AddLaborModal'
-import { AddExpenseModal } from '../components/AddExpenseModal'
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { AddLaborModal } from "../components/AddLaborModal";
+import { AddExpenseModal } from "../components/AddExpenseModal";
 
 export const Labour = () => {
-  const[showLaborModal, setshowLaborModal] = useState(false)
+  const [showLaborModal, setshowLaborModal] = useState(false);
   const [showExpenseModal, setshowExpenseModal] = useState(false);
+
+  const handleSave = () => {
+    console.log("saving...");
+  };
+
   return (
     <div className="w-full flex flex-col p-1">
       <div className="w-full flex justify-end  gap-2">
@@ -46,7 +51,10 @@ export const Labour = () => {
         </div>
 
         {showLaborModal && (
-          <AddLaborModal onClose={() => setshowLaborModal(false)} />
+          <AddLaborModal
+            onClose={() => setshowLaborModal(false)}
+            onSave={() => handleSave()}
+          />
         )}
 
         {showExpenseModal && (
@@ -73,4 +81,4 @@ export const Labour = () => {
       </div>
     </div>
   );
-}
+};
