@@ -12,8 +12,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { toast } from "sonner";
 
-export const AddLaborModal = ({ onClose }) => {
+export const AddLaborModal = ({ onClose, onSave }) => {
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [doB, setDoB] = useState(dayjs());
@@ -24,6 +25,45 @@ export const AddLaborModal = ({ onClose }) => {
   const [kinPhone, setKinPhone] = useState("");
   const [role, setRole] = useState("");
   const [status, setStatus] = useState("");
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!id.trim()) newErrors.id = true
+    if (!name.trim()) newErrors.name = true;
+    if (!phone.trim()) newErrors.phone = true;
+    if (!location.trim()) newErrors.location = true;
+    if (!home.trim()) newErrors.home = true;
+    if (!kin.trim()) newErrors.kin = true;
+    if (!kinPhone.trim()) newErrors.kinPhone = true;
+    if (!role.trim()) newErrors.role = true;
+    if (!status.trim()) newErrors.status = true;
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSave = () => {
+    if (!validate()) {
+      toast.error("Highlighted fields are required");
+      return
+    }
+
+    onSave({
+      id: id,
+      name:name,
+      doB: doB,
+      phone: phone,
+      location: location,
+      home: home,
+      kin: kin,
+      kinPhone: kinPhone,
+      role: role,
+      status: status
+    })
+  };
+
   return (
     <form
       className="fixed inset-0  flex justify-center items-center z-99"
