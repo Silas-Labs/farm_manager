@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Card,
@@ -14,6 +14,16 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 
 export const AddLaborModal = ({ onClose }) => {
+    const [id,setId] = useState("")
+    const [name, setName] = useState("");
+    const [doB, setDoB] = useState("");
+    const [phone, setPhone] = useState("");
+    const [location, setLocation] = useState("");
+    const [home, setHome] = useState("");
+    const [kin, setKin] = useState("");
+    const [kinPhone, setKinPhone] = useState("");
+    const [role, setRole] = useState("");
+    const [status, setStatus] = useState("");
   return (
     <form
       className="fixed inset-0  flex justify-center items-center z-99"
