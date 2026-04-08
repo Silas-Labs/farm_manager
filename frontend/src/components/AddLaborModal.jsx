@@ -30,6 +30,7 @@ export const AddLaborModal = ({ onClose, onSave }) => {
   const inputClass = (hasError) =>
     `min-h-13 border rounded p-2 ${hasError ? "border-red-500" : "border-gray-300"}`;
 
+
   const validate = () => {
     const newErrors = {};
 
