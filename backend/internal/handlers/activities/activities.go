@@ -3,12 +3,9 @@ package activities
 import (
 	"encoding/json"
 	"net/http"
-)
 
-type Error struct {
-	Code    int
-	Message string
-}
+	"backend/internal/models"
+)
 
 func ActivityHandler(w http.ResponseWriter, r *http.Request) {
 	println("URL working")
@@ -18,7 +15,7 @@ func ActivityHandler(w http.ResponseWriter, r *http.Request) {
 func GetAllActivities(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		error := Error{
+		error := models.Error{
 			Code:    http.StatusMethodNotAllowed,
 			Message: "method not allowed",
 		}
@@ -29,7 +26,7 @@ func GetAllActivities(w http.ResponseWriter, r *http.Request) {
 func GetActivity(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		error := Error{
+		error := models.Error{
 			Code:    http.StatusMethodNotAllowed,
 			Message: "method not allowed",
 		}
@@ -40,7 +37,7 @@ func GetActivity(w http.ResponseWriter, r *http.Request) {
 func AddActivity(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		error := Error{
+		error := models.Error{
 			Code:    http.StatusMethodNotAllowed,
 			Message: "method not allowed",
 		}
@@ -51,7 +48,7 @@ func AddActivity(w http.ResponseWriter, r *http.Request) {
 func EditActivity(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "PUT" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		error := Error{
+		error := models.Error{
 			Code:    http.StatusMethodNotAllowed,
 			Message: "method not allowed",
 		}
@@ -62,7 +59,7 @@ func EditActivity(w http.ResponseWriter, r *http.Request) {
 func DeleteActivity(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "DELETE" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		error := Error{
+		error := models.Error{
 			Code:    http.StatusMethodNotAllowed,
 			Message: "method not allowed",
 		}
