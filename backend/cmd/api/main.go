@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	activities "github.com/Silas-Labs/farm_manager/backend/internal/handlers/activities"
+	"backend/internal/handlers/activities"
 )
 
 func main() {
