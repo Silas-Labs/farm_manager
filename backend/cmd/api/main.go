@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Silas-Labs/farm_manager/backend/internal/activities"
+	activities "github.com/Silas-Labs/farm_manager/backend/internal/handlers/activities"
 )
 
 func main() {
@@ -14,8 +14,8 @@ func main() {
 	})
 
 	//Activities
-	http.HandleFunc("/activities", ActivitiesHandler) //POST & GET(all)
-	http.HandleFunc("/activities/:id", ActivityHandler) // PUT, DELETE & GET(single)
+	http.HandleFunc("/activities", activities.ActivitiesHandler) //POST & GET(all)
+	http.HandleFunc("/activities/:id", activities.ActivityHandler) // PUT, DELETE & GET(single)
 
 	//Inputs
 
