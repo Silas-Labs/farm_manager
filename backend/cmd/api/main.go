@@ -8,6 +8,7 @@ import (
 	"backend/internal/handlers/crop"
 	"backend/internal/handlers/equipment"
 	"backend/internal/handlers/expense"
+	"backend/internal/handlers/labor"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -59,6 +60,15 @@ func main() {
 		r.Get("/{id}", expense.GetExpense)
 		r.Put("/{id}", expense.EditExpense)
 		r.Delete("/{id}", expense.DeleteExpense)
+	})
+
+	// Labor routes
+	r.Route("/labor", func(r chi.Router) {
+		r.Get("/", labor.GetAllLabor)
+		r.Post("/", labor.AddLabor)
+		r.Get("/{id}", labor.GetLabor)
+		r.Put("/{id}", labor.EditLabor)
+		r.Delete("/{id}", labor.DeleteLabor)
 	})
 
 	fmt.Println("Server starting on port 8080")
