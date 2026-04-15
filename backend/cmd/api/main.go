@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"backend/internal/handlers/activities"
+	"backend/internal/handlers/crop"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -33,11 +34,11 @@ func main() {
 	// Crop
 
 	r.Route("/crop", func(r chi.Router) {
-		r.Get("/crop", activities.GetAllActivities)
-		r.Post("/crop", activities.AddActivity) 
-		r.Get("/crop/{id}", activities.GetActivity) 
-		r.Put("/crop/{id}", activities.EditActivity) 
-		r.Delete("/crop/{id}", activities.DeleteActivity) 
+		r.Get("/crop", crop.GetAllCrops)
+		r.Post("/crop", crop.AddCrop) 
+		r.Get("/crop/{id}", crop.GetCrop) 
+		r.Put("/crop/{id}", crop.EditCrop) 
+		r.Delete("/crop/{id}", crop.DeleteCrop) 
 	})
 
 	// Analytics
