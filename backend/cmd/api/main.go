@@ -32,6 +32,14 @@ func main() {
 
 	// Crop
 
+	r.Route("/crop", func(r chi.Router) {
+		r.Get("/crop", activities.GetAllActivities)
+		r.Post("/crop", activities.AddActivity) 
+		r.Get("/crop/{id}", activities.GetActivity) 
+		r.Put("/crop/{id}", activities.EditActivity) 
+		r.Delete("/crop/{id}", activities.DeleteActivity) 
+	})
+
 	// Analytics
 
 	fmt.Println("Server starting on port 8080")
