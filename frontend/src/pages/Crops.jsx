@@ -4,34 +4,24 @@ import { TableDisplay } from "../components/Table";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { AddCropModal } from "../components/AddCropModal";
 import { AddExpenseModal } from "../components/AddExpenseModal";
+import dayjs from "dayjs";
 
 export const Crops = () => {
   const [showCropModal, setshowCropModal] = useState(false);
   const [showExpenseModal, setshowExpenseModal] = useState(false);
   // Example: State to hold crop data
-  const [crops, setCrops] = useState([
-    {
-      id: 1,
-      name: "Tomatoes",
-      field: "Field A",
-      area: "2 acres",
-      stage: "Growing",
-      health: "Good",
-      plantingDate: "2026-03-10",
-    },
-    {
-      id: 2,
-      name: "Maize",
-      field: "Field B",
-      area: "5 acres",
-      stage: "Planted",
-      health: "Needs Attention",
-      plantingDate: "2026-03-15",
-    },
-  ]);
+  const [crops, setCrops] = useState([]);
 
-  const onSave = () => {
-    console.log("Saving...");
+  const onSave = (props) => {
+    const crop = {
+      name : props.crop,
+      brand: props.brand,
+      variety: props.variety,
+      duration: props.duration,
+      date: props.date
+    }
+    const newCrops = [...crops,crop] 
+    setCrops(newCrops)
   };
 
   return (
@@ -83,7 +73,7 @@ export const Crops = () => {
           <CardTitle>Ready to Harvest</CardTitle>
           <CardContent>
             <p className="text-2xl font-bold">
-              {crops.filter((c) => c.stage === "Ready to Harvest").length}
+              {/* {crops.filter((c) => c.stage === "Ready to Harvest").length} */}
             </p>
           </CardContent>
         </Card>
@@ -100,22 +90,30 @@ export const Crops = () => {
       )}
 
       {/* Crop Table */}
-      <Card className="p-4">
-        <CardTitle>All Crops</CardTitle>
-        <CardContent>
-          <TableDisplay
-            data={crops}
-            columns={[
-              { header: "Crop Name", accessor: "name" },
-              { header: "Field", accessor: "field" },
-              { header: "Area", accessor: "area" },
-              { header: "Stage", accessor: "stage" },
-              { header: "Health", accessor: "health" },
-              { header: "Planting Date", accessor: "plantingDate" },
-            ]}
-          />
-        </CardContent>
-      </Card>
+      <div className="overflow-x-auto">
+          <table className="table-auto w-full border text-start">
+            <thead className="bg-gray-100">
+              <tr>
+                <th>Crop</th>
+                <th>Brand</th>
+                <th>Variety</th>
+                <th>Plant Date</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              {crops.map((it)=>(
+                <tr>
+                  <td>{it.name}</td>
+                  <td>{it.brand}</td>
+                  <td>{it.variety}</td>
+                  <td>{`${dayjs(it.date).format("DD/MM/YYYY")}`}</td>
+                  <td>{it.duration}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
     </div>
   );
 };
