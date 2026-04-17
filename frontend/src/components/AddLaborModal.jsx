@@ -66,6 +66,7 @@ export const AddLaborModal = ({ onClose, onSave }) => {
       role: role,
       status: status,
     });
+    onClose();
   };
 
   return (

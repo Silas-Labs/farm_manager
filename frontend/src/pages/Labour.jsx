@@ -23,7 +23,8 @@ export const Labour = () => {
       role: props.role,
       status: props.status,
     }
-    console.log(newLabor)
+    const toSave = [...labor,newLabor]
+    setLabor(toSave)
   };
 
   return (
