@@ -57,8 +57,11 @@ export function WeatherCard({weather}) {
 
       {/* Right Side: Temperature & Condition */}
       <CardContent className="flex flex-col items-center gap-1">
+        {/* Current temperature from API main data */}
         <p className="text-2xl font-bold">{weather?.data?.main.temp}</p>
+        {/* Primary weather condition (e.g., "Clouds", "Rain") */}
         <p className="text-sm font-semibold">{weather.condition}</p>
+        {/* "Feels like" temperature for temperature perception */}
         <p className="text-xs text-slate-400">{weather?.data?.main["feels_like"]}</p>
       </CardContent>
 
