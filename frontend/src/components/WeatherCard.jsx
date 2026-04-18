@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CloudSunRain } from "lucide-react";
 
-export function WeatherCard(weather) {
+export function WeatherCard({weather}) {
 
   return (
     <Card className="w-full md:w-80 p-4 flex flex-col md:flex-col gap-4">
@@ -10,7 +10,7 @@ export function WeatherCard(weather) {
       <CardHeader className="w-full flex flex-col items-start gap-1">
         <CardDescription>
           <p className="text-xs bg-green-600 rounded-lg text-white px-2 py-1 text-center">
-            {weather.name}
+            {weather?.data?.name}
           </p>
         </CardDescription>
         <CardTitle className="flex flex-col">
@@ -26,9 +26,9 @@ export function WeatherCard(weather) {
 
       {/* Right Side: Temperature & Condition */}
       <CardContent className="flex flex-col items-center gap-1">
-        <p className="text-2xl font-bold">{weather.temp}</p>
+        <p className="text-2xl font-bold">{weather?.data?.main.temp}</p>
         <p className="text-sm font-semibold">{weather.condition}</p>
-        <p className="text-xs text-slate-400">{weather.temp_approx}</p>
+        <p className="text-xs text-slate-400">{weather?.data?.main["feels_like"]}</p>
       </CardContent>
 
     </Card>

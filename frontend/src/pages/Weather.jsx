@@ -8,7 +8,6 @@ const Weather = () => {
 
   useEffect(()=>{
     const weatherStore = JSON.parse(localStorage.getItem("weather")) || {}
-    console.log(weatherStore)
     setWeather(weatherStore)
   },[])
 
@@ -38,10 +37,10 @@ const Weather = () => {
 
   return (
     <div className=" flex flex-wrap justify-items-start gap-2 p-2">
-      <WeatherCard weather={weather["data"]} />
-      <WeatherHighlight />
+      <WeatherCard weather={weather} />
+      <WeatherHighlight weather={weather}/>
       <div className="flex-1">
-        <Forecast />
+        <Forecast weather={weather}/>
       </div>
       <button onClick={getWeather}>Fetch</button>
     </div>
