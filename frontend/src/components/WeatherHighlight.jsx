@@ -1,6 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function WeatherHighlight({weather}) {
+  /**
+   * Converts Unix timestamp to readable time format (HH:MM AM/PM)
+   */
   const formatTime = (timestamp) => {
     if (!timestamp) return 'N/A'
     const date = new Date(timestamp * 1000)
