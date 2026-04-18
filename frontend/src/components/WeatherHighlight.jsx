@@ -1,18 +1,30 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-export function WeatherHighlight() {
-  const weather = {
-    wind: "7.9 km/h",
-    wind_sub: "9.00 AM",
-    humidity: "85%",
-    humidity_sub: "Humidity is good",
-    uv_index: "4 UV",
-    uv_index_sub: "Moderate UV",
-    visibility: "5 km",
-    visibility_sub: "9.00 AM",
-    sunrise: "4:50 AM",
-    sunset: "6:45 PM",
-  };
+export function WeatherHighlight({weather}) {
+  const formatTime = (timestamp) => {
+    if (!timestamp) return 'N/A'
+    const date = new Date(timestamp * 1000)
+    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
+  }
+
+  const windSpeed = weather?.data?.wind?.speed || 0
+  const humidity = weather?.data?.main?.humidity || 0
+  const visibility = weather?.data?.visibility ? (weather.data.visibility / 1000).toFixed(1) : 0
+  const sunrise = weather?.data?.sys?.sunrise
+  const sunset = weather?.data?.sys?.sunset
+
+  const weatherHighlights = {
+    wind: `${windSpeed} m/s`,
+    wind_sub: formatTime(weather?.data?.dt),
+    humidity: `${humidity}%`,
+    humidity_sub: humidity > 70 ? "High humidity" : humidity > 40 ? "Humidity is good" : "Low humidity",
+    uv_index: "N/A",
+    uv_index_sub: "Not available in this API",
+    visibility: `${visibility} km`,
+    visibility_sub: formatTime(weather?.data?.dt),
+    sunrise: formatTime(sunrise),
+    sunset: formatTime(sunset),
+  }
 
   return (
     <Card className="w-full md:w-[700px] p-4">
@@ -24,16 +36,16 @@ export function WeatherHighlight() {
           <Card className="p-2">
             <CardHeader>Wind Status</CardHeader>
             <CardContent>
-              <p className="font-bold">{weather.wind}</p>
-              <CardDescription>{weather.wind_sub}</CardDescription>
+              <p className="font-bold">{weatherHighlights.wind}</p>
+              <CardDescription>{weatherHighlights.wind_sub}</CardDescription>
             </CardContent>
           </Card>
 
           <Card className="p-2">
             <CardHeader>UV Index</CardHeader>
             <CardContent>
-              <p className="font-bold">{weather.uv_index}</p>
-              <CardDescription>{weather.uv_index_sub}</CardDescription>
+              <p className="font-bold">{weatherHighlights.uv_index}</p>
+              <CardDescription>{weatherHighlights.uv_index_sub}</CardDescription>
             </CardContent>
           </Card>
         </div>
@@ -43,16 +55,16 @@ export function WeatherHighlight() {
           <Card className="p-2">
             <CardHeader>Humidity</CardHeader>
             <CardContent>
-              <p className="font-bold">{weather.humidity}</p>
-              <CardDescription>{weather.humidity_sub}</CardDescription>
+              <p className="font-bold">{weatherHighlights.humidity}</p>
+              <CardDescription>{weatherHighlights.humidity_sub}</CardDescription>
             </CardContent>
           </Card>
 
           <Card className="p-2">
             <CardHeader>Visibility</CardHeader>
             <CardContent>
-              <p className="font-bold">{weather.visibility}</p>
-              <CardDescription>{weather.visibility_sub}</CardDescription>
+              <p className="font-bold">{weatherHighlights.visibility}</p>
+              <CardDescription>{weatherHighlights.visibility_sub}</CardDescription>
             </CardContent>
           </Card>
         </div>
@@ -62,14 +74,14 @@ export function WeatherHighlight() {
           <Card className="p-2 text-center">
             <CardHeader>Sunrise</CardHeader>
             <CardContent>
-              <p className="font-bold">{weather.sunrise}</p>
+              <p className="font-bold">{weatherHighlights.sunrise}</p>
             </CardContent>
           </Card>
 
           <Card className="p-2 text-center">
             <CardHeader>Sunset</CardHeader>
             <CardContent>
-              <p className="font-bold">{weather.sunset}</p>
+              <p className="font-bold">{weatherHighlights.sunset}</p>
             </CardContent>
           </Card>
         </div>
