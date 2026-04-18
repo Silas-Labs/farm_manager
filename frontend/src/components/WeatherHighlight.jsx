@@ -10,6 +10,7 @@ export function WeatherHighlight({weather}) {
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
   }
 
+  // Extract and prepare data from weather API response
   const windSpeed = weather?.data?.wind?.speed || 0
   const humidity = weather?.data?.main?.humidity || 0
   const visibility = weather?.data?.visibility ? (weather.data.visibility / 1000).toFixed(1) : 0
