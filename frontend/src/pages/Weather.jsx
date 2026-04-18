@@ -67,11 +67,15 @@ const Weather = () => {
 
   return (
     <div className=" flex flex-wrap justify-items-start gap-2 p-2">
+      {/* Display current weather info */}
       <WeatherCard weather={formattedWeather} />
+      {/* Display weather highlights (wind, humidity, etc.) */}
       <WeatherHighlight weather={formattedWeather}/>
+      {/* Display weather forecast */}
       <div className="flex-1">
         <Forecast weather={formattedWeather}/>
       </div>
+      {/* Manual refresh button for weather data */}
       <button onClick={getWeather}>Fetch</button>
     </div>
   );
