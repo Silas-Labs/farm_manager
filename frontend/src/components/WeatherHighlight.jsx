@@ -17,6 +17,7 @@ export function WeatherHighlight({weather}) {
   const sunrise = weather?.data?.sys?.sunrise
   const sunset = weather?.data?.sys?.sunset
 
+  // Map extracted data to display format with dynamic values
   const weatherHighlights = {
     wind: `${windSpeed} m/s`,
     wind_sub: formatTime(weather?.data?.dt),
