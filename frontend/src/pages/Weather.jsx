@@ -35,12 +35,18 @@ const Weather = () => {
     }
   }
 
+  /**
+   * Formats weather data from API response for display
+   * Extracts readable day, date, and weather condition
+   */
   const formatWeatherData = (weatherData) => {
     if (!weatherData.data) return weatherData
     
+    // Convert Unix timestamp to readable date
     const date = new Date(weatherData.data.dt * 1000)
     const day = date.toLocaleDateString('en-US', { weekday: 'long' })
     const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    // Extract main weather condition (e.g., 'Clouds', 'Rain')
     const condition = weatherData.data.weather?.[0]?.main || ''
     
     return {
