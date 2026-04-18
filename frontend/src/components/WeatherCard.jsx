@@ -2,9 +2,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Cloud, CloudRain, Sun, CloudSnow, CloudDrizzle, CloudLightning, CloudFog } from "lucide-react";
 
 export function WeatherCard({weather}) {
+  /**
+   * Returns appropriate weather icon based on current condition
+   * Icons are color-coded for visual clarity
+   */
   const getWeatherIcon = () => {
+    // Extract and normalize the weather condition from API
     const condition = weather?.data?.weather?.[0]?.main?.toLowerCase()
     
+    // Map weather conditions to corresponding icons with tailwind colors
     switch(condition) {
       case 'clear':
         return <Sun size={48} className="text-yellow-400" />
