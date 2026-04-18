@@ -29,18 +29,37 @@ const Weather = () => {
         "data": body
       }
       localStorage.setItem("weather",JSON.stringify(newUpdate))
+      setWeather(newUpdate)
     }else {
         console.log("Less than 7 days")
     }
   }
 
+  const formatWeatherData = (weatherData) => {
+    if (!weatherData.data) return weatherData
+    
+    const date = new Date(weatherData.data.dt * 1000)
+    const day = date.toLocaleDateString('en-US', { weekday: 'long' })
+    const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    const condition = weatherData.data.weather?.[0]?.main || ''
+    
+    return {
+      ...weatherData,
+      day,
+      date: dateStr,
+      condition
+    }
+  }
+
+
+  const formattedWeather = formatWeatherData(weather)
 
   return (
     <div className=" flex flex-wrap justify-items-start gap-2 p-2">
-      <WeatherCard weather={weather} />
-      <WeatherHighlight weather={weather}/>
+      <WeatherCard weather={formattedWeather} />
+      <WeatherHighlight weather={formattedWeather}/>
       <div className="flex-1">
-        <Forecast weather={weather}/>
+        <Forecast weather={formattedWeather}/>
       </div>
       <button onClick={getWeather}>Fetch</button>
     </div>
