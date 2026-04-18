@@ -38,17 +38,19 @@ export function WeatherCard({weather}) {
       {/* Left Side: Date & Location */}
       <CardHeader className="w-full flex flex-col items-start gap-1">
         <CardDescription>
+          {/* Location badge from API response */}
           <p className="text-xs bg-green-600 rounded-lg text-white px-2 py-1 text-center">
             {weather?.data?.name}
           </p>
         </CardDescription>
         <CardTitle className="flex flex-col">
+          {/* Day and date formatted from Unix timestamp */}
           <span className="font-bold text-black">{weather.day}</span>
           <span className="text-xs text-slate-400">{weather.date}</span>
         </CardTitle>
       </CardHeader>
 
-      {/* Middle: Weather Icon */}
+      {/* Middle: Dynamic Weather Icon */}
       <div className="flex items-center justify-center">
         {getWeatherIcon()}
       </div>
