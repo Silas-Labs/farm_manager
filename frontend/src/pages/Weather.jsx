@@ -14,21 +14,26 @@ const Weather = () => {
   const {VITE_WEATHER_API, VITE_WEATHER_URL} = import.meta.env
 
   const getWeather=async()=>{
+    // Retrieve cached weather from localStorage
     const weatherStore = JSON.parse(localStorage.getItem("weather")) || {}
     const date =  Date.now()
+    // Calculate days since last update
     const diff = (date - weatherStore["lastUpdate"])/(1000*60*60*24)
 
+    // Fetch new data if cache is empty or older than 7 days
     if (Object.keys(weatherStore).length == 0 || (diff > 7)) {
       const res = await fetch(`${VITE_WEATHER_URL}?lat=-0.0917&lon=34.7680&cnt=7&appid=${VITE_WEATHER_API}&units=metric`)
       if (!res.ok){
         throw new Error(res.status)
       }
       const body = await res.json()
+      // Create update with current timestamp and API response
       const newUpdate = {
         "lastUpdate": Date.now(),
         "data": body
       }
       localStorage.setItem("weather",JSON.stringify(newUpdate))
+      // Update React state with new weather data
       setWeather(newUpdate)
     }else {
         console.log("Less than 7 days")
