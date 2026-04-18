@@ -1,7 +1,30 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CloudSunRain } from "lucide-react";
+import { Cloud, CloudRain, Sun, CloudSnow, CloudDrizzle, CloudLightning, CloudFog } from "lucide-react";
 
 export function WeatherCard({weather}) {
+  const getWeatherIcon = () => {
+    const condition = weather?.data?.weather?.[0]?.main?.toLowerCase()
+    
+    switch(condition) {
+      case 'clear':
+        return <Sun size={48} className="text-yellow-400" />
+      case 'clouds':
+        return <Cloud size={48} className="text-gray-400" />
+      case 'rain':
+        return <CloudRain size={48} className="text-blue-500" />
+      case 'drizzle':
+        return <CloudDrizzle size={48} className="text-blue-400" />
+      case 'thunderstorm':
+        return <CloudLightning size={48} className="text-purple-500" />
+      case 'snow':
+        return <CloudSnow size={48} className="text-blue-200" />
+      case 'mist':
+      case 'fog':
+        return <CloudFog size={48} className="text-gray-300" />
+      default:
+        return <Cloud size={48} className="text-gray-400" />
+    }
+  }
 
   return (
     <Card className="w-full md:w-80 p-4 flex flex-col md:flex-col gap-4">
@@ -21,7 +44,7 @@ export function WeatherCard({weather}) {
 
       {/* Middle: Weather Icon */}
       <div className="flex items-center justify-center">
-        <CloudSunRain size={48} className="text-blue-500" />
+        {getWeatherIcon()}
       </div>
 
       {/* Right Side: Temperature & Condition */}
