@@ -27,6 +27,10 @@ export const Labour = () => {
     setLabor(toSave)
   };
 
+  const addExpense=()=>{
+    console.log("Expensing")
+  }
+
   return (
     <div className="w-full flex flex-col p-1">
       <div className="w-full flex justify-end  gap-2">
@@ -72,7 +76,7 @@ export const Labour = () => {
         )}
 
         {showExpenseModal && (
-          <AddExpenseModal onClose={() => setshowExpenseModal(false)} />
+          <AddExpenseModal onClose={() => setshowExpenseModal(false)} onSave={addExpense}/>
         )}
 
         {/* Personnel Table */}
