@@ -5,10 +5,30 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { AddEquipmentModal } from "../components/AddEquipmentModal";
 import { AddExpenseModal } from "../components/AddExpenseModal";
+import { toast } from "sonner";
+import dayjs from "dayjs";
 
 export const Equipment = () => {
   const [showAddEquipmentModal, setshowAdEquipmentModal] = useState(false);
   const [showExpenseModal, setshowExpenseModal] = useState(false);
+  const [equipment, setEquipment] = useState([])
+
+  const onSave=(props)=>{
+    const newEq = {
+      name : props.name,
+      type: props.type,
+      model: props.model,
+      description: props.description,
+      status: props.status,
+      quantity: props.quantity,
+      date: props.date,
+      price: props.price
+    }
+    const newList = [...equipment,newEq]
+    setEquipment(newList)
+    toast.success("Equipment added successfully.")
+
+  }
 
   return (
     <div className="w-full flex  flex-col p-1">
@@ -37,7 +57,7 @@ export const Equipment = () => {
           </Card>
         </div>
         {showAddEquipmentModal && (
-          <AddEquipmentModal onClose={() => setshowAdEquipmentModal(false)} />
+          <AddEquipmentModal onClose={() => setshowAdEquipmentModal(false)} onSave={onSave}/>
         )}
         {showExpenseModal && <AddExpenseModal onClose={()=>setshowExpenseModal(false)} />}
 
@@ -48,15 +68,28 @@ export const Equipment = () => {
               <tr>
                 <th>Name</th>
                 <th>Type</th>
+                <th>Model</th>
+                <th>Description</th>
+                <th>Status</th>
                 <th>Quantity</th>
-                <th>State</th>
-                <th>Borrowed</th>
-                <th>Borrower</th>
-                <th>Date Lent</th>
-                <th>Actions</th>
+                <th>Date</th>
+                <th>Price</th>
               </tr>
             </thead>
-            <tbody>{/* Map equipment data here */}</tbody>
+            <tbody>
+              {equipment.map((it)=>(
+                <tr>
+                  <td>{it.name}</td>
+                  <td>{it.type}</td>
+                  <td>{it.model}</td>
+                  <td>{it.description}</td>
+                  <td>{it.status}</td>
+                  <td>{it.quantity}</td>
+                  <td>{`${dayjs(it.date).format("DD/MM/YYYY")}`}</td>
+                  <td>{it.price}</td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       </div>

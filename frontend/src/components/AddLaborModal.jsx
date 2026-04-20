@@ -66,6 +66,7 @@ export const AddLaborModal = ({ onClose, onSave }) => {
       role: role,
       status: status,
     });
+    onClose();
   };
 
   return (
@@ -106,7 +107,7 @@ export const AddLaborModal = ({ onClose, onSave }) => {
                   textField: { fullWidth: true },
                 }}
                 value={doB}
-                onChange={() => setDoB(() => (newDate) => newDate)}
+                onChange={ (newDate) => setDoB(newDate)}
                 maxDate={dayjs()}
               />
             </LocalizationProvider>

@@ -21,7 +21,7 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [date, setDate] = useState(dayjs(new Date()).format("DD-MM-YYYY"));
+  const [date, setDate] = useState(dayjs(new Date()));
   const [price, setPrice] = useState("");
   const [errors, setErrors] = useState({});
 

@@ -13,13 +13,13 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout/>}> 
-      <Route path="/dashboard" element={<Dashboard/>}/> 
-    <Route path="/crops" element={<Crops/>}/> 
-    <Route path="/weather" element={<Weather/>}/> 
-    <Route path="/equipment" element={<Equipment/>}/> 
-    <Route path="/labor" element={<Labour/>}/> 
-    <Route path="/reports" element={<Reports/>}/> 
-        </Route>
+        <Route path="/dashboard" element={<Dashboard/>}/> 
+        <Route path="/crops" element={<Crops/>}/> 
+        <Route path="/weather" element={<Weather/>}/> 
+        <Route path="/equipment" element={<Equipment/>}/> 
+        <Route path="/labor" element={<Labour/>}/> 
+        <Route path="/reports" element={<Reports/>}/> 
+      </Route>
     </Routes>
   );
 }

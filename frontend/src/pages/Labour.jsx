@@ -8,9 +8,23 @@ import { AddExpenseModal } from "../components/AddExpenseModal";
 export const Labour = () => {
   const [showLaborModal, setshowLaborModal] = useState(false);
   const [showExpenseModal, setshowExpenseModal] = useState(false);
+  const [labor, setLabor] = useState([])
 
-  const handleSave = () => {
-    console.log("saving...");
+  const handleSave = (props) => {
+    const newLabor = {
+      id: props.id,
+      name: props.name,
+      doB: props.doB,
+      phone: props.phone,
+      location: props.location,
+      home: props.home,
+      kin: props.kin,
+      kinPhone: props.kinPhone,
+      role: props.role,
+      status: props.status,
+    }
+    const toSave = [...labor,newLabor]
+    setLabor(toSave)
   };
 
   return (
@@ -53,7 +67,7 @@ export const Labour = () => {
         {showLaborModal && (
           <AddLaborModal
             onClose={() => setshowLaborModal(false)}
-            onSave={() => handleSave()}
+            onSave={ handleSave}
           />
         )}
 
