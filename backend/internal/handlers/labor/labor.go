@@ -2,6 +2,7 @@ package labor
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"backend/internal/models"
@@ -52,6 +53,13 @@ func AddLabor(w http.ResponseWriter, r *http.Request) {
 		Code:    http.StatusOK,
 		Message: "Success",
 	}
+	defer r.Body.Close()
+
+	expense := models.Expense{}
+	data := r.Body
+	json.NewDecoder(data).Decode(&expense)
+
+	fmt.Println(expense)
 	json.NewEncoder(w).Encode(response)
 }
 

@@ -27,8 +27,8 @@ export const Labour = () => {
     setLabor(toSave)
   };
 
-  const addExpense=()=>{
-    console.log("Expensing")
+  const addExpense=(props)=>{
+    console.log("Expensing", props)
   }
 
   return (
