@@ -48,6 +48,11 @@ func AddExpense(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(error)
 	}
+
+	expense := models.Expense{}
+	data := r.Body
+	json.NewDecoder(data).Decode(&expense)
+
 	response := models.Response{
 		Code:    http.StatusOK,
 		Message: "Success",
