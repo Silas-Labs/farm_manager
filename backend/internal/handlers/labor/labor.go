@@ -54,12 +54,6 @@ func AddLabor(w http.ResponseWriter, r *http.Request) {
 		Message: "Success",
 	}
 	defer r.Body.Close()
-
-	expense := models.Expense{}
-	data := r.Body
-	json.NewDecoder(data).Decode(&expense)
-
-	fmt.Println(expense)
 	json.NewEncoder(w).Encode(response)
 }
 
