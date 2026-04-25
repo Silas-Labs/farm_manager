@@ -13,7 +13,8 @@ A centralized farm management system to record activities, track costs, and visu
 - [Project Structure](#-project-structure)
 - [Contributing](#-contributing)
 
-## 📌 Problem Statement
+## 📌 Problem Statement.
+
 
 Managing a farm involves tracking a wide range of activities, resources, and expenses—from purchasing seeds and fertilizers to recording cultivation, harvesting, and sales. Farmers often face challenges in maintaining accurate records, analyzing operational costs, and assessing overall farm performance. Without a centralized system, it becomes difficult to identify trends, optimize resource usage, or make informed, data-driven decisions to improve productivity and profitability.
 
