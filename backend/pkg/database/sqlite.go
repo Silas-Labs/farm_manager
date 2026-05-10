@@ -142,3 +142,5 @@ func CloseDB() {
 		DB.Close()
 	}
 }
+
+// EOF: sqlite.go
