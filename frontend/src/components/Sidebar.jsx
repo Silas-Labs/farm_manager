@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: Sidebar.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import {
