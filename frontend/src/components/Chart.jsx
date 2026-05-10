@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: Chart.jsx
 "use client";
 
 import {
