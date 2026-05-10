@@ -21,3 +21,5 @@ export const ProtectedRoute = ({ children }) => {
 
   return children;
 };
+
+// EOF: ProtectedRoute.jsx
