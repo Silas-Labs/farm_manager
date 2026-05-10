@@ -65,3 +65,5 @@ const Header = () => {
 };
 
 export default Header;
+
+// EOF: Header.jsx
