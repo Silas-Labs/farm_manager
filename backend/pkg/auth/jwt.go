@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: jwt.go
 package auth
 
 import (
