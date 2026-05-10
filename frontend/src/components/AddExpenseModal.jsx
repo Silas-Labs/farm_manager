@@ -84,7 +84,7 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
 
   return (
     <form
-      className="fixed inset-0 flex justify-center items-center z-99 bg-black/30"
+      className="fixed inset-0 flex justify-center items-center z-50 p-3 sm:p-4"
       onClick={onClose}
     >
       <Card
