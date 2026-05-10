@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: AddEquipmentModal.jsx
 import React, { useState } from "react";
 
 import {
