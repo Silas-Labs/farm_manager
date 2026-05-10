@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: auth.go
 package middleware
 
 import (
