@@ -12,3 +12,5 @@ createRoot(document.getElementById("root")).render(
       <Toaster position="top-center" />
   </StrictMode>,
 );
+
+// EOF: main.jsx
