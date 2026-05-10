@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: WeatherHighlight.jsx
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function WeatherHighlight({weather}) {
