@@ -244,3 +244,5 @@ func (r *EquipmentRepository) Delete(id, userID int) error {
 
 // Similar repositories for Labor, Expenses, Harvests...
 // (I'll provide these in the next message due to length)
+
+// EOF: repository.go
