@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: Layout.jsx
 import React from "react";
 import { Outlet } from "react-router";
 import { SideBar } from "../Sidebar";
