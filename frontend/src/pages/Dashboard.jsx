@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: Dashboard.jsx
 import React, { useState, useEffect } from "react";
 import { Chart } from "../components/Chart";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
