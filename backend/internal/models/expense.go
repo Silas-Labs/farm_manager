@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: expense.go
 package models
 
 import "time"
