@@ -51,3 +51,5 @@ func GetUserID(r *http.Request) int {
 	}
 	return userID
 }
+
+// EOF: auth.go
