@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: equipment_handler.go
 package handler
 
 import (
