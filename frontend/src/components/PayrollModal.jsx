@@ -197,3 +197,5 @@ export const PayrollModal = ({ worker, onClose, onSave }) => {
     </div>
   );
 };
+
+// EOF: PayrollModal.jsx
