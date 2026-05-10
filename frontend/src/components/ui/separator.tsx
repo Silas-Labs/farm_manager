@@ -25,3 +25,5 @@ function Separator({
 }
 
 export { Separator }
+
+// EOF: separator.tsx
