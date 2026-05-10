@@ -86,3 +86,5 @@ func DeleteExpense(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(response)
 }
+
+// EOF: expense_handler.go
