@@ -57,3 +57,5 @@ export const UpdateStageModal = ({ crop, onClose, onSave }) => {
     </div>
   );
 };
+
+// EOF: UpdateStageModal.jsx
