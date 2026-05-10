@@ -69,3 +69,4 @@ export function WeatherCard({weather}) {
     </Card>
   );
 }
+// EOF: WeatherCard.jsx
