@@ -120,3 +120,4 @@ export const HarvestModal = ({ crop, onClose, onSave }) => {
     </form>
   );
 };
+// EOF: HarvestModal.jsx
