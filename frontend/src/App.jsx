@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: App.jsx
 // src/App.jsx
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
