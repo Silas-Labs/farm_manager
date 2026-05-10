@@ -95,3 +95,4 @@ export function WeatherHighlight({weather}) {
     </Card>
   );
 }
+// EOF: WeatherHighlight.jsx
