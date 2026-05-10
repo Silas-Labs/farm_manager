@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: Header.jsx
 // Header.jsx - Make sure text has proper color
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
