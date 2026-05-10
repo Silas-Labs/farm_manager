@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: activities_handler.go
 package handler
 
 import (
