@@ -5,3 +5,5 @@ type Response struct {
 	Code    int
 	Message string
 }
+
+// EOF: response.go
