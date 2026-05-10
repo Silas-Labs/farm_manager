@@ -246,3 +246,5 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
     </form>
   );
 };
+
+// EOF: AddExpenseModal.jsx
