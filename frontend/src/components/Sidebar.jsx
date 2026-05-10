@@ -229,3 +229,5 @@ export const SideBar = () => {
     </>
   );
 };
+
+// EOF: Sidebar.jsx
