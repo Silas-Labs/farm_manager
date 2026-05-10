@@ -190,3 +190,4 @@ export const Register = () => {
     </div>
   );
 };
+// EOF: Register.jsx
