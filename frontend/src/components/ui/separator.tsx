@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: separator.tsx
 import * as React from "react"
 import { Separator as SeparatorPrimitive } from "radix-ui"
 
