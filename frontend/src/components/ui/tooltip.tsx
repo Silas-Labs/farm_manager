@@ -56,3 +56,5 @@ function TooltipContent({
 }
 
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }
+
+// EOF: tooltip.tsx
