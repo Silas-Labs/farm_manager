@@ -180,3 +180,5 @@ export const AddLaborModal = ({ onClose, onSave }) => {
     </form>
   );
 };
+
+// EOF: AddLaborModal.jsx
