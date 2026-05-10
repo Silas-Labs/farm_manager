@@ -151,3 +151,5 @@ export const AgriculturalAdvice = ({ weather }) => {
     </Card>
   );
 };
+
+// EOF: AgriculturalAdvice.jsx
