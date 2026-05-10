@@ -121,6 +121,13 @@ Built with Go for performance and scalability:
 - Charts: Recharts
 - Tooling: ESLint + Git
 
+## 📈 Recent Developments
+
+The project has recently undergone a major architectural overhaul:
+- **Modular Backend:** Refactored into distinct `handler`, `service`, and `repository` packages for better separation of concerns.
+- **Granular History:** Established a highly detailed commit history to facilitate precise auditing and easier rollbacks.
+- **Security Audit:** Removed sensitive configuration from version control and strengthened authentication flows.
+
 ## 📊 System Output & Visualizations
 
 - The system generates visual insights such as:
