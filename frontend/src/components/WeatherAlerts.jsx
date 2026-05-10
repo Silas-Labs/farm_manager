@@ -163,3 +163,5 @@ export const WeatherAlerts = ({ weather, farmingTips }) => {
     </div>
   );
 };
+
+// EOF: WeatherAlerts.jsx
