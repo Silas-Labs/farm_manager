@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: sidebar.tsx
 "use client"
 
 import * as React from "react"
