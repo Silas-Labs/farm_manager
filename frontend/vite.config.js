@@ -12,3 +12,4 @@ export default defineConfig({
     },
   },
 })
+// Project: Farm Manager
