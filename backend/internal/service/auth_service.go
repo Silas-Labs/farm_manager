@@ -68,3 +68,5 @@ func (s *AuthService) Login(email, password string) (string, *models.User, error
 	user.PasswordHash = ""
 	return token, user, nil
 }
+
+// EOF: auth_service.go
