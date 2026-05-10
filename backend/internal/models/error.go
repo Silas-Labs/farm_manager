@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: error.go
 package models
 
 type Error struct {
