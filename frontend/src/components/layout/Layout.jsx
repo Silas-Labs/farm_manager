@@ -28,3 +28,5 @@ export const Layout = () => {
     </SidebarProvider>
   );
 };
+
+// EOF: Layout.jsx
