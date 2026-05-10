@@ -173,3 +173,5 @@ func (h *EquipmentHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(models.SuccessResponse{Message: "Equipment deleted successfully"})
 }
+
+// EOF: equipment_handler.go
