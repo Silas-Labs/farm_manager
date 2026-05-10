@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: labor.go
 package models
 
 import "time"
