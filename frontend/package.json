@@ -15,7 +15,7 @@
     "@fontsource-variable/geist": "^5.2.8",
     "@fontsource/roboto": "^5.2.10",
     "@mui/material": "^7.3.9",
-    "@mui/x-date-pickers": "^9.0.0",
+    "@mui/x-date-pickers": "^9.1.0",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.16.0",
