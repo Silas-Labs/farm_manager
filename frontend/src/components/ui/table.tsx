@@ -113,3 +113,5 @@ export {
   TableCell,
   TableCaption,
 }
+
+// EOF: table.tsx
