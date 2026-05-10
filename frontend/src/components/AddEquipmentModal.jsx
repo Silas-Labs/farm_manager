@@ -163,3 +163,5 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
     </form>
   );
 };
+
+// EOF: AddEquipmentModal.jsx
