@@ -87,3 +87,5 @@ func DeleteActivity(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(response)
 }
+
+// EOF: activities_handler.go
