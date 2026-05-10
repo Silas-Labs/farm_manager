@@ -66,3 +66,5 @@ function Button({
 }
 
 export { Button, buttonVariants }
+
+// EOF: button.tsx
