@@ -66,7 +66,7 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
   };
   return (
     <form
-      className="fixed inset-0  flex justify-center items-center z-99 shadow-xl"
+      className="fixed inset-0 flex justify-center items-center z-50 p-3 sm:p-4"
       onClick={onClose}
     >
       <Card
