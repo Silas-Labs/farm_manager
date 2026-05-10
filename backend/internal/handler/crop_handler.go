@@ -189,3 +189,5 @@ func (h *CropHandler) GetStats(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(stats)
 }
+
+// EOF: crop_handler.go
