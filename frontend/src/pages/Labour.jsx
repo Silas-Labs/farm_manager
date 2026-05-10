@@ -810,3 +810,5 @@ export const Labour = () => {
     </div>
   );
 };
+
+// EOF: Labour.jsx
