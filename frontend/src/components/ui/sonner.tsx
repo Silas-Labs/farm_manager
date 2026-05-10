@@ -46,3 +46,5 @@ const Toaster = ({ ...props }: ToasterProps) => {
 }
 
 export { Toaster }
+
+// EOF: sonner.tsx
