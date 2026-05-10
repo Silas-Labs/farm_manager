@@ -87,3 +87,5 @@ func DeleteLabor(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(response)
 }
+
+// EOF: labor_handler.go
