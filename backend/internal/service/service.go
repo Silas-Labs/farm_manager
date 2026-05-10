@@ -175,3 +175,5 @@ func (s *EquipmentService) GetStats(userID int) (map[string]interface{}, error) 
 
 	return stats, nil
 }
+
+// EOF: service.go
