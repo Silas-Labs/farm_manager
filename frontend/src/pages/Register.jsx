@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: Register.jsx
 // src/pages/Register.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
