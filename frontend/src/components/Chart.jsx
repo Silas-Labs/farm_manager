@@ -123,3 +123,5 @@ export function Chart({ data, type = "comparison" }) {
     </ChartContainer>
   );
 }
+
+// EOF: Chart.jsx
