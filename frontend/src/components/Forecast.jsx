@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: Forecast.jsx
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CloudLightning, CloudRain, CloudRainWind, CloudSun, CloudSunRain, Cloudy } from "lucide-react";
 
