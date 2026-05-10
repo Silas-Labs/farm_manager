@@ -39,7 +39,7 @@ export const AddCropModal = ({ onSave, onClose }) => {
 
   //save
   const handleSave = () => {
-    if (!validate()){ 
+    if (!validate()) {
       toast.error("Highlighted fields are required");
       return;
     }
@@ -56,7 +56,7 @@ export const AddCropModal = ({ onSave, onClose }) => {
   };
   return (
     <form
-      className="fixed inset-0  flex justify-center items-center z-99  shadow-xl"
+      className="fixed inset-0 flex justify-center items-center z-50 p-3 sm:p-4"
       onClick={onClose}
     >
       <Card
@@ -70,8 +70,7 @@ export const AddCropModal = ({ onSave, onClose }) => {
     rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <CardTitle>Plant Crop
-        </CardTitle>
+        <CardTitle>Plant Crop</CardTitle>
         <CardDescription>
           <div className="h-full flex flex-col gap-4">
             <Input
