@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: WeatherAlerts.jsx
 import { Card } from "@/components/ui/card";
 import {
   AlertTriangle,
