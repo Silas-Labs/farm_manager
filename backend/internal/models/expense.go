@@ -14,3 +14,5 @@ type Expense struct {
 	Notes       string    `json:"notes"`
 	CreatedAt   time.Time `json:"created_at"`
 }
+
+// EOF: expense.go
