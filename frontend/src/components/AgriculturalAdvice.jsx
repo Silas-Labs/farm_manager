@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: AgriculturalAdvice.jsx
 import { Card, CardTitle, CardContent } from "@/components/ui/card";
 import { Sprout, Droplets, Sun, Wind, Cloud } from "lucide-react";
 
