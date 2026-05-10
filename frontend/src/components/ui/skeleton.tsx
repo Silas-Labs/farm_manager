@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: skeleton.tsx
 import { cn } from "@/lib/utils"
 
 function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
