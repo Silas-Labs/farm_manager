@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: Table.jsx
 import {
   Table,
   TableBody,
