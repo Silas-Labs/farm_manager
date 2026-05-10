@@ -134,3 +134,5 @@ export const AddCropModal = ({ onSave, onClose }) => {
     </form>
   );
 };
+
+// EOF: AddCropModal.jsx
