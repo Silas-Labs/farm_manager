@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: ProtectedRoute.jsx
 // src/components/ProtectedRoute.jsx
 import React from "react";
 import { Navigate } from "react-router";
