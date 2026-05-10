@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: AuthContext.jsx
 // src/context/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { authAPI } from "../services/api";
