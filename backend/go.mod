@@ -12,3 +12,4 @@ require (
 	github.com/joho/godotenv v1.5.1 // indirect
 	golang.org/x/crypto v0.51.0 // indirect
 )
+// Project: Farm Manager
