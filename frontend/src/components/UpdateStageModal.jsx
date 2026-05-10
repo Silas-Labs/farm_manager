@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: UpdateStageModal.jsx
 import React, { useState } from "react";
 import {
   Card,
