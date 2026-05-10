@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: sqlite.go
 package database
 
 import (
