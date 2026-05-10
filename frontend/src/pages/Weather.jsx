@@ -790,3 +790,5 @@ const Weather = () => {
 };
 
 export default Weather;
+
+// EOF: Weather.jsx
