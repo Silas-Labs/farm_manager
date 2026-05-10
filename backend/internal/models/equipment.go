@@ -1,3 +1,4 @@
+// Project: Farm Manager | Module: equipment.go
 package models
 
 import "time"
