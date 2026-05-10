@@ -701,3 +701,5 @@ export {
   SidebarTrigger,
   useSidebar,
 }
+
+// EOF: sidebar.tsx
