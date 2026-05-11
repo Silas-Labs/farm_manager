@@ -12,16 +12,16 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-// Helper to get crop service from request context
-func getCropService(r *http.Request) *service.CropService {
+// Helper to get harvest service from request context
+func getHarvestService(r *http.Request) *service.HarvestService {
 	db := middleware.GetUserDB(r)
-	repo := repository.NewCropRepository(db)
-	return service.NewCropService(repo)
+	repo := repository.NewHarvestRepository(db)
+	return service.NewHarvestService(repo)
 }
 
-func CropGetAll(w http.ResponseWriter, r *http.Request) {
-	svc := getCropService(r)
-	crops, err := svc.GetAll()
+func HarvestGetAll(w http.ResponseWriter, r *http.Request) {
+	svc := getHarvestService(r)
+	harvests, err := svc.GetAll()
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -30,21 +30,21 @@ func CropGetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(crops)
+	json.NewEncoder(w).Encode(harvests)
 }
 
-func CropGetByID(w http.ResponseWriter, r *http.Request) {
+func HarvestGetByID(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.ErrorResponse{Error: "Invalid crop ID"})
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: "Invalid harvest ID"})
 		return
 	}
 
-	svc := getCropService(r)
-	crop, err := svc.GetByID(id)
+	svc := getHarvestService(r)
+	harvest, err := svc.GetByID(id)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
@@ -53,11 +53,11 @@ func CropGetByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(crop)
+	json.NewEncoder(w).Encode(harvest)
 }
 
-func CropCreate(w http.ResponseWriter, r *http.Request) {
-	var req models.CropRequest
+func HarvestCreate(w http.ResponseWriter, r *http.Request) {
+	var req models.HarvestRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
@@ -65,8 +65,8 @@ func CropCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	svc := getCropService(r)
-	crop, err := svc.Create(&req)
+	svc := getHarvestService(r)
+	harvest, err := svc.Create(&req)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -77,22 +77,22 @@ func CropCreate(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(models.SuccessResponse{
-		Message: "Crop created successfully",
-		Data:    crop,
+		Message: "Harvest recorded successfully",
+		Data:    harvest,
 	})
 }
 
-func CropUpdate(w http.ResponseWriter, r *http.Request) {
+func HarvestUpdate(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.ErrorResponse{Error: "Invalid crop ID"})
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: "Invalid harvest ID"})
 		return
 	}
 
-	var req models.CropRequest
+	var req models.HarvestRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
@@ -100,8 +100,8 @@ func CropUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	svc := getCropService(r)
-	crop, err := svc.Update(id, &req)
+	svc := getHarvestService(r)
+	harvest, err := svc.Update(id, &req)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -111,22 +111,22 @@ func CropUpdate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(models.SuccessResponse{
-		Message: "Crop updated successfully",
-		Data:    crop,
+		Message: "Harvest updated successfully",
+		Data:    harvest,
 	})
 }
 
-func CropDelete(w http.ResponseWriter, r *http.Request) {
+func HarvestDelete(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.ErrorResponse{Error: "Invalid crop ID"})
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: "Invalid harvest ID"})
 		return
 	}
 
-	svc := getCropService(r)
+	svc := getHarvestService(r)
 	if err := svc.Delete(id); err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -135,11 +135,11 @@ func CropDelete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(models.SuccessResponse{Message: "Crop deleted successfully"})
+	json.NewEncoder(w).Encode(models.SuccessResponse{Message: "Harvest deleted successfully"})
 }
 
-func CropGetStats(w http.ResponseWriter, r *http.Request) {
-	svc := getCropService(r)
+func HarvestGetStats(w http.ResponseWriter, r *http.Request) {
+	svc := getHarvestService(r)
 	stats, err := svc.GetStats()
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")

@@ -1,4 +1,3 @@
-// Project: Farm Manager | Module: main.go
 package main
 
 import (
@@ -18,36 +17,29 @@ import (
 )
 
 func main() {
-	// Load .env file
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found, using environment variables")
 	}
 
-	// Initialize database
-	if err := database.InitDB(); err != nil {
-		log.Fatal("Failed to connect to database:", err)
+	// Initialize central database only
+	if err := database.InitCentralDB(); err != nil {
+		log.Fatal("Failed to connect to central database:", err)
 	}
-	defer database.CloseDB()
+	defer database.CloseCentralDB()
+	defer database.CloseAllUserDBs()
 
-	// Initialize repositories
-	userRepo := repository.NewUserRepository(database.DB)
-	cropRepo := repository.NewCropRepository(database.DB)
-	equipmentRepo := repository.NewEquipmentRepository(database.DB)
+	// User repository uses central DB
+	userRepo := repository.NewUserRepository(database.CentralDB)
 
-	// Initialize services
+	// Services
 	authService := service.NewAuthService(userRepo)
-	cropService := service.NewCropService(cropRepo)
-	equipmentService := service.NewEquipmentService(equipmentRepo)
 
-	// Initialize handlers
+	// Handlers
 	authHandler := handler.NewAuthHandler(authService)
-	cropHandler := handler.NewCropHandler(cropService)
-	equipmentHandler := handler.NewEquipmentHandler(equipmentService)
 
-	// Setup router
 	r := chi.NewRouter()
 
-	// Custom middleware (replacing chi/middleware)
+	// Middleware
 	r.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
@@ -56,7 +48,6 @@ func main() {
 		})
 	})
 
-	// Recoverer middleware (replaces chi/middleware.Recoverer)
 	r.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			defer func() {
@@ -71,7 +62,6 @@ func main() {
 		})
 	})
 
-	// CORS middleware
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
@@ -92,25 +82,49 @@ func main() {
 	r.Post("/api/auth/register", authHandler.Register)
 	r.Post("/api/auth/login", authHandler.Login)
 
-	// Protected routes
+	// Protected routes (require authentication)
 	r.Group(func(r chi.Router) {
 		r.Use(middleware.AuthMiddleware)
 
 		// Crop routes
-		r.Get("/api/crops", cropHandler.GetAll)
-		r.Get("/api/crops/{id}", cropHandler.GetByID)
-		r.Post("/api/crops", cropHandler.Create)
-		r.Put("/api/crops/{id}", cropHandler.Update)
-		r.Delete("/api/crops/{id}", cropHandler.Delete)
-		r.Get("/api/crops/stats/summary", cropHandler.GetStats)
+		r.Get("/api/crops", handler.CropGetAll)
+		r.Get("/api/crops/{id}", handler.CropGetByID)
+		r.Post("/api/crops", handler.CropCreate)
+		r.Put("/api/crops/{id}", handler.CropUpdate)
+		r.Delete("/api/crops/{id}", handler.CropDelete)
+		r.Get("/api/crops/stats/summary", handler.CropGetStats)
 
 		// Equipment routes
-		r.Get("/api/equipment", equipmentHandler.GetAll)
-		r.Get("/api/equipment/{id}", equipmentHandler.GetByID)
-		r.Post("/api/equipment", equipmentHandler.Create)
-		r.Put("/api/equipment/{id}", equipmentHandler.Update)
-		r.Delete("/api/equipment/{id}", equipmentHandler.Delete)
-		//r.Get("/api/equipment/stats/summary", equipmentHandler.GetStats)
+		r.Get("/api/equipment", handler.EquipmentGetAll)
+		r.Get("/api/equipment/{id}", handler.EquipmentGetByID)
+		r.Post("/api/equipment", handler.EquipmentCreate)
+		r.Put("/api/equipment/{id}", handler.EquipmentUpdate)
+		r.Delete("/api/equipment/{id}", handler.EquipmentDelete)
+		r.Get("/api/equipment/stats/summary", handler.EquipmentGetStats)
+
+		// Labor routes
+		r.Get("/api/labor", handler.LaborGetAll)
+		r.Get("/api/labor/{id}", handler.LaborGetByID)
+		r.Post("/api/labor", handler.LaborCreate)
+		r.Put("/api/labor/{id}", handler.LaborUpdate)
+		r.Delete("/api/labor/{id}", handler.LaborDelete)
+		r.Get("/api/labor/stats/summary", handler.LaborGetStats)
+
+		// Expense routes
+		r.Get("/api/expenses", handler.ExpenseGetAll)
+		r.Get("/api/expenses/{id}", handler.ExpenseGetByID)
+		r.Post("/api/expenses", handler.ExpenseCreate)
+		r.Put("/api/expenses/{id}", handler.ExpenseUpdate)
+		r.Delete("/api/expenses/{id}", handler.ExpenseDelete)
+		r.Get("/api/expenses/stats/summary", handler.ExpenseGetStats)
+
+		// Harvest routes
+		r.Get("/api/harvests", handler.HarvestGetAll)
+		r.Get("/api/harvests/{id}", handler.HarvestGetByID)
+		r.Post("/api/harvests", handler.HarvestCreate)
+		r.Put("/api/harvests/{id}", handler.HarvestUpdate)
+		r.Delete("/api/harvests/{id}", handler.HarvestDelete)
+		r.Get("/api/harvests/stats/summary", handler.HarvestGetStats)
 	})
 
 	port := os.Getenv("PORT")
@@ -120,11 +134,9 @@ func main() {
 
 	log.Printf("Server starting on port %s", port)
 	log.Printf("API available at http://localhost:%s", port)
-	log.Printf("Health check: http://localhost:%s/health", port)
+	log.Printf("Data directory: ./data/")
 
 	if err := http.ListenAndServe(":"+port, r); err != nil {
 		log.Fatal("Failed to start server:", err)
 	}
 }
-
-// EOF: main.go

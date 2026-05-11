@@ -1,90 +1,153 @@
-// Project: Farm Manager | Module: expense_handler.go
 package handler
+
 import (
+	"backend/internal/middleware"
+	"backend/internal/models"
+	"backend/internal/repository"
+	"backend/internal/service"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
-	"backend/internal/models"
+	"github.com/go-chi/chi/v5"
 )
 
-func GetAllExpenses(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		error := models.Error{
-			Code:    http.StatusMethodNotAllowed,
-			Message: "method not allowed",
-		}
-		json.NewEncoder(w).Encode(error)
-	}
-	response := models.Response{
-		Code:    http.StatusOK,
-		Message: "Success",
-	}
-	json.NewEncoder(w).Encode(response)
+// Helper to get expense service from request context
+func getExpenseService(r *http.Request) *service.ExpenseService {
+	db := middleware.GetUserDB(r)
+	repo := repository.NewExpenseRepository(db)
+	return service.NewExpenseService(repo)
 }
 
-func GetExpense(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		error := models.Error{
-			Code:    http.StatusMethodNotAllowed,
-			Message: "method not allowed",
-		}
-		json.NewEncoder(w).Encode(error)
+func ExpenseGetAll(w http.ResponseWriter, r *http.Request) {
+	svc := getExpenseService(r)
+	expenses, err := svc.GetAll()
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		return
 	}
-	response := models.Response{
-		Code:    http.StatusOK,
-		Message: "Success",
-	}
-	json.NewEncoder(w).Encode(response)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(expenses)
 }
 
-func AddExpense(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		error := models.Error{
-			Code:    http.StatusMethodNotAllowed,
-			Message: "method not allowed",
-		}
-		json.NewEncoder(w).Encode(error)
+func ExpenseGetByID(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: "Invalid expense ID"})
+		return
 	}
-	response := models.Response{
-		Code:    http.StatusOK,
-		Message: "Success",
+
+	svc := getExpenseService(r)
+	expense, err := svc.GetByID(id)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		return
 	}
-	json.NewEncoder(w).Encode(response)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(expense)
 }
 
-func EditExpense(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "PUT" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		error := models.Error{
-			Code:    http.StatusMethodNotAllowed,
-			Message: "method not allowed",
-		}
-		json.NewEncoder(w).Encode(error)
+func ExpenseCreate(w http.ResponseWriter, r *http.Request) {
+	var req models.ExpenseRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		return
 	}
-	response := models.Response{
-		Code:    http.StatusOK,
-		Message: "Success",
+
+	svc := getExpenseService(r)
+	expense, err := svc.Create(&req)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		return
 	}
-	json.NewEncoder(w).Encode(response)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(models.SuccessResponse{
+		Message: "Expense added successfully",
+		Data:    expense,
+	})
 }
 
-func DeleteExpense(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "DELETE" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		error := models.Error{
-			Code:    http.StatusMethodNotAllowed,
-			Message: "method not allowed",
-		}
-		json.NewEncoder(w).Encode(error)
+func ExpenseUpdate(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: "Invalid expense ID"})
+		return
 	}
-	response := models.Response{
-		Code:    http.StatusOK,
-		Message: "Success",
+
+	var req models.ExpenseRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		return
 	}
-	json.NewEncoder(w).Encode(response)
+
+	svc := getExpenseService(r)
+	expense, err := svc.Update(id, &req)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(models.SuccessResponse{
+		Message: "Expense updated successfully",
+		Data:    expense,
+	})
 }
 
-// EOF: expense_handler.go
+func ExpenseDelete(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: "Invalid expense ID"})
+		return
+	}
+
+	svc := getExpenseService(r)
+	if err := svc.Delete(id); err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(models.SuccessResponse{Message: "Expense deleted successfully"})
+}
+
+func ExpenseGetStats(w http.ResponseWriter, r *http.Request) {
+	svc := getExpenseService(r)
+	stats, err := svc.GetStats()
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(stats)
+}

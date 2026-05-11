@@ -1,3 +1,3 @@
-// Project: Farm Manager | Module: config.go
+package config
 
-// EOF: config.go
+// Config placeholder
