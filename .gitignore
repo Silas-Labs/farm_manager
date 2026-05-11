@@ -25,6 +25,7 @@ dist-ssr/
 *.sw?
 
 # Go
+backend/data/
 backend/farm_manager.db
 *.exe
 *.exe~
