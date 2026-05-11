@@ -1,55 +1,95 @@
-// Project: Farm Manager | Module: sqlite.go
 package database
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var DB *sql.DB
+// Central DB for users
+var CentralDB *sql.DB
 
-func InitDB() error {
-	dbPath := os.Getenv("DB_PATH")
-	if dbPath == "" {
-		dbPath = "./farm_manager.db"
+// UserDBs map to store connections (optional caching)
+var UserDBs = make(map[int]*sql.DB)
+
+// InitCentralDB initializes the central users database
+func InitCentralDB() error {
+	// Create data directory if not exists
+	if err := os.MkdirAll("./data", 0755); err != nil {
+		return fmt.Errorf("failed to create data directory: %w", err)
 	}
 
+	dbPath := "./data/users.db"
 	var err error
-	DB, err = sql.Open("sqlite3", dbPath)
+	CentralDB, err = sql.Open("sqlite3", dbPath)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to open central database: %w", err)
 	}
 
-	if err = DB.Ping(); err != nil {
-		return err
+	if err = CentralDB.Ping(); err != nil {
+		return fmt.Errorf("failed to ping central database: %w", err)
 	}
 
-	log.Println("SQLite database connected successfully")
-	return createTables()
+	log.Println("Central database connected successfully")
+	return createCentralTables()
 }
 
-func createTables() error {
-	queries := []string{
-		// Users table
-		`CREATE TABLE IF NOT EXISTS users (
+func createCentralTables() error {
+	query := `
+        CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             email TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
             farm_name TEXT,
             location TEXT,
+            db_path TEXT NOT NULL,
             role TEXT DEFAULT 'user',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`,
+        )
+    `
+	_, err := CentralDB.Exec(query)
+	if err != nil {
+		return fmt.Errorf("failed to create users table: %w", err)
+	}
+	log.Println("Central database tables created/verified")
+	return nil
+}
 
+// CreateUserDatabase creates a new SQLite database for a user
+func CreateUserDatabase(userID int, farmName string) (string, error) {
+	dbPath := fmt.Sprintf("./data/farm_%d.db", userID)
+
+	// Check if file already exists
+	if _, err := os.Stat(dbPath); err == nil {
+		return dbPath, fmt.Errorf("database already exists for user %d", userID)
+	}
+
+	// Create new database file
+	userDB, err := sql.Open("sqlite3", dbPath)
+	if err != nil {
+		return "", fmt.Errorf("failed to create user database: %w", err)
+	}
+	defer userDB.Close()
+
+	// Create all tables for the user
+	if err := createUserTables(userDB); err != nil {
+		return "", err
+	}
+
+	log.Printf("Created user database for user %d at %s", userID, dbPath)
+	return dbPath, nil
+}
+
+func createUserTables(db *sql.DB) error {
+	queries := []string{
 		// Crops table
 		`CREATE TABLE IF NOT EXISTS crops (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
             name TEXT NOT NULL,
             brand TEXT,
             variety TEXT,
@@ -58,14 +98,12 @@ func createTables() error {
             planted_date DATE,
             expected_harvest_date DATE,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )`,
 
 		// Equipment table
 		`CREATE TABLE IF NOT EXISTS equipment (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
             name TEXT NOT NULL,
             type TEXT,
             model TEXT,
@@ -75,14 +113,12 @@ func createTables() error {
             purchase_date DATE,
             price DECIMAL(10,2),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )`,
 
 		// Labor table
 		`CREATE TABLE IF NOT EXISTS labor (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
             name TEXT NOT NULL,
             role TEXT,
             phone TEXT,
@@ -92,28 +128,24 @@ func createTables() error {
             monthly_salary DECIMAL(10,2),
             start_date DATE,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )`,
 
 		// Expenses table
 		`CREATE TABLE IF NOT EXISTS expenses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
             title TEXT NOT NULL,
             amount DECIMAL(10,2) NOT NULL,
             category TEXT,
             expense_type TEXT,
             date DATE,
             notes TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )`,
 
 		// Harvests table
 		`CREATE TABLE IF NOT EXISTS harvests (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
             crop_id INTEGER,
             crop_name TEXT,
             yield_amount DECIMAL(10,2),
@@ -122,25 +154,69 @@ func createTables() error {
             harvest_date DATE,
             notes TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
             FOREIGN KEY (crop_id) REFERENCES crops(id) ON DELETE SET NULL
         )`,
 	}
 
 	for _, query := range queries {
-		if _, err := DB.Exec(query); err != nil {
-			return err
+		if _, err := db.Exec(query); err != nil {
+			return fmt.Errorf("failed to create user table: %w", err)
 		}
 	}
 
-	log.Println("Database tables created/verified successfully")
+	log.Println("User database tables created successfully")
 	return nil
 }
 
-func CloseDB() {
-	if DB != nil {
-		DB.Close()
+// GetUserDB gets or creates a connection to a user's database
+func GetUserDB(userID int) (*sql.DB, error) {
+	// Check cache first
+	if db, exists := UserDBs[userID]; exists {
+		return db, nil
+	}
+
+	// Get user's db_path from central DB
+	var dbPath string
+	query := `SELECT db_path FROM users WHERE id = ?`
+	err := CentralDB.QueryRow(query, userID).Scan(&dbPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user database path: %w", err)
+	}
+
+	// Open the database
+	userDB, err := sql.Open("sqlite3", dbPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open user database: %w", err)
+	}
+
+	if err := userDB.Ping(); err != nil {
+		return nil, fmt.Errorf("failed to ping user database: %w", err)
+	}
+
+	// Cache the connection
+	UserDBs[userID] = userDB
+	return userDB, nil
+}
+
+// CloseUserDB closes a user's database connection
+func CloseUserDB(userID int) {
+	if db, exists := UserDBs[userID]; exists {
+		db.Close()
+		delete(UserDBs, userID)
 	}
 }
 
-// EOF: sqlite.go
+// CloseAllUserDBs closes all cached user database connections
+func CloseAllUserDBs() {
+	for userID, db := range UserDBs {
+		db.Close()
+		delete(UserDBs, userID)
+	}
+}
+
+// CloseCentralDB closes the central database
+func CloseCentralDB() {
+	if CentralDB != nil {
+		CentralDB.Close()
+	}
+}

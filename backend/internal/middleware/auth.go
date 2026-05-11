@@ -1,9 +1,10 @@
-// Project: Farm Manager | Module: auth.go
 package middleware
 
 import (
 	"backend/pkg/auth"
+	"backend/pkg/database"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -12,6 +13,7 @@ import (
 type contextKey string
 
 const UserIDKey contextKey = "userID"
+const UserDBKey contextKey = "userDB"
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +41,17 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
+		// Get user's database connection
+		userDB, err := database.GetUserDB(userID)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to connect to user database"})
+			return
+		}
+
 		ctx := context.WithValue(r.Context(), UserIDKey, userID)
+		ctx = context.WithValue(ctx, UserDBKey, userDB)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -52,4 +64,10 @@ func GetUserID(r *http.Request) int {
 	return userID
 }
 
-// EOF: auth.go
+func GetUserDB(r *http.Request) *sql.DB {
+	db, ok := r.Context().Value(UserDBKey).(*sql.DB)
+	if !ok {
+		return nil
+	}
+	return db
+}
