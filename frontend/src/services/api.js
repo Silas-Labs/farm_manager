@@ -1,34 +1,60 @@
 // src/services/api.js
 import axios from "axios";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "https://agropulse-bakcend.onrender.com/api";
+// Try multiple possible backend URLs
+const getBaseURL = () => {
+  // First check env variable
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  // Fallback for local development
+  return "http://localhost:8000/api";
+};
+
+const API_BASE_URL = getBaseURL();
+
+console.log("API Base URL:", API_BASE_URL); // Check what URL is being used
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 10000, // 10 second timeout
 });
 
-// Request interceptor to add token
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log(
+      `API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`,
+    );
     return config;
   },
   (error) => {
+    console.error("Request interceptor error:", error);
     return Promise.reject(error);
   },
 );
 
-// Response interceptor to handle errors
+// Response interceptor
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(`API Response: ${response.status} ${response.config.url}`);
+    return response;
+  },
   (error) => {
+    console.error("API Error:", {
+      message: error.message,
+      status: error.response?.status,
+      url: error.config?.url,
+      baseURL: error.config?.baseURL,
+    });
+
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -105,21 +131,26 @@ export const harvestsAPI = {
 // Dashboard stats
 export const dashboardAPI = {
   getStats: async () => {
-    const [crops, equipment, labor, expenses, harvests] = await Promise.all([
-      cropsAPI.getStats(),
-      equipmentAPI.getStats(),
-      laborAPI.getStats(),
-      expensesAPI.getStats(),
-      harvestsAPI.getStats(),
-    ]);
+    try {
+      const [crops, equipment, labor, expenses, harvests] = await Promise.all([
+        cropsAPI.getStats().catch(() => ({ data: {} })),
+        equipmentAPI.getStats().catch(() => ({ data: {} })),
+        laborAPI.getStats().catch(() => ({ data: {} })),
+        expensesAPI.getStats().catch(() => ({ data: {} })),
+        harvestsAPI.getStats().catch(() => ({ data: {} })),
+      ]);
 
-    return {
-      crops: crops.data,
-      equipment: equipment.data,
-      labor: labor.data,
-      expenses: expenses.data,
-      harvests: harvests.data,
-    };
+      return {
+        crops: crops.data,
+        equipment: equipment.data,
+        labor: labor.data,
+        expenses: expenses.data,
+        harvests: harvests.data,
+      };
+    } catch (error) {
+      console.error("Failed to fetch dashboard stats:", error);
+      throw error;
+    }
   },
 };
 

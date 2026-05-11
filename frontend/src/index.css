@@ -19,6 +19,134 @@ body,
   padding: 0;
 }
 
+/* Fix button text colors */
+button,
+.button,
+[role="button"] {
+  color: white !important;
+}
+
+button.bg-white,
+button.variant-outline,
+button[class*="outline"] {
+  color: #166534 !important;
+  /* farm green */
+}
+
+button.bg-white span,
+button.variant-outline span {
+  color: #166534 !important;
+}
+
+/* Dark text on light backgrounds */
+p,
+span,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+td,
+th,
+li {
+  color: #1a1a1a;
+}
+
+/* Keep white text only on dark backgrounds */
+.bg-gradient-to-r.from-farm-600,
+.bg-gradient-to-r.from-farm-700,
+.bg-farm-600,
+.bg-farm-700,
+.bg-green-700,
+.bg-green-800 {
+  color: white;
+}
+
+.bg-gradient-to-r.from-farm-600 *,
+.bg-gradient-to-r.from-farm-700 *,
+.bg-farm-600 *,
+.bg-farm-700 * {
+  color: white;
+}
+
+s
+/* ===== BUTTON STYLES FIX ===== */
+
+/* Primary buttons - dark background, white text */
+.btn-primary,
+button.bg-gradient-to-r,
+button[class*="bg-farm-600"],
+button[class*="bg-green-600"] {
+  background: linear-gradient(135deg, #166534, #14532d) !important;
+  color: white !important;
+}
+
+.btn-primary span,
+button.bg-gradient-to-r span,
+button[class*="bg-farm-600"] span {
+  color: white !important;
+}
+
+/* Secondary/Outline buttons */
+.btn-secondary,
+button[class*="outline"] {
+  background: transparent !important;
+  border: 1px solid #166534 !important;
+  color: #166534 !important;
+}
+
+.btn-secondary span,
+button[class*="outline"] span {
+  color: #166534 !important;
+}
+
+.btn-secondary:hover,
+button[class*="outline"]:hover {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+}
+
+/* Force consistent text colors */
+h1, h2, h3, h4, h5, h6, .heading {
+  color: #1f2937 !important;
+}
+
+p, span, li, .text-body {
+  color: #4b5563 !important;
+}
+
+.text-muted, .text-secondary {
+  color: #9ca3af !important;
+}
+
+/* Keep white text only on dark backgrounds */
+.bg-green-700, .bg-green-800, .bg-green-900,
+button.bg-green-700, button.bg-green-800 {
+  color: white !important;
+}
+
+.bg-green-700 * , .bg-green-800 * {
+  color: white !important;
+}
+
+/* Danger buttons */
+.btn-danger,
+button[class*="red"] {
+  background: #dc2626 !important;
+  color: white !important;
+}
+
+/* All buttons should have visible text */
+button {
+  font-weight: 500 !important;
+}
+
+button:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
 /* Remove any max-width from main containers */
 main,
 .main-content {

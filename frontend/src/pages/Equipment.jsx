@@ -1,9 +1,9 @@
-// Project: Farm Manager | Module: Equipment.jsx
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { AddEquipmentModal } from "../components/AddEquipmentModal";
 import { AddExpenseModal } from "../components/AddExpenseModal";
+import { equipmentAPI, expensesAPI } from "../services/api";
 import {
   Tractor,
   Wrench,
@@ -12,17 +12,7 @@ import {
   TrendingUp,
   AlertTriangle,
   CheckCircle,
-  Search,
-  Filter,
-  MoreVertical,
-  Edit,
-  Trash2,
-  Eye,
   Calendar,
-  DollarSign,
-  Activity,
-  Clock,
-  RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 import dayjs from "dayjs";
@@ -31,68 +21,86 @@ export const Equipment = () => {
   const [showAddEquipmentModal, setShowAddEquipmentModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [equipment, setEquipment] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [selectedEquipment, setSelectedEquipment] = useState(null);
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [maintenanceHistory, setMaintenanceHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Load data from localStorage
   useEffect(() => {
     loadEquipment();
-    loadMaintenanceHistory();
   }, []);
 
-  const loadEquipment = () => {
-    const stored = JSON.parse(localStorage.getItem("equipment") || "[]");
-    setEquipment(stored);
-  };
-
-  const loadMaintenanceHistory = () => {
-    const stored = JSON.parse(
-      localStorage.getItem("maintenanceHistory") || "[]",
-    );
-    setMaintenanceHistory(stored);
-  };
-
-  // Save equipment to localStorage
-  useEffect(() => {
-    localStorage.setItem("equipment", JSON.stringify(equipment));
-  }, [equipment]);
-
-  const onSave = (props) => {
-    const newEq = {
-      id: Date.now(),
-      name: props.name,
-      type: props.type,
-      model: props.model,
-      description: props.description,
-      status: props.status,
-      quantity: parseInt(props.quantity),
-      date: props.date,
-      price: parseFloat(props.price),
-      lastMaintenance: null,
-      nextMaintenance: null,
-      createdAt: new Date().toISOString(),
-    };
-    setEquipment([...equipment, newEq]);
-    toast.success(`${props.name} added successfully!`);
-  };
-
-  const deleteEquipment = (id) => {
-    if (window.confirm("Are you sure you want to remove this equipment?")) {
-      setEquipment(equipment.filter((item) => item.id !== id));
-      toast.success("Equipment removed successfully");
+  const loadEquipment = async () => {
+    setLoading(true);
+    try {
+      const response = await equipmentAPI.getAll();
+      setEquipment(response.data || []);
+    } catch (error) {
+      console.error("Error loading equipment:", error);
+      toast.error("Failed to load equipment");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const updateEquipmentStatus = (id, newStatus) => {
-    const updated = equipment.map((item) =>
-      item.id === id ? { ...item, status: newStatus } : item,
-    );
-    setEquipment(updated);
-    toast.success(`Status updated to ${newStatus}`);
+  const onSave = async (props) => {
+    try {
+      const response = await equipmentAPI.create({
+        name: props.name,
+        type: props.type,
+        model: props.model,
+        description: props.description,
+        status: props.status,
+        quantity: parseInt(props.quantity),
+        purchase_date: props.date,
+        price: parseFloat(props.price),
+      });
+
+      setEquipment([...equipment, response.data.data]);
+      toast.success("Equipment added successfully.");
+      loadEquipment();
+    } catch (error) {
+      console.error("Error creating equipment:", error);
+      toast.error("Failed to add equipment");
+    }
+  };
+
+  const deleteEquipment = async (id) => {
+    if (window.confirm("Are you sure you want to remove this equipment?")) {
+      try {
+        await equipmentAPI.delete(id);
+        setEquipment(equipment.filter((item) => item.id !== id));
+        toast.success("Equipment removed successfully");
+      } catch (error) {
+        console.error("Error deleting equipment:", error);
+        toast.error("Failed to delete equipment");
+      }
+    }
+  };
+
+  const updateEquipmentStatus = async (id, newStatus) => {
+    const item = equipment.find((e) => e.id === id);
+    if (!item) return;
+
+    try {
+      await equipmentAPI.update(id, {
+        name: item.name,
+        type: item.type,
+        model: item.model,
+        description: item.description,
+        status: newStatus,
+        quantity: item.quantity,
+        purchase_date: item.purchase_date,
+        price: item.price,
+      });
+
+      setEquipment(
+        equipment.map((item) =>
+          item.id === id ? { ...item, status: newStatus } : item,
+        ),
+      );
+      toast.success(`Status updated to ${newStatus}`);
+    } catch (error) {
+      console.error("Error updating equipment:", error);
+      toast.error("Failed to update status");
+    }
   };
 
   const getStatusConfig = (status) => {
@@ -137,30 +145,13 @@ export const Equipment = () => {
     const icons = {
       Tractor: <Tractor className="w-4 h-4" />,
       Harvester: <Package className="w-4 h-4" />,
-      Plow: <Activity className="w-4 h-4" />,
-      Irrigation: <RefreshCw className="w-4 h-4" />,
+      Plow: <TrendingUp className="w-4 h-4" />,
+      Irrigation: <Package className="w-4 h-4" />,
       Vehicle: <Tractor className="w-4 h-4" />,
     };
     return icons[type] || <Wrench className="w-4 h-4" />;
   };
 
-  // Filter equipment
-  const filteredEquipment = equipment.filter((item) => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (item.model &&
-        item.model.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesStatus =
-      statusFilter === "all" || item.status === statusFilter;
-    const matchesType = typeFilter === "all" || item.type === typeFilter;
-    return matchesSearch && matchesStatus && matchesType;
-  });
-
-  // Get unique types for filter
-  const uniqueTypes = ["all", ...new Set(equipment.map((item) => item.type))];
-
-  // Calculate stats
   const stats = {
     total: equipment.length,
     totalValue: equipment.reduce((sum, e) => sum + e.price * e.quantity, 0),
@@ -208,12 +199,19 @@ export const Equipment = () => {
     </Card>
   );
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-farm-600"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      {/* Header Section */}
+    <div className="w-full space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-display font-bold bg-gradient-to-r from-farm-700 to-farm-600 bg-clip-text">
+          <h2 className="text-xl sm:text-2xl font-display font-bold bg-gradient-to-r from-farm-700 to-farm-600 bg-clip-text text-transparent">
             Equipment & Machinery
           </h2>
           <p className="text-earth-500 text-sm mt-1">
@@ -225,22 +223,21 @@ export const Equipment = () => {
           <Button
             variant="outline"
             onClick={() => setShowExpenseModal(true)}
-            className="bg-gradient-to-r from-farm-600 to-farm-700 hover:from-farm-700 hover:to-farm-800 text-farm-700 shadow-md hover:shadow-lg transition-all"
+            className="border-farm-200 text-farm-700 hover:bg-farm-50"
           >
-            <TrendingUp className="w-4 h-4 mr-2" />
-            Add Expense
+            {" "}
+            <TrendingUp className="w-4 h-4 mr-2" /> Add Expense{" "}
           </Button>
           <Button
             onClick={() => setShowAddEquipmentModal(true)}
-            className="bg-gradient-to-r from-farm-600 to-farm-700 hover:from-farm-700 hover:to-farm-800 text-farm-700 shadow-md hover:shadow-lg transition-all"
+            className="bg-gradient-to-r from-farm-600 to-farm-700 hover:from-farm-700 hover:to-farm-800 text-white shadow-md"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Equipment
+            {" "}
+            <Plus className="w-4 h-4 mr-2" /> Add Equipment{" "}
           </Button>
         </div>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard
           title="Total Equipment"
@@ -252,7 +249,7 @@ export const Equipment = () => {
         <StatCard
           title="Utilization Rate"
           value={`${stats.utilizationRate}%`}
-          icon={Activity}
+          icon={TrendingUp}
           color="from-green-500 to-green-600"
           subtitle={`${stats.working} units active`}
         />
@@ -272,7 +269,6 @@ export const Equipment = () => {
         />
       </div>
 
-      {/* Status Breakdown Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-r from-green-50 to-green-100 border-green-200">
           <CardContent className="p-4">
@@ -326,59 +322,6 @@ export const Equipment = () => {
         </Card>
       </div>
 
-      {/* Search and Filters */}
-      <Card className="p-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-earth-400" />
-            <input
-              type="text"
-              placeholder="Search equipment by name, type, or model..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-earth-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-farm-500 focus:border-transparent"
-            />
-          </div>
-          <div className="flex gap-3">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-earth-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-farm-500 bg-white"
-            >
-              <option value="all">All Status</option>
-              <option value="Working">Working</option>
-              <option value="Maintenance">Maintenance</option>
-              <option value="Broken">Broken</option>
-              <option value="Borrowed">Borrowed</option>
-            </select>
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="px-4 py-2 border border-earth-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-farm-500 bg-white"
-            >
-              {uniqueTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type === "all" ? "All Types" : type}
-                </option>
-              ))}
-            </select>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setSearchTerm("");
-                setStatusFilter("all");
-                setTypeFilter("all");
-              }}
-              className="border-farm-200 text-farm-600 hover:bg-farm-50"
-            >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Reset
-            </Button>
-          </div>
-        </div>
-      </Card>
-
-      {/* Equipment Table */}
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -411,15 +354,14 @@ export const Equipment = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filteredEquipment.map((item, idx) => {
+              {equipment.map((item) => {
                 const statusConfig = getStatusConfig(item.status);
                 const StatusIcon = statusConfig.icon;
                 const totalValue = item.price * item.quantity;
                 return (
                   <tr
                     key={item.id}
-                    className="hover:bg-farm-50/50 transition-colors group animate-fade-in"
-                    style={{ animationDelay: `${idx * 50}ms` }}
+                    className="hover:bg-farm-50/50 transition-colors group"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -447,20 +389,18 @@ export const Equipment = () => {
                       {item.model || "—"}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <select
-                          value={item.status}
-                          onChange={(e) =>
-                            updateEquipmentStatus(item.id, e.target.value)
-                          }
-                          className={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border} focus:outline-none focus:ring-2 focus:ring-${statusConfig.color}-500 cursor-pointer`}
-                        >
-                          <option value="Working">✅ Working</option>
-                          <option value="Maintenance">🔧 Maintenance</option>
-                          <option value="Broken">⚠️ Broken</option>
-                          <option value="Borrowed">📦 Borrowed</option>
-                        </select>
-                      </div>
+                      <select
+                        value={item.status}
+                        onChange={(e) =>
+                          updateEquipmentStatus(item.id, e.target.value)
+                        }
+                        className={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border} focus:outline-none cursor-pointer`}
+                      >
+                        <option value="Working">✅ Working</option>
+                        <option value="Maintenance">🔧 Maintenance</option>
+                        <option value="Broken">⚠️ Broken</option>
+                        <option value="Borrowed">📦 Borrowed</option>
+                      </select>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className="inline-flex items-center justify-center w-8 h-8 bg-farm-100 rounded-full text-farm-700 font-semibold">
@@ -470,7 +410,9 @@ export const Equipment = () => {
                     <td className="px-6 py-4 text-earth-600">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-3 h-3 text-earth-400" />
-                        <span>{dayjs(item.date).format("DD MMM YYYY")}</span>
+                        <span>
+                          {dayjs(item.purchase_date).format("DD MMM YYYY")}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -488,47 +430,27 @@ export const Equipment = () => {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => {
-                            setSelectedEquipment(item);
-                            setShowDetailsModal(true);
-                          }}
-                          className="text-farm-600 hover:bg-farm-100"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
                           onClick={() => deleteEquipment(item.id)}
                           className="text-red-500 hover:bg-red-50"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <AlertTriangle className="w-4 h-4" />
                         </Button>
                       </div>
                     </td>
                   </tr>
                 );
               })}
-              {filteredEquipment.length === 0 && (
+              {equipment.length === 0 && (
                 <tr>
                   <td
                     colSpan="8"
                     className="px-6 py-12 text-center text-earth-400"
                   >
                     <Tractor className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                    {searchTerm ||
-                    statusFilter !== "all" ||
-                    typeFilter !== "all" ? (
-                      <p>
-                        No equipment matches your filters. Try adjusting your
-                        search.
-                      </p>
-                    ) : (
-                      <p>
-                        No equipment added yet. Click "Add Equipment" to get
-                        started!
-                      </p>
-                    )}
+                    <p>
+                      No equipment added yet. Click "Add Equipment" to get
+                      started!
+                    </p>
                   </td>
                 </tr>
               )}
@@ -537,158 +459,6 @@ export const Equipment = () => {
         </div>
       </Card>
 
-      {/* Equipment Details Modal */}
-      {showDetailsModal && selectedEquipment && (
-        <div
-          className="fixed inset-0 flex justify-center items-center z-50 bg-black/50 backdrop-blur-sm animate-fade-in"
-          onClick={() => setShowDetailsModal(false)}
-        >
-          <Card
-            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="sticky top-0 bg-white border-b border-gray-100 p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-farm-100 rounded-xl">
-                    {getTypeIcon(selectedEquipment.type)}
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-earth-800">
-                      {selectedEquipment.name}
-                    </h3>
-                    <p className="text-sm text-earth-500">
-                      {selectedEquipment.type} •{" "}
-                      {selectedEquipment.model || "No model"}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  variant="ghost"
-                  onClick={() => setShowDetailsModal(false)}
-                  className="text-earth-400 hover:text-earth-600"
-                >
-                  ✕
-                </Button>
-              </div>
-            </div>
-
-            <div className="p-6 space-y-6">
-              {/* Details Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-earth-500">Status</p>
-                  <p className="font-semibold text-earth-800 mt-1">
-                    {selectedEquipment.status}
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-earth-500">Quantity</p>
-                  <p className="font-semibold text-earth-800 mt-1">
-                    {selectedEquipment.quantity} units
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-earth-500">Unit Price</p>
-                  <p className="font-semibold text-earth-800 mt-1">
-                    ${selectedEquipment.price.toLocaleString()}
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-earth-500">Total Value</p>
-                  <p className="font-semibold text-farm-700 mt-1">
-                    $
-                    {(
-                      selectedEquipment.price * selectedEquipment.quantity
-                    ).toLocaleString()}
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-earth-500">Purchase Date</p>
-                  <p className="font-semibold text-earth-800 mt-1">
-                    {dayjs(selectedEquipment.date).format("DD MMMM YYYY")}
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-earth-500">Added On</p>
-                  <p className="font-semibold text-earth-800 mt-1">
-                    {dayjs(selectedEquipment.createdAt).format("DD MMM YYYY")}
-                  </p>
-                </div>
-              </div>
-
-              {/* Description */}
-              {selectedEquipment.description && (
-                <div>
-                  <h4 className="text-sm font-semibold text-earth-700 mb-2">
-                    Description
-                  </h4>
-                  <p className="text-sm text-earth-600 bg-gray-50 p-3 rounded-lg">
-                    {selectedEquipment.description}
-                  </p>
-                </div>
-              )}
-
-              {/* Maintenance History */}
-              <div>
-                <h4 className="text-sm font-semibold text-earth-700 mb-3">
-                  Maintenance History
-                </h4>
-                {maintenanceHistory.filter(
-                  (m) => m.equipmentId === selectedEquipment.id,
-                ).length > 0 ? (
-                  <div className="space-y-2">
-                    {maintenanceHistory
-                      .filter((m) => m.equipmentId === selectedEquipment.id)
-                      .map((m, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                        >
-                          <div>
-                            <p className="text-sm font-medium text-earth-700">
-                              {m.type}
-                            </p>
-                            <p className="text-xs text-earth-400">
-                              {dayjs(m.date).format("DD MMM YYYY")}
-                            </p>
-                          </div>
-                          <p className="text-sm font-semibold text-earth-800">
-                            ${m.cost.toLocaleString()}
-                          </p>
-                        </div>
-                      ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-earth-400 text-center py-4">
-                    No maintenance records yet
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="sticky bottom-0 bg-white border-t border-gray-100 p-4 flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowDetailsModal(false)}
-              >
-                Close
-              </Button>
-              <Button
-                className="bg-farm-600 hover:bg-farm-700 text-white"
-                onClick={() => {
-                  setShowDetailsModal(false);
-                  // Could open maintenance modal here
-                }}
-              >
-                Log Maintenance
-              </Button>
-            </div>
-          </Card>
-        </div>
-      )}
-
-      {/* Modals */}
       {showAddEquipmentModal && (
         <AddEquipmentModal
           onClose={() => setShowAddEquipmentModal(false)}
@@ -704,5 +474,3 @@ export const Equipment = () => {
     </div>
   );
 };
-
-// EOF: Equipment.jsx

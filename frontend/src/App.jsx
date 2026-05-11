@@ -1,5 +1,4 @@
-// Project: Farm Manager | Module: App.jsx
-// src/App.jsx
+// src/App.jsx - Remove lazy loading, use normal imports
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -12,6 +11,8 @@ import Weather from "./pages/Weather";
 import { Equipment } from "./pages/Equipment";
 import { Labour } from "./pages/Labour";
 import { Reports } from "./pages/Reports";
+import { Expenses } from "./pages/Expenses";
+import { Harvests } from "./pages/Harvests";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -24,7 +25,7 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
 function AppRoutes() {
@@ -40,14 +41,17 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/dashboard" />} />
+        <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="crops" element={<Crops />} />
         <Route path="weather" element={<Weather />} />
         <Route path="equipment" element={<Equipment />} />
         <Route path="labor" element={<Labour />} />
+        <Route path="expenses" element={<Expenses />} />
+        <Route path="harvests" element={<Harvests />} />
         <Route path="reports" element={<Reports />} />
       </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
@@ -63,5 +67,3 @@ function App() {
 }
 
 export default App;
-
-// EOF: App.jsx

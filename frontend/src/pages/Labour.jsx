@@ -1,10 +1,10 @@
-// Project: Farm Manager | Module: Labour.jsx
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { AddLaborModal } from "../components/AddLaborModal";
 import { AddExpenseModal } from "../components/AddExpenseModal";
 import { PayrollModal } from "../components/PayrollModal";
+import { laborAPI, expensesAPI } from "../services/api";
 import {
   Users,
   UserPlus,
@@ -14,10 +14,8 @@ import {
   DollarSign,
   Search,
   Filter,
-  MoreVertical,
-  Edit,
-  Trash2,
   Eye,
+  Trash2,
   CheckCircle,
   XCircle,
   AlertCircle,
@@ -25,11 +23,6 @@ import {
   MapPin,
   User,
   Briefcase,
-  Award,
-  FileText,
-  Download,
-  PieChart,
-  Activity,
 } from "lucide-react";
 import { toast } from "sonner";
 import dayjs from "dayjs";
@@ -38,113 +31,91 @@ export const Labour = () => {
   const [showLaborModal, setShowLaborModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showPayrollModal, setShowPayrollModal] = useState(false);
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedWorker, setSelectedWorker] = useState(null);
   const [labor, setLabor] = useState([]);
-  const [payrollRecords, setPayrollRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [roleFilter, setRoleFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
 
-  // Load data from localStorage
   useEffect(() => {
     loadLabor();
-    loadPayrollRecords();
   }, []);
 
-  const loadLabor = () => {
-    const stored = JSON.parse(localStorage.getItem("labor") || "[]");
-    setLabor(stored);
-  };
-
-  const loadPayrollRecords = () => {
-    const stored = JSON.parse(localStorage.getItem("payroll") || "[]");
-    setPayrollRecords(stored);
-  };
-
-  useEffect(() => {
-    localStorage.setItem("labor", JSON.stringify(labor));
-  }, [labor]);
-
-  useEffect(() => {
-    localStorage.setItem("payroll", JSON.stringify(payrollRecords));
-  }, [payrollRecords]);
-
-  const handleSave = (props) => {
-    const newLabor = {
-      id: Date.now(),
-      name: props.name,
-      doB: props.doB,
-      phone: props.phone,
-      location: props.location,
-      home: props.home,
-      kin: props.kin,
-      kinPhone: props.kinPhone,
-      role: props.role,
-      status: props.status,
-      startDate: new Date().toISOString(),
-      hourlyRate: props.hourlyRate || 0,
-      monthlySalary: props.monthlySalary || 0,
-      skills: props.skills || [],
-      emergencyContact: props.emergencyContact || props.phone,
-      avatar: null,
-      totalHoursWorked: 0,
-      totalEarned: 0,
-      attendance: {},
-    };
-    setLabor([...labor, newLabor]);
-    toast.success(`${props.name} added to workforce!`);
-  };
-
-  const deleteWorker = (id) => {
-    if (window.confirm("Are you sure you want to remove this worker?")) {
-      setLabor(labor.filter((worker) => worker.id !== id));
-      toast.success("Worker removed successfully");
+  const loadLabor = async () => {
+    setLoading(true);
+    try {
+      const response = await laborAPI.getAll();
+      setLabor(response.data || []);
+    } catch (error) {
+      console.error("Error loading labor:", error);
+      toast.error("Failed to load labor data");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const updateWorkerStatus = (id, newStatus) => {
-    const updated = labor.map((worker) =>
-      worker.id === id ? { ...worker, status: newStatus } : worker,
-    );
-    setLabor(updated);
-    toast.success(`Status updated to ${newStatus}`);
+  const handleSave = async (props) => {
+    try {
+      const response = await laborAPI.create({
+        name: props.name,
+        role: props.role,
+        phone: props.phone,
+        location: props.location,
+        status: props.status,
+        hourly_rate: props.hourlyRate || 0,
+        monthly_salary: props.monthlySalary || 0,
+        start_date: props.startDate || new Date().toISOString(),
+      });
+
+      setLabor([...labor, response.data.data]);
+      toast.success(`${props.name} added to workforce!`);
+      loadLabor();
+    } catch (error) {
+      console.error("Error creating labor:", error);
+      toast.error("Failed to add worker");
+    }
   };
 
-  const recordAttendance = (workerId, date, status) => {
-    const updated = labor.map((worker) => {
-      if (worker.id === workerId) {
-        const attendance = { ...worker.attendance, [date]: status };
-        return { ...worker, attendance };
+  const deleteWorker = async (id) => {
+    if (window.confirm("Are you sure you want to remove this worker?")) {
+      try {
+        await laborAPI.delete(id);
+        setLabor(labor.filter((worker) => worker.id !== id));
+        toast.success("Worker removed successfully");
+      } catch (error) {
+        console.error("Error deleting worker:", error);
+        toast.error("Failed to delete worker");
       }
-      return worker;
-    });
-    setLabor(updated);
-    toast.success(
-      `Attendance recorded for ${new Date(date).toLocaleDateString()}`,
-    );
+    }
   };
 
-  const addPayrollRecord = (record) => {
-    const newRecord = {
-      id: Date.now(),
-      ...record,
-      createdAt: new Date().toISOString(),
-    };
-    setPayrollRecords([...payrollRecords, newRecord]);
+  const updateWorkerStatus = async (id, newStatus) => {
+    const worker = labor.find((w) => w.id === id);
+    if (!worker) return;
 
-    // Update worker's total earned
-    const updated = labor.map((worker) => {
-      if (worker.id === record.workerId) {
-        return {
-          ...worker,
-          totalEarned: (worker.totalEarned || 0) + record.amount,
-        };
-      }
-      return worker;
-    });
-    setLabor(updated);
-    toast.success(`Payroll processed: $${record.amount}`);
+    try {
+      await laborAPI.update(id, {
+        name: worker.name,
+        role: worker.role,
+        phone: worker.phone,
+        location: worker.location,
+        status: newStatus,
+        hourly_rate: worker.hourly_rate,
+        monthly_salary: worker.monthly_salary,
+        start_date: worker.start_date,
+      });
+
+      setLabor(
+        labor.map((worker) =>
+          worker.id === id ? { ...worker, status: newStatus } : worker,
+        ),
+      );
+      toast.success(`Status updated to ${newStatus}`);
+    } catch (error) {
+      console.error("Error updating worker:", error);
+      toast.error("Failed to update status");
+    }
   };
 
   const getStatusConfig = (status) => {
@@ -185,18 +156,18 @@ export const Labour = () => {
     const icons = {
       "Farm Manager": <Briefcase className="w-4 h-4" />,
       Harvester: <Users className="w-4 h-4" />,
-      "Irrigation Specialist": <Activity className="w-4 h-4" />,
+      "Irrigation Specialist": <Clock className="w-4 h-4" />,
       "Equipment Operator": <Users className="w-4 h-4" />,
       "General Labor": <User className="w-4 h-4" />,
     };
     return icons[role] || <User className="w-4 h-4" />;
   };
 
-  // Filter workers
   const filteredWorkers = labor.filter((worker) => {
     const matchesSearch =
       worker.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      worker.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (worker.role &&
+        worker.role.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (worker.phone && worker.phone.includes(searchTerm));
     const matchesStatus =
       statusFilter === "all" || worker.status === statusFilter;
@@ -204,22 +175,17 @@ export const Labour = () => {
     return matchesSearch && matchesStatus && matchesRole;
   });
 
-  // Get unique roles for filter
   const uniqueRoles = ["all", ...new Set(labor.map((worker) => worker.role))];
-
-  // Calculate stats
   const stats = {
     total: labor.length,
     active: labor.filter((w) => w.status === "Active").length,
     onLeave: labor.filter((w) => w.status === "On Leave").length,
     inactive: labor.filter((w) => w.status === "Inactive").length,
-    totalPayroll: payrollRecords.reduce((sum, p) => sum + p.amount, 0),
+    totalPayroll: 0,
     avgHourlyRate:
-      labor.reduce((sum, w) => sum + (w.hourlyRate || 0), 0) /
+      labor.reduce((sum, w) => sum + (w.hourly_rate || 0), 0) /
       (labor.length || 1),
-    thisMonthPayroll: payrollRecords
-      .filter((p) => dayjs(p.date).month() === dayjs().month())
-      .reduce((sum, p) => sum + p.amount, 0),
+    thisMonthPayroll: 0,
   };
 
   const StatCard = ({ title, value, icon: Icon, color, subtitle }) => (
@@ -248,31 +214,19 @@ export const Labour = () => {
     </Card>
   );
 
-  const exportWorkforceData = () => {
-    const data = {
-      exportedAt: new Date().toISOString(),
-      workforce: labor,
-      payroll: payrollRecords,
-      summary: stats,
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `workforce-data-${new Date().toISOString().split("T")[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Workforce data exported!");
-  };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-farm-600"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      {/* Header Section */}
+    <div className="w-full space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-display font-bold bg-gradient-to-r from-farm-700 to-farm-600 bg-clip-text">
+          <h2 className="text-xl sm:text-2xl font-display font-bold bg-gradient-to-r from-farm-700 to-farm-600 bg-clip-text text-transparent">
             Labor Management
           </h2>
           <p className="text-earth-500 text-sm mt-1">
@@ -281,14 +235,6 @@ export const Labour = () => {
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button
-            variant="outline"
-            onClick={exportWorkforceData}
-            className="border-farm-200 text-farm-700 hover:bg-farm-50"
-          >
-            <Download className="w-4 h-4 mr-2" />
-            Export Data
-          </Button>
           <Button
             variant="outline"
             onClick={() => setShowExpenseModal(true)}
@@ -307,7 +253,6 @@ export const Labour = () => {
         </div>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard
           title="Total Workforce"
@@ -328,15 +273,14 @@ export const Labour = () => {
           color="from-yellow-500 to-yellow-600"
         />
         <StatCard
-          title="Monthly Payroll"
-          value={`$${stats.thisMonthPayroll.toLocaleString()}`}
+          title="Avg Hourly Rate"
+          value={`$${stats.avgHourlyRate.toFixed(2)}`}
           icon={DollarSign}
           color="from-purple-500 to-purple-600"
           subtitle="Current month"
         />
       </div>
 
-      {/* Workforce Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-gradient-to-r from-green-50 to-green-100 border-green-200">
           <CardContent className="p-4">
@@ -368,23 +312,8 @@ export const Labour = () => {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-r from-purple-50 to-purple-100 border-purple-200">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-purple-700">Total Payroll</p>
-                <p className="text-2xl font-bold text-purple-800">
-                  ${stats.totalPayroll.toLocaleString()}
-                </p>
-                <p className="text-xs text-purple-600 mt-1">All time</p>
-              </div>
-              <PieChart className="w-8 h-8 text-purple-500 opacity-50" />
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
-      {/* Search and Filters */}
       <Card className="p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
@@ -423,7 +352,6 @@ export const Labour = () => {
         </div>
       </Card>
 
-      {/* Workers Table */}
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -444,23 +372,19 @@ export const Labour = () => {
                 <th className="px-6 py-4 text-right text-sm font-semibold text-farm-700">
                   Rate
                 </th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-farm-700">
-                  Earned
-                </th>
                 <th className="px-6 py-4 text-center text-sm font-semibold text-farm-700">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filteredWorkers.map((worker, idx) => {
+              {filteredWorkers.map((worker) => {
                 const statusConfig = getStatusConfig(worker.status);
                 const StatusIcon = statusConfig.icon;
                 return (
                   <tr
                     key={worker.id}
-                    className="hover:bg-farm-50/50 transition-colors group animate-fade-in"
-                    style={{ animationDelay: `${idx * 50}ms` }}
+                    className="hover:bg-farm-50/50 transition-colors group"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -470,9 +394,6 @@ export const Labour = () => {
                         <div>
                           <p className="font-semibold text-earth-800">
                             {worker.name}
-                          </p>
-                          <p className="text-xs text-earth-400">
-                            ID: {worker.id}
                           </p>
                         </div>
                       </div>
@@ -496,50 +417,26 @@ export const Labour = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <select
-                          value={worker.status}
-                          onChange={(e) =>
-                            updateWorkerStatus(worker.id, e.target.value)
-                          }
-                          className={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border} focus:outline-none cursor-pointer`}
-                        >
-                          <option value="Active">Active</option>
-                          <option value="On Leave">On Leave</option>
-                          <option value="Inactive">Inactive</option>
-                          <option value="Suspended">Suspended</option>
-                        </select>
-                      </div>
+                      <select
+                        value={worker.status}
+                        onChange={(e) =>
+                          updateWorkerStatus(worker.id, e.target.value)
+                        }
+                        className={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border} focus:outline-none cursor-pointer`}
+                      >
+                        <option value="Active">Active</option>
+                        <option value="On Leave">On Leave</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Suspended">Suspended</option>
+                      </select>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <p className="font-semibold text-earth-800">
-                        ${(worker.hourlyRate || 0).toFixed(2)}/hr
-                      </p>
-                      {worker.monthlySalary > 0 && (
-                        <p className="text-xs text-earth-400">
-                          or ${worker.monthlySalary}/mo
-                        </p>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <p className="font-semibold text-farm-700">
-                        ${(worker.totalEarned || 0).toLocaleString()}
+                        ${(worker.hourly_rate || 0).toFixed(2)}/hr
                       </p>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex gap-2 justify-center">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => {
-                            setSelectedWorker(worker);
-                            setShowDetailsModal(true);
-                          }}
-                          className="text-farm-600 hover:bg-farm-100"
-                          title="View Details"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
                         <Button
                           size="sm"
                           variant="ghost"
@@ -569,23 +466,14 @@ export const Labour = () => {
               {filteredWorkers.length === 0 && (
                 <tr>
                   <td
-                    colSpan="7"
+                    colSpan="6"
                     className="px-6 py-12 text-center text-earth-400"
                   >
                     <Users className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                    {searchTerm ||
-                    statusFilter !== "all" ||
-                    roleFilter !== "all" ? (
-                      <p>
-                        No workers match your filters. Try adjusting your
-                        search.
-                      </p>
-                    ) : (
-                      <p>
-                        No workers added yet. Click "Add Worker" to build your
-                        team!
-                      </p>
-                    )}
+                    <p>
+                      No workers added yet. Click "Add Worker" to build your
+                      team!
+                    </p>
                   </td>
                 </tr>
               )}
@@ -594,197 +482,6 @@ export const Labour = () => {
         </div>
       </Card>
 
-      {/* Worker Details Modal */}
-      {showDetailsModal && selectedWorker && (
-        <div
-          className="fixed inset-0 flex justify-center items-center z-50 bg-black/50 backdrop-blur-sm"
-          onClick={() => setShowDetailsModal(false)}
-        >
-          <Card
-            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="sticky top-0 bg-white border-b border-gray-100 p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-farm-400 to-farm-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                    {selectedWorker.name.charAt(0)}
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-earth-800">
-                      {selectedWorker.name}
-                    </h3>
-                    <p className="text-sm text-farm-600">
-                      {selectedWorker.role}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  variant="ghost"
-                  onClick={() => setShowDetailsModal(false)}
-                  className="text-earth-400"
-                >
-                  ✕
-                </Button>
-              </div>
-            </div>
-
-            <div className="p-6 space-y-6">
-              {/* Personal Information */}
-              <div>
-                <h4 className="text-sm font-semibold text-earth-700 mb-3 flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  Personal Information
-                </h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-earth-500">Date of Birth</p>
-                    <p className="font-medium text-earth-800 mt-1">
-                      {dayjs(selectedWorker.doB).format("DD MMM YYYY")}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-earth-500">Phone</p>
-                    <p className="font-medium text-earth-800 mt-1">
-                      {selectedWorker.phone}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-earth-500">Location</p>
-                    <p className="font-medium text-earth-800 mt-1">
-                      {selectedWorker.location}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-earth-500">Home Address</p>
-                    <p className="font-medium text-earth-800 mt-1">
-                      {selectedWorker.home}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Emergency Contact */}
-              <div>
-                <h4 className="text-sm font-semibold text-earth-700 mb-3">
-                  Emergency Contact
-                </h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-earth-500">Next of Kin</p>
-                    <p className="font-medium text-earth-800 mt-1">
-                      {selectedWorker.kin}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-earth-500">Contact Phone</p>
-                    <p className="font-medium text-earth-800 mt-1">
-                      {selectedWorker.kinPhone}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Employment Details */}
-              <div>
-                <h4 className="text-sm font-semibold text-earth-700 mb-3 flex items-center gap-2">
-                  <Briefcase className="w-4 h-4" />
-                  Employment Details
-                </h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-earth-500">Start Date</p>
-                    <p className="font-medium text-earth-800 mt-1">
-                      {dayjs(selectedWorker.startDate).format("DD MMM YYYY")}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-earth-500">Hourly Rate</p>
-                    <p className="font-medium text-earth-800 mt-1">
-                      ${(selectedWorker.hourlyRate || 0).toFixed(2)}/hr
-                    </p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-earth-500">Total Earned</p>
-                    <p className="font-medium text-farm-700 mt-1">
-                      ${(selectedWorker.totalEarned || 0).toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-earth-500">Status</p>
-                    <p className="font-medium text-earth-800 mt-1">
-                      {selectedWorker.status}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Payroll History */}
-              <div>
-                <h4 className="text-sm font-semibold text-earth-700 mb-3">
-                  Payroll History
-                </h4>
-                {payrollRecords.filter((p) => p.workerId === selectedWorker.id)
-                  .length > 0 ? (
-                  <div className="space-y-2">
-                    {payrollRecords
-                      .filter((p) => p.workerId === selectedWorker.id)
-                      .map((record, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                        >
-                          <div>
-                            <p className="text-sm font-medium text-earth-700">
-                              {record.type}
-                            </p>
-                            <p className="text-xs text-earth-400">
-                              {dayjs(record.date).format("DD MMM YYYY")}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-semibold text-farm-700">
-                              ${record.amount.toLocaleString()}
-                            </p>
-                            {record.hours && (
-                              <p className="text-xs text-earth-400">
-                                {record.hours} hours
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-earth-400 text-center py-4">
-                    No payroll records yet
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="sticky bottom-0 bg-white border-t border-gray-100 p-4 flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowDetailsModal(false)}
-              >
-                Close
-              </Button>
-              <Button
-                className="bg-farm-600 hover:bg-farm-700 text-white"
-                onClick={() => {
-                  setShowDetailsModal(false);
-                  setShowPayrollModal(true);
-                }}
-              >
-                Process Payroll
-              </Button>
-            </div>
-          </Card>
-        </div>
-      )}
-
-      {/* Modals */}
       {showLaborModal && (
         <AddLaborModal
           onClose={() => setShowLaborModal(false)}
@@ -804,11 +501,12 @@ export const Labour = () => {
             setShowPayrollModal(false);
             setSelectedWorker(null);
           }}
-          onSave={addPayrollRecord}
+          onSave={() => {
+            toast.success("Payroll recorded");
+            loadLabor();
+          }}
         />
       )}
     </div>
   );
 };
-
-// EOF: Labour.jsx

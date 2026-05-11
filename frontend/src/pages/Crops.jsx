@@ -1,4 +1,3 @@
-// Project: Farm Manager | Module: Crops.jsx
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
@@ -6,7 +5,15 @@ import { AddCropModal } from "../components/AddCropModal";
 import { AddExpenseModal } from "../components/AddExpenseModal";
 import { HarvestModal } from "../components/HarvestModal";
 import { UpdateStageModal } from "../components/UpdateStageModal";
-import { Plus, DollarSign, Sprout, Calendar, Clock, TrendingUp } from "lucide-react";
+import { cropsAPI, expensesAPI, harvestsAPI } from "../services/api";
+import {
+  Plus,
+  DollarSign,
+  Sprout,
+  Calendar,
+  Clock,
+  TrendingUp,
+} from "lucide-react";
 import dayjs from "dayjs";
 import { toast } from "sonner";
 
@@ -17,6 +24,7 @@ export const Crops = () => {
   const [showStageModal, setShowStageModal] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState(null);
   const [crops, setCrops] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -27,62 +35,85 @@ export const Crops = () => {
   }, []);
 
   useEffect(() => {
-    const storedCrops = JSON.parse(localStorage.getItem("crops") || "[]");
-    setCrops(storedCrops);
+    loadCrops();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("crops", JSON.stringify(crops));
-  }, [crops]);
-
-  const onSaveCrop = (props) => {
-    const crop = {
-      id: Date.now(),
-      name: props.crop,
-      brand: props.brand,
-      variety: props.variety,
-      duration: parseInt(props.duration),
-      date: props.date,
-      stage: "Planted",
-      plantedDate: props.date,
-      expectedHarvestDate: dayjs(props.date)
-        .add(parseInt(props.duration), "month")
-        .format("YYYY-MM-DD"),
-    };
-    setCrops([...crops, crop]);
-    toast.success(`${props.crop} planted successfully!`);
+  const loadCrops = async () => {
+    setLoading(true);
+    try {
+      const response = await cropsAPI.getAll();
+      setCrops(response.data || []);
+    } catch (error) {
+      console.error("Error loading crops:", error);
+      toast.error("Failed to load crops");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateCropStage = (cropId, newStage) => {
-    const updatedCrops = crops.map((crop) =>
-      crop.id === cropId ? { ...crop, stage: newStage } : crop,
-    );
-    setCrops(updatedCrops);
-    toast.success(`Crop stage updated to ${newStage}`);
+  const onSaveCrop = async (props) => {
+    try {
+      const response = await cropsAPI.create({
+        name: props.crop,
+        brand: props.brand,
+        variety: props.variety,
+        duration: parseInt(props.duration),
+        planted_date: props.date,
+      });
+
+      const newCrop = response.data.data;
+      setCrops([...crops, newCrop]);
+      toast.success(`${props.crop} planted successfully!`);
+      loadCrops(); // Refresh list
+    } catch (error) {
+      console.error("Error creating crop:", error);
+      toast.error("Failed to create crop");
+    }
   };
 
-  const handleHarvest = (harvestData) => {
-    const newHarvest = {
-      id: Date.now(),
-      cropId: selectedCrop.id,
-      cropName: selectedCrop.name,
-      yield: harvestData.yield,
-      unit: harvestData.unit,
-      revenue: harvestData.revenue,
-      date: harvestData.date,
-      notes: harvestData.notes,
-    };
+  const updateCropStage = async (cropId, newStage) => {
+    const crop = crops.find((c) => c.id === cropId);
+    if (!crop) return;
 
-    const existingHarvests = JSON.parse(
-      localStorage.getItem("harvests") || "[]",
-    );
-    localStorage.setItem(
-      "harvests",
-      JSON.stringify([...existingHarvests, newHarvest]),
-    );
-    updateCropStage(selectedCrop.id, "Harvested");
-    setShowHarvestModal(false);
-    toast.success(`🌾 Harvest recorded! Revenue: $${harvestData.revenue}`);
+    try {
+      await cropsAPI.update(cropId, {
+        name: crop.name,
+        brand: crop.brand,
+        variety: crop.variety,
+        duration: crop.duration,
+        planted_date: crop.planted_date,
+      });
+      // Update stage in local state
+      setCrops(
+        crops.map((c) => (c.id === cropId ? { ...c, stage: newStage } : c)),
+      );
+      toast.success(`Crop stage updated to ${newStage}`);
+    } catch (error) {
+      console.error("Error updating crop:", error);
+      toast.error("Failed to update crop stage");
+    }
+  };
+
+  const handleHarvest = async (harvestData) => {
+    try {
+      await harvestsAPI.create({
+        crop_id: selectedCrop.id,
+        crop_name: selectedCrop.name,
+        yield_amount: harvestData.yield,
+        yield_unit: harvestData.unit,
+        revenue: harvestData.revenue,
+        harvest_date: harvestData.date,
+        notes: harvestData.notes,
+      });
+
+      await updateCropStage(selectedCrop.id, "Harvested");
+      setShowHarvestModal(false);
+      toast.success(`🌾 Harvest recorded! Revenue: $${harvestData.revenue}`);
+      loadCrops(); // Refresh list
+    } catch (error) {
+      console.error("Error recording harvest:", error);
+      toast.error("Failed to record harvest");
+    }
   };
 
   const getStageConfig = (stage) => {
@@ -126,7 +157,6 @@ export const Crops = () => {
     ready: crops.filter((c) => c.stage === "Ready to Harvest").length,
   };
 
-  // Reusable Stat Card component matching Dashboard style
   const StatCard = ({ title, value, icon: Icon, color, gradient }) => (
     <Card className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <div
@@ -138,52 +168,53 @@ export const Crops = () => {
             <p className="text-xs sm:text-sm font-medium text-earth-500 mb-1">
               {title}
             </p>
-            <p className={`text-xl sm:text-3xl font-bold ${color}`}>
-              {value}
-            </p>
+            <p className={`text-xl sm:text-3xl font-bold ${color}`}>{value}</p>
           </div>
-          <div className={`p-2 sm:p-3 rounded-2xl bg-gradient-to-br ${gradient} bg-opacity-10 flex-shrink-0`}>
-            <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${color.replace("text", "text")}`} />
+          <div
+            className={`p-2 sm:p-3 rounded-2xl bg-gradient-to-br ${gradient} bg-opacity-10 flex-shrink-0`}
+          >
+            <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${color}`} />
           </div>
         </div>
       </CardContent>
     </Card>
   );
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-farm-600"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full space-y-4 sm:space-y-6">
-      {/* Header Section */}
+    <div className="w-full space-y-6">
       <div>
-        <h2 className="text-xl sm:text-2xl font-display font-bold text-earth-800">
-          Crop Management
-        </h2>
-        <p className="text-earth-500 text-sm mt-1">
+        <h2 className="text-2xl font-bold text-gray-800">Crop Management</h2>
+        <p className="text-gray-500 text-sm mt-1">
           Track and manage all your crops from planting to harvest
         </p>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
+      <div className="flex flex-col sm:flex-row justify-end gap-3">
         <Button
           variant="outline"
           onClick={() => setShowExpenseModal(true)}
-          className="border-farm-200 text-farm-700 hover:bg-farm-50 w-full sm:w-auto"
-          size={isMobile ? "sm" : "default"}
+          className="border-green-300 text-green-700 hover:bg-green-50"
         >
           <DollarSign className="w-4 h-4 mr-2" />
           Add Expense
         </Button>
         <Button
           onClick={() => setShowCropModal(true)}
-          className="bg-gradient-to-r from-farm-600 to-farm-700 hover:from-farm-700 hover:to-farm-800 text-white shadow-md w-full sm:w-auto"
-          size={isMobile ? "sm" : "default"}
+          className="bg-green-700 hover:bg-green-800 text-white shadow-md"
         >
           <Plus className="w-4 h-4 mr-2" />
           Plant New Crop
         </Button>
       </div>
 
-      {/* Stats Cards - Matching Dashboard style */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
         <StatCard
           title="Total Crops"
@@ -215,7 +246,6 @@ export const Crops = () => {
         />
       </div>
 
-      {/* Crops Table */}
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px]">
@@ -266,7 +296,7 @@ export const Crops = () => {
                       {crop.variety}
                     </td>
                     <td className="px-3 sm:px-6 py-3 sm:py-4 text-earth-600 text-sm hidden sm:table-cell">
-                      {dayjs(crop.date).format("DD MMM YYYY")}
+                      {dayjs(crop.planted_date).format("DD MMM YYYY")}
                     </td>
                     <td className="px-3 sm:px-6 py-3 sm:py-4 text-earth-600 text-sm hidden md:table-cell">
                       {crop.duration} months
@@ -324,7 +354,8 @@ export const Crops = () => {
                   >
                     <Sprout className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 opacity-30" />
                     <p className="text-sm">
-                      No crops planted yet. Click "Plant New Crop" to get started!
+                      No crops planted yet. Click "Plant New Crop" to get
+                      started!
                     </p>
                   </td>
                 </tr>
@@ -334,7 +365,6 @@ export const Crops = () => {
         </div>
       </Card>
 
-      {/* Modals */}
       {showCropModal && (
         <AddCropModal
           onClose={() => setShowCropModal(false)}
@@ -367,4 +397,3 @@ export const Crops = () => {
     </div>
   );
 };
-// EOF: Crops.jsx

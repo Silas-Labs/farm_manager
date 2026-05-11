@@ -13,6 +13,8 @@ import {
   Leaf,
   Menu,
   X,
+  Package,
+  DollarSign,
 } from "lucide-react";
 import {
   Sidebar,
@@ -86,6 +88,18 @@ export const SideBar = () => {
       name: "Labor",
       icon: BicepsFlexed,
       color: "text-orange-600",
+    },
+    {
+      path: "/expenses",
+      name: "Expenses",
+      icon: DollarSign,
+      color: "text-red-600",
+    },
+    {
+      path: "/harvests",
+      name: "Harvests",
+      icon: Package,
+      color: "text-emerald-600",
     },
     {
       path: "/reports",
