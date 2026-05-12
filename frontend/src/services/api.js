@@ -8,7 +8,7 @@ const getBaseURL = () => {
     return import.meta.env.VITE_API_URL;
   }
   // Fallback for local development
-  return "http://localhost:8000/api";
+  return "https://agropulse-bakcend.onrender.com/api";
 };
 
 const API_BASE_URL = getBaseURL();
@@ -20,7 +20,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 10000, // 10 second timeout
+  timeout: 60000, // 10 second timeout
 });
 
 // Request interceptor

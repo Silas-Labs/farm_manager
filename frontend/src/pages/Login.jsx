@@ -55,8 +55,10 @@ export const Login = () => {
           <div className="inline-flex p-3 bg-white/20 rounded-2xl mb-3 backdrop-blur-sm">
             <Leaf className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white">Farm Manager</h1>
-          <p className="text-green-100 text-sm mt-1">
+          <h1 className="text-3xl font-bold text-white important">
+            Farm Manager
+          </h1>
+          <p className="text-whitetext-sm mt-1">
             Smart Agriculture Management System
           </p>
         </div>
@@ -126,9 +128,9 @@ export const Login = () => {
             <Button
               type="submit"
               disabled={loading || !isOnline}
-              className="w-full h-11 bg-green-700 hover:bg-green-800 text-white font-medium shadow-md"
+              className="w-full h-11 bg-green-700 hover:bg-green-800 font-medium shadow-md"
             >
-              <LogIn className="w-4 h-4 mr-2" />
+              <LogIn className="w-4 h-4 mr-2 " />
               {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
@@ -145,12 +147,12 @@ export const Login = () => {
             </p>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-gray-100">
+          {/* <div className="mt-6 pt-4 border-t border-gray-100">
             <p className="text-xs text-gray-400 text-center">
               Demo: <span className="font-mono">admin@farm.com</span> /{" "}
               <span className="font-mono">password123</span>
             </p>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>

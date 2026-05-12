@@ -3,10 +3,10 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
-@import '@fontsource/roboto/300.css';
-@import '@fontsource/roboto/400.css';
-@import '@fontsource/roboto/500.css';
-@import '@fontsource/roboto/700.css';
+@import "@fontsource/roboto/300.css";
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -17,13 +17,6 @@ body,
   width: 100%;
   margin: 0;
   padding: 0;
-}
-
-/* Fix button text colors */
-button,
-.button,
-[role="button"] {
-  color: white !important;
 }
 
 button.bg-white,
@@ -70,26 +63,26 @@ li {
   color: white;
 }
 
-s
 /* ===== BUTTON STYLES FIX ===== */
 
 /* Primary buttons - dark background, white text */
-.btn-primary,
+/* .btn-primary,
 button.bg-gradient-to-r,
 button[class*="bg-farm-600"],
 button[class*="bg-green-600"] {
   background: linear-gradient(135deg, #166534, #14532d) !important;
   color: white !important;
-}
+} */
 
+/* 
 .btn-primary span,
 button.bg-gradient-to-r span,
 button[class*="bg-farm-600"] span {
   color: white !important;
-}
+} */
 
 /* Secondary/Outline buttons */
-.btn-secondary,
+/* .btn-secondary,
 button[class*="outline"] {
   background: transparent !important;
   border: 1px solid #166534 !important;
@@ -105,28 +98,42 @@ button[class*="outline"] span {
 button[class*="outline"]:hover {
   background: #dcfce7 !important;
   color: #166534 !important;
-}
+} */
 
 /* Force consistent text colors */
-h1, h2, h3, h4, h5, h6, .heading {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.heading {
   color: #1f2937 !important;
 }
 
-p, span, li, .text-body {
+p,
+span,
+li,
+.text-body {
   color: #4b5563 !important;
 }
 
-.text-muted, .text-secondary {
+.text-muted,
+.text-secondary {
   color: #9ca3af !important;
 }
 
 /* Keep white text only on dark backgrounds */
-.bg-green-700, .bg-green-800, .bg-green-900,
-button.bg-green-700, button.bg-green-800 {
+.bg-green-700,
+.bg-green-800,
+.bg-green-900,
+button.bg-green-700,
+button.bg-green-800 {
   color: white !important;
 }
 
-.bg-green-700 * , .bg-green-800 * {
+.bg-green-700 *,
+.bg-green-800 * {
   color: white !important;
 }
 
@@ -280,7 +287,6 @@ main,
 
 /* Add to your global CSS file */
 @layer utilities {
-
   /* Responsive text utilities */
   .text-responsive {
     @apply text-sm sm:text-base md:text-lg;
