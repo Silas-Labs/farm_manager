@@ -13,8 +13,8 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/": {
-        target: "https://agropulse-bakcend.onrender.com/",
+      "/api": {
+        target: "https://agropulse-bakcend.onrender.com/api",
         changeOrigin: true,
       },
     },
