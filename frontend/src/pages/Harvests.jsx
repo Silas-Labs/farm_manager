@@ -47,10 +47,10 @@ export const Harvests = () => {
   const handleHarvest = async (harvestData) => {
     try {
       await harvestsAPI.create({
-        crop_id: selectedCrop?.id || null,
-        crop_name: harvestData.cropName || selectedCrop?.name,
-        yield_amount: harvestData.yield,
-        yield_unit: harvestData.unit,
+        crop_id: harvestData.cropId || null,
+        crop_name: harvestData.cropName || "General Harvest",
+        yield: harvestData.yield,
+        unit: harvestData.unit,
         revenue: harvestData.revenue,
         harvest_date: harvestData.date,
         notes: harvestData.notes,
@@ -79,8 +79,8 @@ export const Harvests = () => {
     }
   };
 
-  const totalYield = harvests.reduce((sum, h) => sum + h.yield_amount, 0);
-  const totalRevenue = harvests.reduce((sum, h) => sum + h.revenue, 0);
+  const totalYield = harvests.reduce((sum, h) => sum + (h.yield || 0), 0);
+  const totalRevenue = harvests.reduce((sum, h) => sum + (h.revenue || 0), 0);
 
   const StatCard = ({ title, value, icon: Icon, color, unit }) => (
     <Card className="relative overflow-hidden hover:shadow-lg transition-all">
@@ -198,9 +198,9 @@ export const Harvests = () => {
                   </td>
                   <td className="px-6 py-4">
                     <span className="font-semibold text-green-600">
-                      {harvest.yield_amount}
+                      {harvest.yield}
                     </span>{" "}
-                    <span className="text-earth-500">{harvest.yield_unit}</span>
+                    <span className="text-earth-500">{harvest.unit}</span>
                   </td>
                   <td className="px-6 py-4">
                     <p className="font-semibold text-emerald-600">

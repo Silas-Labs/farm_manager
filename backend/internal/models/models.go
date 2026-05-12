@@ -57,7 +57,7 @@ type ExpenseRequest struct {
 
 
 type HarvestRequest struct {
-	CropID      int       `json:"crop_id"`
+	CropID      *int      `json:"crop_id"`
 	CropName    string    `json:"crop_name"`
 	Yield       float64   `json:"yield"`
 	Unit        string    `json:"unit"`
@@ -65,7 +65,6 @@ type HarvestRequest struct {
 	HarvestDate time.Time `json:"harvest_date"`
 	Notes       string    `json:"notes"`
 }
-
 
 // User model for central DB
 type User struct {
@@ -140,7 +139,7 @@ type Expense struct {
 // Harvest model - NO user_id
 type Harvest struct {
     ID          int       `json:"id"`
-    CropID      int       `json:"crop_id"`
+    CropID      *int      `json:"crop_id"`
     CropName    string    `json:"crop_name"`
     Yield       float64   `json:"yield"`
     Unit        string    `json:"unit"`

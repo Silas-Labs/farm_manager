@@ -20,7 +20,7 @@ export const AddCropModal = ({ onSave, onClose }) => {
   const [brand, setBrand] = useState("");
   const [variety, setVariety] = useState("");
   const [duration, setDuration] = useState("");
-  const [date, setDate] = useState(dayjs(new Date()).format("DD/MM/YYYY"));
+  const [date, setDate] = useState(dayjs());
   const [errors, setErrors] = useState({});
 
   //validate fields
@@ -39,7 +39,8 @@ export const AddCropModal = ({ onSave, onClose }) => {
     `min-h-13 border rounded p-2 ${hasError ? "border-red-500" : "border-gray-300"}`;
 
   //save
-  const handleSave = () => {
+  const handleSave = (e) => {
+    if (e) e.preventDefault();
     if (!validate()) {
       toast.error("Highlighted fields are required");
       return;
@@ -56,8 +57,8 @@ export const AddCropModal = ({ onSave, onClose }) => {
     onClose();
   };
   return (
-    <form
-      className="fixed inset-0 flex justify-center items-center z-50 p-3 sm:p-4"
+    <div
+      className="fixed inset-0 flex justify-center items-center z-50 p-3 sm:p-4 bg-black/20 backdrop-blur-sm"
       onClick={onClose}
     >
       <Card
@@ -73,65 +74,59 @@ export const AddCropModal = ({ onSave, onClose }) => {
       >
         <CardTitle>Plant Crop</CardTitle>
         <CardDescription>
-          <div className="h-full flex flex-col gap-4">
-            <Input
-              className={inputClass(errors.crop)}
-              placeholder="Crop e.g maize"
-              value={crop}
-              onChange={(e) => setCrop(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.brand)}
-              placeholder="Brand"
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.variety)}
-              placeholder="Variety"
-              value={variety}
-              onChange={(e) => setVariety(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.duration)}
-              placeholder="Duration in months"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-            />
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Select date"
-                slotProps={{
-                  textField: { fullWidth: true },
-                }}
-                value={dayjs(date)}
-                onChange={(newValue) => setDate(newValue)}
-              />
-            </LocalizationProvider>
-          </div>
+          Enter the details of the new crop you're planting.
         </CardDescription>
-        <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
-          <Button
-            className="min-h-12 min-w-18"
-            onClick={(e) => {
-              e.preventDefault();
-              handleSave();
-            }}
-          >
-            Save
-          </Button>
-          <Button
-            className="min-h-12 min-w-18"
-            onClick={(e) => {
-              e.preventDefault();
-              onClose();
-            }}
-          >
-            Cancel
-          </Button>
-        </CardFooter>
+        <form onSubmit={handleSave} className="h-full flex flex-col gap-4 mt-4">
+          <Input
+            className={inputClass(errors.crop)}
+            placeholder="Crop e.g maize"
+            value={crop}
+            onChange={(e) => setCrop(e.target.value)}
+          />
+          <Input
+            className={inputClass(errors.brand)}
+            placeholder="Brand"
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+          />
+          <Input
+            className={inputClass(errors.variety)}
+            placeholder="Variety"
+            value={variety}
+            onChange={(e) => setVariety(e.target.value)}
+          />
+          <Input
+            className={inputClass(errors.duration)}
+            placeholder="Duration in months"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Select date"
+              slotProps={{
+                textField: { fullWidth: true },
+              }}
+              value={date}
+              onChange={(newValue) => setDate(newValue)}
+            />
+          </LocalizationProvider>
+          <CardFooter className="mt-4 bg-transparent flex justify-center gap-5">
+            <Button type="submit" className="min-h-12 min-w-18">
+              Save
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-12 min-w-18"
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
+          </CardFooter>
+        </form>
       </Card>
-    </form>
+    </div>
   );
 };
 

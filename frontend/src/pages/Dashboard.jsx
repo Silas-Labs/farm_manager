@@ -70,7 +70,7 @@ export const Dashboard = () => {
 
       const allActivities = [
         ...crops.slice(-3).map(c => ({ type: "🌱 Crop Planted", description: `${c.name}`, date: c.planted_date || c.created_at })),
-        ...harvests.slice(-3).map(h => ({ type: "🌾 Harvest", description: `${h.crop_name} - ${h.yield_amount}${h.yield_unit}`, date: h.harvest_date })),
+        ...harvests.slice(-3).map(h => ({ type: "🌾 Harvest", description: `${h.crop_name} - ${h.yield}${h.unit}`, date: h.harvest_date })),
         ...expenses.slice(-3).map(e => ({ type: "💰 Expense", description: e.title, date: e.date }))
       ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
       

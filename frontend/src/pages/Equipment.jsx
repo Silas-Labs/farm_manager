@@ -103,6 +103,17 @@ export const Equipment = () => {
     }
   };
 
+  const handleSaveExpense = async (expenseData) => {
+    try {
+      await expensesAPI.create(expenseData);
+      toast.success("Expense recorded successfully");
+      setShowExpenseModal(false);
+    } catch (error) {
+      console.error("Error creating expense:", error);
+      toast.error("Failed to add expense");
+    }
+  };
+
   const getStatusConfig = (status) => {
     const configs = {
       Working: {
@@ -468,7 +479,7 @@ export const Equipment = () => {
       {showExpenseModal && (
         <AddExpenseModal
           onClose={() => setShowExpenseModal(false)}
-          onSave={() => {}}
+          onSave={handleSaveExpense}
         />
       )}
     </div>

@@ -78,53 +78,56 @@ func main() {
 		w.Write([]byte(`{"status":"ok","message":"Farm Manager API is running"}`))
 	})
 
-	// Public routes
-	r.Post("/api/auth/register", authHandler.Register)
-	r.Post("/api/auth/login", authHandler.Login)
+	// API Routes
+	r.Route("/api/v1", func(r chi.Router) {
+		// Public routes
+		r.Post("/auth/register", authHandler.Register)
+		r.Post("/auth/login", authHandler.Login)
 
-	// Protected routes (require authentication)
-	r.Group(func(r chi.Router) {
-		r.Use(middleware.AuthMiddleware)
+		// Protected routes
+		r.Group(func(r chi.Router) {
+			r.Use(middleware.AuthMiddleware)
 
-		// Crop routes
-		r.Get("/api/crops", handler.CropGetAll)
-		r.Get("/api/crops/{id}", handler.CropGetByID)
-		r.Post("/api/crops", handler.CropCreate)
-		r.Put("/api/crops/{id}", handler.CropUpdate)
-		r.Delete("/api/crops/{id}", handler.CropDelete)
-		r.Get("/api/crops/stats/summary", handler.CropGetStats)
+			// Crops
+			r.Get("/crops", handler.CropGetAll)
+			r.Post("/crops", handler.CropCreate)
+			r.Get("/crops/{id}", handler.CropGetByID)
+			r.Put("/crops/{id}", handler.CropUpdate)
+			r.Delete("/crops/{id}", handler.CropDelete)
+			r.Get("/crops/stats/summary", handler.CropGetStats)
 
-		// Equipment routes
-		r.Get("/api/equipment", handler.EquipmentGetAll)
-		r.Get("/api/equipment/{id}", handler.EquipmentGetByID)
-		r.Post("/api/equipment", handler.EquipmentCreate)
-		r.Put("/api/equipment/{id}", handler.EquipmentUpdate)
-		r.Delete("/api/equipment/{id}", handler.EquipmentDelete)
-		r.Get("/api/equipment/stats/summary", handler.EquipmentGetStats)
+			// Equipment
+			r.Get("/equipment", handler.EquipmentGetAll)
+			r.Post("/equipment", handler.EquipmentCreate)
+			r.Get("/equipment/{id}", handler.EquipmentGetByID)
+			r.Put("/equipment/{id}", handler.EquipmentUpdate)
+			r.Delete("/equipment/{id}", handler.EquipmentDelete)
+			r.Get("/equipment/stats/summary", handler.EquipmentGetStats)
 
-		// Labor routes
-		r.Get("/api/labor", handler.LaborGetAll)
-		r.Get("/api/labor/{id}", handler.LaborGetByID)
-		r.Post("/api/labor", handler.LaborCreate)
-		r.Put("/api/labor/{id}", handler.LaborUpdate)
-		r.Delete("/api/labor/{id}", handler.LaborDelete)
-		r.Get("/api/labor/stats/summary", handler.LaborGetStats)
+			// Labor
+			r.Get("/labor", handler.LaborGetAll)
+			r.Post("/labor", handler.LaborCreate)
+			r.Get("/labor/{id}", handler.LaborGetByID)
+			r.Put("/labor/{id}", handler.LaborUpdate)
+			r.Delete("/labor/{id}", handler.LaborDelete)
+			r.Get("/labor/stats/summary", handler.LaborGetStats)
 
-		// Expense routes
-		r.Get("/api/expenses", handler.ExpenseGetAll)
-		r.Get("/api/expenses/{id}", handler.ExpenseGetByID)
-		r.Post("/api/expenses", handler.ExpenseCreate)
-		r.Put("/api/expenses/{id}", handler.ExpenseUpdate)
-		r.Delete("/api/expenses/{id}", handler.ExpenseDelete)
-		r.Get("/api/expenses/stats/summary", handler.ExpenseGetStats)
+			// Expenses
+			r.Get("/expenses", handler.ExpenseGetAll)
+			r.Post("/expenses", handler.ExpenseCreate)
+			r.Get("/expenses/{id}", handler.ExpenseGetByID)
+			r.Put("/expenses/{id}", handler.ExpenseUpdate)
+			r.Delete("/expenses/{id}", handler.ExpenseDelete)
+			r.Get("/expenses/stats/summary", handler.ExpenseGetStats)
 
-		// Harvest routes
-		r.Get("/api/harvests", handler.HarvestGetAll)
-		r.Get("/api/harvests/{id}", handler.HarvestGetByID)
-		r.Post("/api/harvests", handler.HarvestCreate)
-		r.Put("/api/harvests/{id}", handler.HarvestUpdate)
-		r.Delete("/api/harvests/{id}", handler.HarvestDelete)
-		r.Get("/api/harvests/stats/summary", handler.HarvestGetStats)
+			// Harvests
+			r.Get("/harvests", handler.HarvestGetAll)
+			r.Post("/harvests", handler.HarvestCreate)
+			r.Get("/harvests/{id}", handler.HarvestGetByID)
+			r.Put("/harvests/{id}", handler.HarvestUpdate)
+			r.Delete("/harvests/{id}", handler.HarvestDelete)
+			r.Get("/harvests/stats/summary", handler.HarvestGetStats)
+		})
 	})
 
 	port := os.Getenv("PORT")

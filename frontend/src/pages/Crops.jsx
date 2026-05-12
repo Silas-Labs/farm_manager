@@ -99,8 +99,8 @@ export const Crops = () => {
       await harvestsAPI.create({
         crop_id: selectedCrop.id,
         crop_name: selectedCrop.name,
-        yield_amount: harvestData.yield,
-        yield_unit: harvestData.unit,
+        yield: harvestData.yield,
+        unit: harvestData.unit,
         revenue: harvestData.revenue,
         harvest_date: harvestData.date,
         notes: harvestData.notes,
@@ -113,6 +113,17 @@ export const Crops = () => {
     } catch (error) {
       console.error("Error recording harvest:", error);
       toast.error("Failed to record harvest");
+    }
+  };
+
+  const handleSaveExpense = async (expenseData) => {
+    try {
+      await expensesAPI.create(expenseData);
+      toast.success("Expense recorded successfully");
+      setShowExpenseModal(false);
+    } catch (error) {
+      console.error("Error creating expense:", error);
+      toast.error("Failed to add expense");
     }
   };
 
@@ -374,7 +385,7 @@ export const Crops = () => {
       {showExpenseModal && (
         <AddExpenseModal
           onClose={() => setShowExpenseModal(false)}
-          onSave={() => {}}
+          onSave={handleSaveExpense}
         />
       )}
       {showHarvestModal && selectedCrop && (

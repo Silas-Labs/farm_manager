@@ -22,7 +22,7 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [date, setDate] = useState(dayjs(new Date()));
+  const [date, setDate] = useState(dayjs());
   const [price, setPrice] = useState("");
   const [errors, setErrors] = useState({});
 
@@ -44,7 +44,8 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
+  const handleSave = (e) => {
+    if (e) e.preventDefault();
     if (!validate()) {
       toast.error("Highlighted fields are required");
       return;
@@ -57,17 +58,17 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
       model: model,
       description: description,
       status: status,
-      quantity: quantity,
+      quantity: parseInt(quantity),
       date: date,
-      price: price,
+      price: parseFloat(price),
     });
 
     //close modal
     onClose();
   };
   return (
-    <form
-      className="fixed inset-0 flex justify-center items-center z-50 p-3 sm:p-4"
+    <div
+      className="fixed inset-0 flex justify-center items-center z-50 p-3 sm:p-4 bg-black/20 backdrop-blur-sm"
       onClick={onClose}
     >
       <Card
@@ -83,84 +84,80 @@ export const AddEquipmentModal = ({ onClose, onSave }) => {
       >
         <CardTitle>Add Equipment</CardTitle>
         <CardDescription>
-          <div className="h-full flex flex-col gap-4">
-            <Input
-              className={inputClass(errors.name)}
-              placeholder="Equipment Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.type)}
-              placeholder="Type"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.model)}
-              placeholder="Model"
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.description)}
-              placeholder="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.status)}
-              placeholder="Status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.quantity)}
-              placeholder="Quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-            />
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Select date"
-                slotProps={{
-                  textField: { fullWidth: true },
-                }}
-                maxDate={dayjs()}
-                value={dayjs(date)}
-                onChange={() => setDate(() => (newDate) => newDate)}
-              />
-            </LocalizationProvider>
-            <Input
-              className={inputClass(errors.price)}
-              placeholder="Price"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            />
-          </div>
+          Enter the details of the equipment you're adding.
         </CardDescription>
-        <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
-          <Button
-            className="min-h-12 min-w-18"
-            onClick={(e) => {
-              e.preventDefault();
-              handleSave();
-            }}
-          >
-            Save
-          </Button>
-          <Button
-            className="min-h-12 min-w-18"
-            onClick={(e) => {
-              e.preventDefault();
-              onClose();
-            }}
-          >
-            Cancel
-          </Button>
-        </CardFooter>
+        <form onSubmit={handleSave} className="h-full flex flex-col gap-4 mt-4">
+          <Input
+            className={inputClass(errors.name)}
+            placeholder="Equipment Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Input
+            className={inputClass(errors.type)}
+            placeholder="Type"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+          />
+          <Input
+            className={inputClass(errors.model)}
+            placeholder="Model"
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+          />
+          <Input
+            className={inputClass(errors.description)}
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <Input
+            className={inputClass(errors.status)}
+            placeholder="Status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          />
+          <Input
+            className={inputClass(errors.quantity)}
+            placeholder="Quantity"
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Select date"
+              slotProps={{
+                textField: { fullWidth: true },
+              }}
+              maxDate={dayjs()}
+              value={date}
+              onChange={(newDate) => setDate(newDate)}
+            />
+          </LocalizationProvider>
+          <Input
+            className={inputClass(errors.price)}
+            placeholder="Price"
+            type="number"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+          />
+          <CardFooter className="mt-4 bg-transparent flex justify-center gap-5">
+            <Button type="submit" className="min-h-12 min-w-18">
+              Save
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-12 min-w-18"
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
+          </CardFooter>
+        </form>
       </Card>
-    </form>
+    </div>
   );
 };
 

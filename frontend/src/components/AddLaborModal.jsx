@@ -16,63 +16,55 @@ import dayjs from "dayjs";
 import { toast } from "sonner";
 
 export const AddLaborModal = ({ onClose, onSave }) => {
-  const [id, setId] = useState("");
   const [name, setName] = useState("");
-  const [doB, setDoB] = useState(dayjs());
+  const [role, setRole] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
-  const [home, setHome] = useState("");
-  const [kin, setKin] = useState("");
-  const [kinPhone, setKinPhone] = useState("");
-  const [role, setRole] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("Active");
+  const [hourlyRate, setHourlyRate] = useState("");
+  const [monthlySalary, setMonthlySalary] = useState("");
+  const [startDate, setStartDate] = useState(dayjs());
   const [errors, setErrors] = useState({});
 
   const inputClass = (hasError) =>
     `min-h-13 border rounded p-2 ${hasError ? "border-red-500" : "border-gray-300"}`;
 
-
   const validate = () => {
     const newErrors = {};
 
-    if (!id.trim()) newErrors.id = true;
     if (!name.trim()) newErrors.name = true;
+    if (!role.trim()) newErrors.role = true;
     if (!phone.trim()) newErrors.phone = true;
     if (!location.trim()) newErrors.location = true;
-    if (!home.trim()) newErrors.home = true;
-    if (!kin.trim()) newErrors.kin = true;
-    if (!kinPhone.trim()) newErrors.kinPhone = true;
-    if (!role.trim()) newErrors.role = true;
     if (!status.trim()) newErrors.status = true;
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
+  const handleSave = (e) => {
+    if (e) e.preventDefault();
     if (!validate()) {
       toast.error("Highlighted fields are required");
       return;
     }
 
     onSave({
-      id: id,
       name: name,
-      doB: doB,
+      role: role,
       phone: phone,
       location: location,
-      home: home,
-      kin: kin,
-      kinPhone: kinPhone,
-      role: role,
       status: status,
+      hourly_rate: parseFloat(hourlyRate) || 0,
+      monthly_salary: parseFloat(monthlySalary) || 0,
+      start_date: startDate,
     });
     onClose();
   };
 
   return (
-    <form
-      className="fixed inset-0 flex justify-center items-center z-50 p-3 sm:p-4"
+    <div
+      className="fixed inset-0 flex justify-center items-center z-50 p-3 sm:p-4 bg-black/20 backdrop-blur-sm"
       onClick={onClose}
     >
       <Card
@@ -88,96 +80,86 @@ export const AddLaborModal = ({ onClose, onSave }) => {
       >
         <CardTitle>Add Labourer</CardTitle>
         <CardDescription>
-          <div className="h-full flex flex-col gap-4">
+          Record a new member of your farm workforce.
+        </CardDescription>
+        <form onSubmit={handleSave} className="h-full flex flex-col gap-4 mt-4">
+          <Input
+            className={inputClass(errors.name)}
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Input
+            className={inputClass(errors.role)}
+            placeholder="Role (e.g. Harvester, Manager)"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          />
+          <Input
+            className={inputClass(errors.phone)}
+            placeholder="Phone Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+          <Input
+            className={inputClass(errors.location)}
+            placeholder="Location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+          <div className="grid grid-cols-2 gap-4">
             <Input
-              className={inputClass(errors.id)}
-              placeholder="ID Number"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
+              className={inputClass(errors.hourlyRate)}
+              placeholder="Hourly Rate ($)"
+              type="number"
+              value={hourlyRate}
+              onChange={(e) => setHourlyRate(e.target.value)}
             />
             <Input
-              className={inputClass(errors.name)}
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Date of Birth"
-                slotProps={{
-                  textField: { fullWidth: true },
-                }}
-                value={doB}
-                onChange={ (newDate) => setDoB(newDate)}
-                maxDate={dayjs()}
-              />
-            </LocalizationProvider>
-            <Input
-              className={inputClass(errors.phone)}
-              placeholder="Phone Number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.location)}
-              placeholder="Location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.home)}
-              placeholder="Home"
-              value={home}
-              onChange={(e) => setHome(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.kin)}
-              placeholder="Next of Kin"
-              value={kin}
-              onChange={(e) => setKin(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.kinPhone)}
-              placeholder="Phone Number"
-              value={kinPhone}
-              onChange={(e) => setKinPhone(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.role)}
-              placeholder="Role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            />
-            <Input
-              className={inputClass(errors.status)}
-              placeholder="Status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              className={inputClass(errors.monthlySalary)}
+              placeholder="Monthly Salary ($)"
+              type="number"
+              value={monthlySalary}
+              onChange={(e) => setMonthlySalary(e.target.value)}
             />
           </div>
-        </CardDescription>
-        <CardFooter className="mt-auto bg-transparent flex justify-center gap-5">
-          <Button
-            className="min-h-12 min-w-18"
-            onClick={(e) => {
-              e.preventDefault();
-              handleSave();
-            }}
+          <select
+            className={inputClass(errors.status)}
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
           >
-            Save
-          </Button>
-          <Button
-            className="min-h-12 min-w-18"
-            onClick={(e) => {
-              e.preventDefault();
-              onClose();
-            }}
-          >
-            Cancel
-          </Button>
-        </CardFooter>
+            <option value="Active">Active</option>
+            <option value="On Leave">On Leave</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Suspended">Suspended</option>
+          </select>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Start Date"
+              slotProps={{
+                textField: { fullWidth: true },
+              }}
+              value={startDate}
+              onChange={(newDate) => setStartDate(newDate)}
+              maxDate={dayjs()}
+            />
+          </LocalizationProvider>
+          <CardFooter className="mt-6 bg-transparent flex justify-center gap-5">
+            <Button type="submit" className="min-h-12 min-w-18">
+              Save
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-12 min-w-18"
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
+          </CardFooter>
+        </form>
       </Card>
-    </form>
+    </div>
   );
 };
 

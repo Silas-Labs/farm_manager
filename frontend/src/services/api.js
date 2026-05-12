@@ -3,12 +3,31 @@ import axios from "axios";
 
 // Try multiple possible backend URLs
 const getBaseURL = () => {
+  let url = "";
   // First check env variable
   if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
+    url = import.meta.env.VITE_API_URL;
+  } else if (import.meta.env.VITE_BASE_URL) {
+    url = import.meta.env.VITE_BASE_URL;
+  } else {
+    // Fallback for local development
+    url = "https://agropulse-bakcend.onrender.com/api/v1";
+    //url = "http://localhost:8080/api/v1";
   }
-  // Fallback for local development
-  return "https://agropulse-bakcend.onrender.com/api";
+
+  // Remove trailing slash if present
+  url = url.replace(/\/+$/, "");
+
+  // Ensure /v1 is present
+  if (!url.endsWith("/v1")) {
+    if (url.endsWith("/api")) {
+      url += "/v1";
+    } else {
+      url += "/api/v1";
+    }
+  }
+
+  return url;
 };
 
 const API_BASE_URL = getBaseURL();

@@ -55,25 +55,26 @@ export const Labour = () => {
     }
   };
 
-  const handleSave = async (props) => {
+  const handleSave = async (laborData) => {
     try {
-      const response = await laborAPI.create({
-        name: props.name,
-        role: props.role,
-        phone: props.phone,
-        location: props.location,
-        status: props.status,
-        hourly_rate: props.hourlyRate || 0,
-        monthly_salary: props.monthlySalary || 0,
-        start_date: props.startDate || new Date().toISOString(),
-      });
-
+      const response = await laborAPI.create(laborData);
       setLabor([...labor, response.data.data]);
-      toast.success(`${props.name} added to workforce!`);
+      toast.success(`${laborData.name} added to workforce!`);
       loadLabor();
     } catch (error) {
       console.error("Error creating labor:", error);
       toast.error("Failed to add worker");
+    }
+  };
+
+  const handleSaveExpense = async (expenseData) => {
+    try {
+      await expensesAPI.create(expenseData);
+      toast.success("Expense recorded successfully");
+      setShowExpenseModal(false);
+    } catch (error) {
+      console.error("Error creating expense:", error);
+      toast.error("Failed to add expense");
     }
   };
 
@@ -491,7 +492,7 @@ export const Labour = () => {
       {showExpenseModal && (
         <AddExpenseModal
           onClose={() => setShowExpenseModal(false)}
-          onSave={() => {}}
+          onSave={handleSaveExpense}
         />
       )}
       {showPayrollModal && selectedWorker && (
