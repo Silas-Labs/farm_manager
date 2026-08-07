@@ -1,6 +1,6 @@
 # 🌾 Farm Manager
 
-A centralized farm management system to record activities, track costs, and visualize farm performance for better decision-making.
+An **offline-first crop profitability tracker** for smallholder farmers. Record crops, expenses, and harvests in the field with no connection; sync when you're back online — and always know, per crop, whether it was worth planting.
 
 ## 📑 Table of Contents
 
@@ -8,166 +8,154 @@ A centralized farm management system to record activities, track costs, and visu
 - [Objectives](#-objectives)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
+- [Recent Developments](#-recent-developments)
 - [System Output & Visualizations](#-system-output--visualizations)
 - [Project Scope & Timeline](#-project-scope--timeline)
+- [Getting Started](#-getting-started)
 - [Project Structure](#-project-structure)
 - [Contributing](#-contributing)
 
-## 📌 Problem Statement.
+## 📌 Problem Statement
 
+Smallholder farmers rarely keep consistent records of what they plant and what it costs. By harvest time it's impossible to say which crop actually made money — and in the field, network coverage is often unreliable or nonexistent, so a tool that needs a connection to work simply won't get used.
 
-Managing a farm involves tracking a wide range of activities, resources, and expenses—from purchasing seeds and fertilizers to recording cultivation, harvesting, and sales. Farmers often face challenges in maintaining accurate records, analyzing operational costs, and assessing overall farm performance. Without a centralized system, it becomes difficult to identify trends, optimize resource usage, or make informed, data-driven decisions to improve productivity and profitability.
-
-This project aims to address these challenges by developing a comprehensive and user-friendly Farm Management System that digitally records farm operations and presents meaningful insights through visual analytics.
+This project addresses both problems: a simple record-keeping system that works **fully offline**, and profitability math that answers the one question that matters — *per crop and per plot, was it worth planting?*
 
 ## 🎯 Objectives
 
-- Digitally record all farm-related activities and events
+- Keep recording crops, expenses, and harvests **even without internet** (field-first)
 
-- Track costs associated with cultivation, inputs, and harvesting
+- Link every expense to the crop it belongs to, with an escape hatch for shared farm-wide costs
 
-- Monitor farm outputs such as yield and revenue
+- Compute **per-crop profitability** (revenue − linked expenses, margin)
 
-- Provide clear visualizations of farm performance
+- Rank crops from best to worst performer on the dashboard
 
-- Enable informed decision-making through organized data
+- Sync automatically when a connection returns, without losing data or blocking the user
 
 ## 🧩 Features
 
-- Activity logging (cultivation, harvesting, purchases, sales)
+- **Offline-first data layer** — every read and write goes through a local browser database (IndexedDB), so the app is fully usable without a connection
 
-- Input management (seeds, fertilizers, labor, machinery)
+- **Background sync** — changes are queued in an outbox and flushed to the backend automatically on reconnect and on app boot; the UI badge reflects sync status
 
-- Expense and cost tracking
+- **Crop-linked expenses & harvests** — each expense and harvest belongs to a crop; `is_shared_cost` lets shared farm-level costs be excluded from a crop's profit
 
-- Yield and revenue monitoring
+- **Per-crop profitability** — revenue, linked expenses, net profit, and margin computed locally on the crops page
 
-- Performance visualization using charts and graphs
+- **Dashboard ranking** — crops ranked best-to-worst by profitability with margin bars
 
-- Date-wise and category-wise record keeping
+- **Offline session persistence** — login stays cached so a returning farmer isn't locked out while offline
+
+- **Field dashboard** — weather widget embedded in the dashboard, main navigation focused on crops, expenses, and harvests
 
 ## 🛠️ Tech Stack
 
 ### 🎨 Frontend
 
-Built with modern React tooling for performance and scalability:
-
-- React – Component-based UI development
-- Vite – Fast development server and build system
-- Tailwind CSS – Utility-first styling
-- Material UI (MUI) – Prebuilt UI components
-- shadcn/ui – Accessible UI components
-- Radix UI – Headless UI primitives
-
-#### 📊 Data Visualization & Tables
-
-- Recharts – Charts for analytics
-- TanStack Table – Advanced data tables
-
-#### 🔄 State & Data Handling
-
-- Axios – API communication
-- React Router – Client-side routing
-
-#### 📅 Date & Utilities
-
-- dayjs / date-fns – Date manipulation
-- clsx – Conditional classNames
-- class-variance-authority – Variant-based styling
-
----
+- **React 19** + **Vite 8** – UI and build tooling
+- **Tailwind CSS 4** + **Material UI (MUI) 7** + **Radix / shadcn/ui** – styling and components
+- **Recharts** – charts and margin visualizations
+- **TanStack Table** – data tables
+- **React Router 7** – client-side routing
+- **Axios** – API communication
+- **dayjs / date-fns** – date handling
+- **IndexedDB (native)** – offline storage, outbox queue, and sync engine (no external dependency)
 
 ### ⚙️ Backend
 
-Built with Go for performance and scalability:
-
-- Go (Golang) – Backend programming language
-- net/http – Standard HTTP package
+- **Go** – REST API
+- **go-chi/chi** – routing
+- **go-sqlite3** – per-user SQLite databases
+- **golang-jwt/jwt** – authentication tokens
+- **bcrypt** (`golang.org/x/crypto`) – password hashing
 
 #### 🧱 Architecture
 
 - Clean architecture style:
-  - Handlers (HTTP layer)
-  - Services (business logic)
-  - Repository (data access)
-  - Models (domain entities)
+  - `handler` (HTTP layer)
+  - `service` (business logic & validation)
+  - `repository` (data access)
+  - `models` (domain entities)
 
-#### 🔌 API
-
-- RESTful API design
-- JSON-based communication
-
----
+- **Additive migrations:** schema changes (e.g. adding `crop_id` / `is_shared_cost` to existing expense tables) are applied idempotently on every open, so legacy databases upgrade in place without data loss.
 
 ### 🗄️ Database
 
-- PostgreSQL – Relational database
-
----
+- **SQLite** – one central `users.db` plus a per-user `farm_{user_id}.db`
+- **IndexedDB** – client-side offline store per browser profile
 
 ### 🧪 Development & Tooling
 
-- ESLint – Code linting
-- Git – Version control
-- GitHub – Repository hosting
-
----
-
-### 🎯 Summary
-
-- Frontend: React + Vite + Tailwind + MUI
-- Backend: Go (REST API)
-- Database: PostgreSQL
-- Charts: Recharts
-- Tooling: ESLint + Git
+- Go standard toolchain (`go build` / `go vet` / `go test`)
+- Vite build (used as the frontend verification gate)
+- Git + GitHub – version control and hosting
 
 ## 📈 Recent Developments
 
-The project has recently undergone a major architectural overhaul:
-- **Modular Backend:** Refactored into distinct `handler`, `service`, and `repository` packages for better separation of concerns.
-- **Granular History:** Established a highly detailed commit history to facilitate precise auditing and easier rollbacks.
-- **Security Audit:** Removed sensitive configuration from version control and strengthened authentication flows.
+The project was recently refactored into an **offline-first crop profitability tracker**:
+
+- **Offline store + sync manager** — native IndexedDB store with per-user tables and an outbox; writes are queued and flushed on reconnect/boot with a sync status badge.
+- **Crop-linked costs** — expenses and harvests now require a `crop_id`; a new `is_shared_cost` flag excludes shared costs from profit.
+- **Local-first reads** — pages render from the local store and reconcile with the backend.
+- **Per-crop profitability** — computed locally on the crops page and ranked on the dashboard.
+- **Modular backend** — refactored into `handler`, `service`, `repository`, `models` packages; new `/crops/profitability` endpoint; legacy database migration with regression test.
+- **Security** — credentials removed from version control, JWT auth flows strengthened.
 
 ## 📊 System Output & Visualizations
 
-- The system generates visual insights such as:
+- Per-crop profitability cards (revenue, linked expenses, net profit, margin)
 
-- Cost distribution charts (inputs vs labor vs harvesting)
+- Dashboard crop ranking with margin bars (best → worst)
 
-- Yield and revenue trends over time
-
-- Profit and loss summaries
-
-- Activity timelines and summaries
+- Sync status indicator so users always know if data is uploaded
 
 ## 🚀 Project Scope & Timeline
 
 Scope:
 
-- Designed for small to medium-scale farms
+- Designed for smallholder and small-to-medium-scale farms
 
-- Focuses on record-keeping, cost tracking, and visualization
+- Focus on record-keeping, crop profitability, and offline resilience
 
-- No real-time sensor data or IoT integration
+- No real-time sensor data, IoT integration, or predictive analytics in the initial version
 
-- No predictive analytics in the initial version
+Timeline:
 
-**Timeline:**
+- Development period: 2 months
+- Phases: Requirement analysis → Design → Development → Testing → Documentation
 
-Development period: 2 months
+## 🚀 Getting Started
 
-Phases: Requirement analysis → Design → Development → Testing → Documentation
+### Backend
+
+```bash
+cd backend
+go mod download
+go run ./cmd/api
+# serve on PORT (default 8080); expects JWT_SECRET in env/.env
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ## 📂 Project Structure
 
 ```bash
-Farm-Manager/
- |── frontend/
- |── backend/
- |── database/
- |── docs/
- |── assets/
- |── README.md
+farm_manager/
+ ├── frontend/        # React + Vite app (offline store, sync, UI)
+ ├── backend/
+ │   ├── cmd/api/     # HTTP server entrypoint
+ │   ├── internal/    # handler, service, repository, models, middleware
+ │   ├── pkg/         # database, auth, config
+ │   └── docs/        # API route documentation
+ ├── DOCS.md          # top-level project notes
+ └── README.md
 ```
 
 ## 🤝 Contributing
