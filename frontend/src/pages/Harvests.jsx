@@ -5,6 +5,8 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { HarvestModal } from "../components/HarvestModal";
 import { harvestsAPI, cropsAPI } from "../services/api";
 import { dataActions } from "../lib/dataActions";
+import { useEntityData } from "../lib/useEntityData";
+import { SyncBadge } from "../components/SyncBadge";
 import {
   Sprout,
   DollarSign,
@@ -20,28 +22,24 @@ import dayjs from "dayjs";
 export const Harvests = () => {
   const [showHarvestModal, setShowHarvestModal] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState(null);
-  const [harvests, setHarvests] = useState([]);
+  const harvests =
+    useEntityData(
+      "harvests",
+      () => harvestsAPI.getAll(),
+      (res) => res.data || [],
+    ) || [];
   const [crops, setCrops] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadData();
   }, []);
 
   const loadData = async () => {
-    setLoading(true);
     try {
-      const [harvestsRes, cropsRes] = await Promise.all([
-        harvestsAPI.getAll(),
-        cropsAPI.getAll(),
-      ]);
-      setHarvests(harvestsRes.data || []);
+      const cropsRes = await cropsAPI.getAll().catch(() => ({ data: [] }));
       setCrops(cropsRes.data || []);
     } catch (error) {
-      console.error("Error loading harvests:", error);
-      toast.error("Failed to load harvest data");
-    } finally {
-      setLoading(false);
+      console.error("Error loading crops:", error);
     }
   };
 
@@ -105,14 +103,6 @@ export const Harvests = () => {
       </CardContent>
     </Card>
   );
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-farm-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full space-y-6">
@@ -199,6 +189,7 @@ export const Harvests = () => {
                       <span className="font-medium text-earth-800">
                         {harvest.crop_name}
                       </span>
+                      <SyncBadge record={harvest} />
                     </div>
                   </td>
                   <td className="px-6 py-4">

@@ -7,6 +7,8 @@ import { HarvestModal } from "../components/HarvestModal";
 import { UpdateStageModal } from "../components/UpdateStageModal";
 import { cropsAPI } from "../services/api";
 import { dataActions } from "../lib/dataActions";
+import { useEntityData } from "../lib/useEntityData";
+import { SyncBadge } from "../components/SyncBadge";
 import {
   Plus,
   DollarSign,
@@ -24,8 +26,9 @@ export const Crops = () => {
   const [showHarvestModal, setShowHarvestModal] = useState(false);
   const [showStageModal, setShowStageModal] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState(null);
-  const [crops, setCrops] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const crops =
+    useEntityData("crops", () => cropsAPI.getAll(), (res) => res.data || []) ||
+    [];
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -35,26 +38,9 @@ export const Crops = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    loadCrops();
-  }, []);
-
-  const loadCrops = async () => {
-    setLoading(true);
-    try {
-      const response = await cropsAPI.getAll();
-      setCrops(response.data || []);
-    } catch (error) {
-      console.error("Error loading crops:", error);
-      toast.error("Failed to load crops");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const onSaveCrop = async (props) => {
     try {
-      const newCrop = await dataActions.createCrop({
+      await dataActions.createCrop({
         name: props.crop,
         brand: props.brand,
         variety: props.variety,
@@ -63,7 +49,6 @@ export const Crops = () => {
         stage: "Planted",
       });
 
-      setCrops((prev) => [newCrop, ...prev]);
       toast.success(`${props.crop} planted successfully!`);
     } catch (error) {
       console.error("Error creating crop:", error);
@@ -77,9 +62,6 @@ export const Crops = () => {
 
     try {
       await dataActions.updateCrop(cropId, { ...crop, stage: newStage });
-      setCrops(
-        (prev) => prev.map((c) => (c.id === cropId ? { ...c, stage: newStage } : c)),
-      );
       toast.success(`Crop stage updated to ${newStage}`);
     } catch (error) {
       console.error("Error updating crop:", error);
@@ -183,14 +165,6 @@ export const Crops = () => {
     </Card>
   );
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-farm-600"></div>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full space-y-6">
       <div>
@@ -293,6 +267,7 @@ export const Crops = () => {
                         <span className="font-medium text-earth-800 text-sm sm:text-base">
                           {crop.name}
                         </span>
+                        <SyncBadge record={crop} />
                       </div>
                     </td>
                     <td className="px-3 sm:px-6 py-3 sm:py-4 text-earth-600 text-sm">

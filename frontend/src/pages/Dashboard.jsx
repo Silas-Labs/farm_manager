@@ -1,87 +1,56 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Chart } from "../components/Chart";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { dashboardAPI, cropsAPI, expensesAPI, harvestsAPI } from '../services/api';
+import { cropsAPI, expensesAPI, harvestsAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useEntityData } from '../lib/useEntityData';
 import { Sprout, TrendingUp, TrendingDown, DollarSign, Calendar, Activity, Leaf } from "lucide-react";
-import { toast } from "sonner";
 
 export const Dashboard = () => {
   const { user } = useAuth();
-  const [stats, setStats] = useState({
-    activeCrops: 0,
-    totalExpense: 0,
-    monthRevenue: 0,
-    planted: 0,
-    growing: 0,
-    readyToHarvest: 0,
-    profitMargin: 0,
-  });
-  const [loading, setLoading] = useState(true);
-  const [chartData, setChartData] = useState([]);
-  const [recentActivities, setRecentActivities] = useState([]);
 
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
+  const crops = useEntityData("crops", () => cropsAPI.getAll(), (res) => res.data || []) || [];
+  const expenses = useEntityData("expenses", () => expensesAPI.getAll(), (res) => res.data || []) || [];
+  const harvests = useEntityData("harvests", () => harvestsAPI.getAll(), (res) => res.data || []) || [];
 
-  const loadDashboardData = async () => {
-    setLoading(true);
-    try {
-      const [cropsRes, expensesRes, harvestsRes, cropsStatsRes] = await Promise.all([
-        cropsAPI.getAll(),
-        expensesAPI.getAll(),
-        harvestsAPI.getAll(),
-        cropsAPI.getStats(),
-      ]);
+  const stats = useMemo(() => {
+    const totalExpense = expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
+    const totalRevenue = harvests.reduce((sum, h) => sum + (h.revenue || 0), 0);
+    const profitMargin = totalRevenue > 0 ? ((totalRevenue - totalExpense) / totalRevenue * 100) : 0;
+    return {
+      activeCrops: crops.length,
+      totalExpense,
+      monthRevenue: totalRevenue,
+      planted: crops.filter((c) => c.stage === "Planted").length,
+      growing: crops.filter((c) => c.stage === "Growing").length,
+      readyToHarvest: crops.filter((c) => c.stage === "Ready to Harvest").length,
+      profitMargin,
+    };
+  }, [crops, expenses, harvests]);
 
-      const crops = cropsRes.data || [];
-      const expenses = expensesRes.data || [];
-      const harvests = harvestsRes.data || [];
-      const cropStats = cropsStatsRes.data || {};
+  const chartData = useMemo(() => {
+    const monthlyData = {};
+    [...expenses, ...harvests].forEach(item => {
+      const month = item.date ? new Date(item.date).toLocaleString('default', { month: 'short' }) : "Unknown";
+      if (!monthlyData[month]) monthlyData[month] = { expense: 0, revenue: 0 };
+      if (item.amount) monthlyData[month].expense += item.amount;
+      if (item.revenue) monthlyData[month].revenue += item.revenue;
+    });
+    return Object.entries(monthlyData).map(([month, data]) => ({
+      month,
+      expense: data.expense,
+      revenue: data.revenue
+    }));
+  }, [expenses, harvests]);
 
-      const totalExpense = expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
-      const totalRevenue = harvests.reduce((sum, h) => sum + (h.revenue || 0), 0);
-      const profitMargin = totalRevenue > 0 ? ((totalRevenue - totalExpense) / totalRevenue * 100) : 0;
-
-      setStats({
-        activeCrops: crops.length,
-        totalExpense,
-        monthRevenue: totalRevenue,
-        planted: cropStats.planted || 0,
-        growing: cropStats.growing || 0,
-        readyToHarvest: cropStats.ready_to_harvest || 0,
-        profitMargin,
-      });
-
-      const monthlyData = {};
-      [...expenses, ...harvests].forEach(item => {
-        const month = item.date ? new Date(item.date).toLocaleString('default', { month: 'short' }) : "Unknown";
-        if (!monthlyData[month]) monthlyData[month] = { expense: 0, revenue: 0 };
-        if (item.amount) monthlyData[month].expense += item.amount;
-        if (item.revenue) monthlyData[month].revenue += item.revenue;
-      });
-      
-      setChartData(Object.entries(monthlyData).map(([month, data]) => ({
-        month,
-        expense: data.expense,
-        revenue: data.revenue
-      })));
-
-      const allActivities = [
-        ...crops.slice(-3).map(c => ({ type: "🌱 Crop Planted", description: `${c.name}`, date: c.planted_date || c.created_at })),
-        ...harvests.slice(-3).map(h => ({ type: "🌾 Harvest", description: `${h.crop_name} - ${h.yield}${h.unit}`, date: h.harvest_date })),
-        ...expenses.slice(-3).map(e => ({ type: "💰 Expense", description: e.title, date: e.date }))
-      ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
-      
-      setRecentActivities(allActivities);
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
-      toast.error('Failed to load dashboard data');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const recentActivities = useMemo(() => {
+    const all = [
+      ...crops.slice(-3).map(c => ({ type: "🌱 Crop Planted", description: `${c.name}`, date: c.planted_date || c.created_at })),
+      ...harvests.slice(-3).map(h => ({ type: "🌾 Harvest", description: `${h.crop_name} - ${h.yield}${h.unit}`, date: h.harvest_date })),
+      ...expenses.slice(-3).map(e => ({ type: "💰 Expense", description: e.title, date: e.date }))
+    ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+    return all;
+  }, [crops, expenses, harvests]);
 
   const StatCard = ({ title, value, icon: Icon, trend, color }) => (
     <Card className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
@@ -105,14 +74,6 @@ export const Dashboard = () => {
       </CardContent>
     </Card>
   );
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full space-y-6">

@@ -5,6 +5,8 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { AddExpenseModal } from "../components/AddExpenseModal";
 import { expensesAPI, cropsAPI } from "../services/api";
 import { dataActions } from "../lib/dataActions";
+import { useEntityData } from "../lib/useEntityData";
+import { SyncBadge } from "../components/SyncBadge";
 import {
   DollarSign,
   TrendingDown,
@@ -20,9 +22,13 @@ import dayjs from "dayjs";
 
 export const Expenses = () => {
   const [showExpenseModal, setShowExpenseModal] = useState(false);
-  const [expenses, setExpenses] = useState([]);
+  const expenses =
+    useEntityData(
+      "expenses",
+      () => expensesAPI.getAll(),
+      (res) => res.data || [],
+    ) || [];
   const [crops, setCrops] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
@@ -31,19 +37,11 @@ export const Expenses = () => {
   }, []);
 
   const loadExpenses = async () => {
-    setLoading(true);
     try {
-      const [expenseRes, cropsRes] = await Promise.all([
-        expensesAPI.getAll(),
-        cropsAPI.getAll().catch(() => ({ data: [] })),
-      ]);
-      setExpenses(expenseRes.data || []);
+      const cropsRes = await cropsAPI.getAll().catch(() => ({ data: [] }));
       setCrops(cropsRes.data || []);
     } catch (error) {
-      console.error("Error loading expenses:", error);
-      toast.error("Failed to load expenses");
-    } finally {
-      setLoading(false);
+      console.error("Error loading crops:", error);
     }
   };
 
@@ -101,14 +99,6 @@ export const Expenses = () => {
       </CardContent>
     </Card>
   );
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-farm-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full space-y-6">
@@ -215,6 +205,7 @@ export const Expenses = () => {
                     <p className="font-medium text-earth-800">
                       {expense.title}
                     </p>
+                    <SyncBadge record={expense} />
                     {expense.notes && (
                       <p className="text-xs text-earth-400 mt-0.5">
                         {expense.notes}
