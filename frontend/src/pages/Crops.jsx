@@ -5,7 +5,8 @@ import { AddCropModal } from "../components/AddCropModal";
 import { AddExpenseModal } from "../components/AddExpenseModal";
 import { HarvestModal } from "../components/HarvestModal";
 import { UpdateStageModal } from "../components/UpdateStageModal";
-import { cropsAPI, expensesAPI, harvestsAPI } from "../services/api";
+import { cropsAPI } from "../services/api";
+import { dataActions } from "../lib/dataActions";
 import {
   Plus,
   DollarSign,
@@ -53,18 +54,17 @@ export const Crops = () => {
 
   const onSaveCrop = async (props) => {
     try {
-      const response = await cropsAPI.create({
+      const newCrop = await dataActions.createCrop({
         name: props.crop,
         brand: props.brand,
         variety: props.variety,
         duration: parseInt(props.duration),
         planted_date: props.date,
+        stage: "Planted",
       });
 
-      const newCrop = response.data.data;
-      setCrops([...crops, newCrop]);
+      setCrops((prev) => [newCrop, ...prev]);
       toast.success(`${props.crop} planted successfully!`);
-      loadCrops(); // Refresh list
     } catch (error) {
       console.error("Error creating crop:", error);
       toast.error("Failed to create crop");
@@ -76,16 +76,9 @@ export const Crops = () => {
     if (!crop) return;
 
     try {
-      await cropsAPI.update(cropId, {
-        name: crop.name,
-        brand: crop.brand,
-        variety: crop.variety,
-        duration: crop.duration,
-        planted_date: crop.planted_date,
-      });
-      // Update stage in local state
+      await dataActions.updateCrop(cropId, { ...crop, stage: newStage });
       setCrops(
-        crops.map((c) => (c.id === cropId ? { ...c, stage: newStage } : c)),
+        (prev) => prev.map((c) => (c.id === cropId ? { ...c, stage: newStage } : c)),
       );
       toast.success(`Crop stage updated to ${newStage}`);
     } catch (error) {
@@ -96,7 +89,7 @@ export const Crops = () => {
 
   const handleHarvest = async (harvestData) => {
     try {
-      await harvestsAPI.create({
+      await dataActions.createHarvest({
         crop_id: selectedCrop.id,
         crop_name: selectedCrop.name,
         yield: harvestData.yield,
@@ -109,7 +102,6 @@ export const Crops = () => {
       await updateCropStage(selectedCrop.id, "Harvested");
       setShowHarvestModal(false);
       toast.success(`🌾 Harvest recorded! Revenue: $${harvestData.revenue}`);
-      loadCrops(); // Refresh list
     } catch (error) {
       console.error("Error recording harvest:", error);
       toast.error("Failed to record harvest");
@@ -118,7 +110,7 @@ export const Crops = () => {
 
   const handleSaveExpense = async (expenseData) => {
     try {
-      await expensesAPI.create(expenseData);
+      await dataActions.createExpense(expenseData);
       toast.success("Expense recorded successfully");
       setShowExpenseModal(false);
     } catch (error) {

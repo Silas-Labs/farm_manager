@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { HarvestModal } from "../components/HarvestModal";
 import { harvestsAPI, cropsAPI } from "../services/api";
+import { dataActions } from "../lib/dataActions";
 import {
   Sprout,
   DollarSign,
@@ -50,7 +51,7 @@ export const Harvests = () => {
       return;
     }
     try {
-      await harvestsAPI.create({
+      await dataActions.createHarvest({
         crop_id: harvestData.cropId,
         crop_name: harvestData.cropName,
         yield: harvestData.yield,
@@ -73,7 +74,7 @@ export const Harvests = () => {
       window.confirm("Are you sure you want to delete this harvest record?")
     ) {
       try {
-        await harvestsAPI.delete(id);
+        await dataActions.deleteHarvest(id);
         toast.success("Harvest record deleted");
         loadData();
       } catch (error) {

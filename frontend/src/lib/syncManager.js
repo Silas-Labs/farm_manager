@@ -91,6 +91,7 @@ export async function saveAndQueue(entity, record, sync = {}) {
   await offlineStore.saveLocal(userId, entity, localRecord);
   await offlineStore.put(userId, OUTBOX, entry);
   notify();
+  if (navigator.onLine) flush(userId);
   return localRecord;
 }
 
@@ -125,6 +126,7 @@ export async function deleteAndQueue(entity, id) {
     attempts: 0,
   });
   notify();
+  if (navigator.onLine) flush(userId);
 }
 
 /**

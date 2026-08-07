@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { AddExpenseModal } from "../components/AddExpenseModal";
 import { expensesAPI, cropsAPI } from "../services/api";
+import { dataActions } from "../lib/dataActions";
 import {
   DollarSign,
   TrendingDown,
@@ -53,7 +54,7 @@ export const Expenses = () => {
 
   const handleSave = async (expenseData) => {
     try {
-      await expensesAPI.create(expenseData);
+      await dataActions.createExpense(expenseData);
       toast.success("Expense added successfully");
       loadExpenses();
     } catch (error) {
@@ -65,7 +66,7 @@ export const Expenses = () => {
   const deleteExpense = async (id) => {
     if (window.confirm("Are you sure you want to delete this expense?")) {
       try {
-        await expensesAPI.delete(id);
+        await dataActions.deleteExpense(id);
         toast.success("Expense deleted successfully");
         loadExpenses();
       } catch (error) {
