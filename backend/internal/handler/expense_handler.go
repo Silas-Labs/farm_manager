@@ -12,7 +12,6 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-// Helper to get expense service from request context
 func getExpenseService(r *http.Request) *service.ExpenseService {
 	db := middleware.GetUserDB(r)
 	repo := repository.NewExpenseRepository(db)
@@ -68,9 +67,7 @@ func ExpenseCreate(w http.ResponseWriter, r *http.Request) {
 	svc := getExpenseService(r)
 	expense, err := svc.Create(&req)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		writeServiceError(w, err)
 		return
 	}
 
@@ -103,9 +100,7 @@ func ExpenseUpdate(w http.ResponseWriter, r *http.Request) {
 	svc := getExpenseService(r)
 	expense, err := svc.Update(id, &req)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		writeServiceError(w, err)
 		return
 	}
 

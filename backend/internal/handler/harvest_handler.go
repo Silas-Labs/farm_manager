@@ -12,7 +12,6 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-// Helper to get harvest service from request context
 func getHarvestService(r *http.Request) *service.HarvestService {
 	db := middleware.GetUserDB(r)
 	repo := repository.NewHarvestRepository(db)
@@ -68,9 +67,7 @@ func HarvestCreate(w http.ResponseWriter, r *http.Request) {
 	svc := getHarvestService(r)
 	harvest, err := svc.Create(&req)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		writeServiceError(w, err)
 		return
 	}
 
@@ -103,9 +100,7 @@ func HarvestUpdate(w http.ResponseWriter, r *http.Request) {
 	svc := getHarvestService(r)
 	harvest, err := svc.Update(id, &req)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+		writeServiceError(w, err)
 		return
 	}
 

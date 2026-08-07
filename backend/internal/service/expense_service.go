@@ -6,6 +6,10 @@ import (
 	"errors"
 )
 
+// ErrCropIDRequired is returned when a record that must belong to a crop is
+// submitted without a crop_id. Handlers map this to HTTP 400.
+var ErrCropIDRequired = errors.New("crop_id is required")
+
 type ExpenseService struct {
 	expenseRepo *repository.ExpenseRepository
 }
@@ -15,6 +19,13 @@ func NewExpenseService(expenseRepo *repository.ExpenseRepository) *ExpenseServic
 }
 
 func (s *ExpenseService) Create(req *models.ExpenseRequest) (*models.Expense, error) {
+	if req.CropID == nil || *req.CropID <= 0 {
+		return nil, ErrCropIDRequired
+	}
+	if req.Amount < 0 {
+		return nil, errors.New("amount cannot be negative")
+	}
+
 	expense := &models.Expense{
 		Title:       req.Title,
 		Amount:      req.Amount,
@@ -22,6 +33,8 @@ func (s *ExpenseService) Create(req *models.ExpenseRequest) (*models.Expense, er
 		ExpenseType: req.ExpenseType,
 		Date:        req.Date,
 		Notes:       req.Notes,
+		CropID:      req.CropID,
+		IsSharedCost: req.IsSharedCost,
 	}
 
 	if err := s.expenseRepo.Create(expense); err != nil {
@@ -46,6 +59,9 @@ func (s *ExpenseService) Update(id int, req *models.ExpenseRequest) (*models.Exp
 	if expense == nil {
 		return nil, errors.New("expense not found")
 	}
+	if req.CropID == nil || *req.CropID <= 0 {
+		return nil, ErrCropIDRequired
+	}
 
 	expense.Title = req.Title
 	expense.Amount = req.Amount
@@ -53,6 +69,8 @@ func (s *ExpenseService) Update(id int, req *models.ExpenseRequest) (*models.Exp
 	expense.ExpenseType = req.ExpenseType
 	expense.Date = req.Date
 	expense.Notes = req.Notes
+	expense.CropID = req.CropID
+	expense.IsSharedCost = req.IsSharedCost
 
 	if err := s.expenseRepo.Update(expense); err != nil {
 		return nil, err

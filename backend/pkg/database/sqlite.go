@@ -140,6 +140,8 @@ func createUserTables(db *sql.DB) error {
             expense_type TEXT,
             date DATE,
             notes TEXT,
+            crop_id INTEGER,
+            is_shared_cost INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )`,
 
@@ -164,7 +166,45 @@ func createUserTables(db *sql.DB) error {
 		}
 	}
 
+	if err := migrateExistingColumns(db); err != nil {
+		return err
+	}
+
 	log.Println("User database tables created successfully")
+	return nil
+}
+
+// migrateExistingColumns adds columns introduced after a database already
+// exists. Existing records keep their current values (newly added columns get
+// their default), so nothing is deleted or silently corrupted.
+func migrateExistingColumns(db *sql.DB) error {
+	ensureColumn := func(table, column, definition string) error {
+		rows, err := db.Query("PRAGMA table_info(" + table + ")")
+		if err != nil {
+			return err
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var cid, notnull, pk int
+			var name, ctype string
+			var dflt sql.NullString
+			if err := rows.Scan(&cid, &name, &ctype, &notnull, &dflt, &pk); err != nil {
+				return err
+			}
+			if name == column {
+				return nil
+			}
+		}
+		_, err = db.Exec(fmt.Sprintf("ALTER TABLE %s ADD COLUMN %s", table, definition))
+		return err
+	}
+
+	if err := ensureColumn("expenses", "crop_id", "crop_id INTEGER"); err != nil {
+		return fmt.Errorf("failed to migrate expenses.crop_id: %w", err)
+	}
+	if err := ensureColumn("expenses", "is_shared_cost", "is_shared_cost INTEGER DEFAULT 0"); err != nil {
+		return fmt.Errorf("failed to migrate expenses.is_shared_cost: %w", err)
+	}
 	return nil
 }
 
@@ -191,6 +231,12 @@ func GetUserDB(userID int) (*sql.DB, error) {
 
 	if err := userDB.Ping(); err != nil {
 		return nil, fmt.Errorf("failed to ping user database: %w", err)
+	}
+
+	// Ensure tables + any missing columns exist (idempotent, also migrates
+	// databases created before new columns were introduced).
+	if err := createUserTables(userDB); err != nil {
+		return nil, err
 	}
 
 	// Cache the connection

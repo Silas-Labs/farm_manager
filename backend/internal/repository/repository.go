@@ -358,17 +358,18 @@ func NewExpenseRepository(db *sql.DB) *ExpenseRepository {
 }
 
 func (r *ExpenseRepository) Create(expense *models.Expense) error {
-    query := `INSERT INTO expenses (title, amount, category, expense_type, date, notes)
-              VALUES (?, ?, ?, ?, ?, ?)
+    query := `INSERT INTO expenses (title, amount, category, expense_type, date, notes, crop_id, is_shared_cost)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)
               RETURNING id, created_at`
     
     return r.db.QueryRow(query, expense.Title, expense.Amount,
-        expense.Category, expense.ExpenseType, expense.Date, expense.Notes).
+        expense.Category, expense.ExpenseType, expense.Date, expense.Notes,
+        expense.CropID, expense.IsSharedCost).
         Scan(&expense.ID, &expense.CreatedAt)
 }
 
 func (r *ExpenseRepository) GetAll() ([]models.Expense, error) {
-    query := `SELECT id, title, amount, category, expense_type, date, notes, created_at
+    query := `SELECT id, title, amount, category, expense_type, date, notes, crop_id, is_shared_cost, created_at
               FROM expenses ORDER BY date DESC`
     
     rows, err := r.db.Query(query)
@@ -381,7 +382,7 @@ func (r *ExpenseRepository) GetAll() ([]models.Expense, error) {
     for rows.Next() {
         var e models.Expense
         err := rows.Scan(&e.ID, &e.Title, &e.Amount, &e.Category,
-            &e.ExpenseType, &e.Date, &e.Notes, &e.CreatedAt)
+            &e.ExpenseType, &e.Date, &e.Notes, &e.CropID, &e.IsSharedCost, &e.CreatedAt)
         if err != nil {
             return nil, err
         }
@@ -391,13 +392,13 @@ func (r *ExpenseRepository) GetAll() ([]models.Expense, error) {
 }
 
 func (r *ExpenseRepository) GetByID(id int) (*models.Expense, error) {
-    query := `SELECT id, title, amount, category, expense_type, date, notes, created_at
+    query := `SELECT id, title, amount, category, expense_type, date, notes, crop_id, is_shared_cost, created_at
               FROM expenses WHERE id = ?`
     
     var e models.Expense
     err := r.db.QueryRow(query, id).Scan(
         &e.ID, &e.Title, &e.Amount, &e.Category,
-        &e.ExpenseType, &e.Date, &e.Notes, &e.CreatedAt)
+        &e.ExpenseType, &e.Date, &e.Notes, &e.CropID, &e.IsSharedCost, &e.CreatedAt)
     
     if err == sql.ErrNoRows {
         return nil, nil
@@ -406,11 +407,12 @@ func (r *ExpenseRepository) GetByID(id int) (*models.Expense, error) {
 }
 
 func (r *ExpenseRepository) Update(expense *models.Expense) error {
-    query := `UPDATE expenses SET title=?, amount=?, category=?, expense_type=?, date=?, notes=?
+    query := `UPDATE expenses SET title=?, amount=?, category=?, expense_type=?, date=?, notes=?, crop_id=?, is_shared_cost=?
               WHERE id=?`
     
     _, err := r.db.Exec(query, expense.Title, expense.Amount, expense.Category,
-        expense.ExpenseType, expense.Date, expense.Notes, expense.ID)
+        expense.ExpenseType, expense.Date, expense.Notes, expense.CropID,
+        expense.IsSharedCost, expense.ID)
     return err
 }
 

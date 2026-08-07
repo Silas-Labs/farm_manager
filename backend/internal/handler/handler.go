@@ -5,8 +5,21 @@ import (
 	"backend/internal/models"
 	"backend/internal/service"
 	"encoding/json"
+	"errors"
 	"net/http"
 )
+
+// writeServiceError maps known client errors to HTTP 400 and everything else
+// to HTTP 500.
+func writeServiceError(w http.ResponseWriter, err error) {
+	status := http.StatusInternalServerError
+	if errors.Is(err, service.ErrCropIDRequired) {
+		status = http.StatusBadRequest
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(models.ErrorResponse{Error: err.Error()})
+}
 
 type AuthHandler struct {
 	authService *service.AuthService

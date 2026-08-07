@@ -47,17 +47,19 @@ type LaborRequest struct {
 
 
 type ExpenseRequest struct {
-	Title       string    `json:"title"`
-	Amount      float64   `json:"amount"`
-	Category    string    `json:"category"`
-	ExpenseType string    `json:"expense_type"`
-	Date        time.Time `json:"date"`
-	Notes       string    `json:"notes"`
+	Title        string    `json:"title"`
+	Amount       float64   `json:"amount"`
+	Category     string    `json:"category"`
+	ExpenseType  string    `json:"expense_type"`
+	Date         time.Time `json:"date"`
+	Notes        string    `json:"notes"`
+	CropID       *int64    `json:"crop_id"`
+	IsSharedCost bool      `json:"is_shared_cost"`
 }
 
 
 type HarvestRequest struct {
-	CropID      *int      `json:"crop_id"`
+	CropID      *int64    `json:"crop_id"`
 	CropName    string    `json:"crop_name"`
 	Yield       float64   `json:"yield"`
 	Unit        string    `json:"unit"`
@@ -133,13 +135,15 @@ type Expense struct {
     ExpenseType string    `json:"expense_type"`
     Date        time.Time `json:"date"`
     Notes       string    `json:"notes"`
+    CropID      *int64    `json:"crop_id"`
+    IsSharedCost bool     `json:"is_shared_cost"`
     CreatedAt   time.Time `json:"created_at"`
 }
 
 // Harvest model - NO user_id
 type Harvest struct {
     ID          int       `json:"id"`
-    CropID      *int      `json:"crop_id"`
+    CropID      *int64    `json:"crop_id"`
     CropName    string    `json:"crop_name"`
     Yield       float64   `json:"yield"`
     Unit        string    `json:"unit"`

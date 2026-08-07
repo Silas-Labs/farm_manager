@@ -15,7 +15,11 @@ func NewHarvestService(harvestRepo *repository.HarvestRepository) *HarvestServic
 }
 
 func (s *HarvestService) Create(req *models.HarvestRequest) (*models.Harvest, error) {
-    harvest := &models.Harvest{
+	if req.CropID == nil || *req.CropID <= 0 {
+		return nil, ErrCropIDRequired
+	}
+
+	harvest := &models.Harvest{
         CropID:      req.CropID,
         CropName:    req.CropName,
         Yield:       req.Yield,
@@ -44,11 +48,14 @@ func (s *HarvestService) Update(id int, req *models.HarvestRequest) (*models.Har
     if err != nil {
         return nil, err
     }
-    if harvest == nil {
-        return nil, errors.New("harvest not found")
-    }
+if harvest == nil {
+		return nil, errors.New("harvest not found")
+	}
+	if req.CropID == nil || *req.CropID <= 0 {
+		return nil, ErrCropIDRequired
+	}
 
-    harvest.CropID = req.CropID
+	harvest.CropID = req.CropID
     harvest.CropName = req.CropName
     harvest.Yield = req.Yield
     harvest.Unit = req.Unit

@@ -91,10 +91,11 @@ func main() {
 			// Crops
 			r.Get("/crops", handler.CropGetAll)
 			r.Post("/crops", handler.CropCreate)
+			r.Get("/crops/stats/summary", handler.CropGetStats)
+			r.Get("/crops/profitability", handler.CropGetProfitability)
 			r.Get("/crops/{id}", handler.CropGetByID)
 			r.Put("/crops/{id}", handler.CropUpdate)
 			r.Delete("/crops/{id}", handler.CropDelete)
-			r.Get("/crops/stats/summary", handler.CropGetStats)
 
 			// Equipment
 			r.Get("/equipment", handler.EquipmentGetAll)
