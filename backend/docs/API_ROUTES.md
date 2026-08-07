@@ -4,158 +4,106 @@ This document outlines the REST API routes for the Farm Manager backend.
 
 Base URL: `/api/v1/`
 
+All routes below are behind JWT auth (obtained via `/auth/login`), except
+`/auth/register`, `/auth/login`, and `/health`.
+
 ---
 
 ## 🌾 Core Routes
 
-### 1. Activities
-
-Tracks all farm activities (cultivation, harvesting, purchase, sale).
-
-| Method | Endpoint        | Description         |
-| ------ | --------------- | ------------------- |
-| GET    | /activities     | List all activities |
-| POST   | /activities     | Create activity     |
-| GET    | /activities/:id | Get single activity |
-| PUT    | /activities/:id | Update activity     |
-| DELETE | /activities/:id | Delete activity     |
-
----
-
-### 2. Inputs
-
-Manage farm resources (seeds, fertilizers, labor, machinery).
-
-| Method | Endpoint    | Description     |
-| ------ | ----------- | --------------- |
-| GET    | /inputs     | List all inputs |
-| POST   | /inputs     | Add input       |
-| GET    | /inputs/:id | Get input       |
-| PUT    | /inputs/:id | Update input    |
-| DELETE | /inputs/:id | Delete input    |
-
----
-
-### 2b. Crops
+### 1. Crops
 
 Manage crops and compute per-crop profitability.
 
-| Method | Endpoint                | Description                                     |
-| ------ | ----------------------- | ----------------------------------------------- |
-| GET    | /crops                  | List all crops                                  |
-| POST   | /crops                  | Add crop                                        |
-| GET    | /crops/profitability    | Per-crop revenue, expenses, net, margin         |
-| GET    | /crops/:id              | Get crop                                       |
-| PUT    | /crops/:id              | Update crop                                    |
-| DELETE | /crops/:id              | Delete crop                                    |
+| Method | Endpoint             | Description                             |
+| ------ | -------------------- | --------------------------------------- |
+| GET    | /crops               | List all crops                          |
+| POST   | /crops               | Add crop                                |
+| GET    | /crops/stats/summary | Crop statistics summary                 |
+| GET    | /crops/profitability | Per-crop revenue, expenses, net, margin |
+| GET    | /crops/:id           | Get a single crop                       |
+| PUT    | /crops/:id           | Update a crop                           |
+| DELETE | /crops/:id           | Delete a crop                           |
 
-**Note:** the `/crops/profitability` route must be declared before `/crops/{id}`
-so the literal segment wins over the path parameter.
+**Route ordering:** `/crops/stats/summary` and `/crops/profitability` must be
+declared before `/crops/{id}` so the literal segments win over the path param.
 
 ---
 
-### 3. Expenses
+### 2. Expenses
 
 Track costs. Each expense is linked to a crop and may be flagged as a shared
 (farm-wide) cost that is excluded from the crop's profitability.
 
-| Method | Endpoint      | Description       |
-| ------ | ------------- | ----------------- |
-| GET    | /expenses     | List all expenses |
-| POST   | /expenses     | Add expense       |
-| GET    | /expenses/:id | Get expense       |
-| PUT    | /expenses/:id | Update expense    |
-| DELETE | /expenses/:id | Delete expense    |
+| Method | Endpoint              | Description            |
+| ------ | --------------------- | ---------------------- |
+| GET    | /expenses             | List all expenses      |
+| POST   | /expenses             | Add expense            |
+| GET    | /expenses/stats/summary | Summary               |
+| GET    | /expenses/:id         | Get an expense         |
+| PUT    | /expenses/:id         | Update an expense      |
+| DELETE | /expenses/:id         | Delete an expense      |
 
 **Expense payload notes**
-- `crop_id` (integer, required on create/update): the crop this expense belongs to.
-  Returns `400 crop_id is required` when missing or `<= 0`.
+- `crop_id` (integer, required on create/update): the crop this expense belongs
+  to. Returns `400 crop_id is required` when missing or `<= 0`.
 - `is_shared_cost` (boolean, optional): when `true`, the expense is treated as a
-  shared/farm-level cost and is excluded from the crop's profitability math.
+  shared/farm-level cost and excluded from the crop's profitability math.
 
 ---
 
-### 4. Revenue / Sales
+### 3. Harvest / Yield
 
-Manage farm sales and income.
+| Method | Endpoint              | Description     |
+| ------ | --------------------- | --------------- |
+| GET    | /harvests             | List harvests   |
+| POST   | /harvests             | Add harvest     |
+| GET    | /harvests/stats/summary | Summary       |
+| GET    | /harvests/:id         | Get a harvest   |
+| PUT    | /harvests/:id         | Update harvest  |
+| DELETE | /harvests/:id         | Delete harvest  |
 
-| Method | Endpoint   | Description    |
-| ------ | ---------- | -------------- |
-| GET    | /sales     | List all sales |
-| POST   | /sales     | Record sale    |
-| GET    | /sales/:id | Get sale       |
-| PUT    | /sales/:id | Update sale    |
-| DELETE | /sales/:id | Delete sale    |
-
----
-
-### 5. Harvest / Yield
-
-Track harvest data and yield statistics.
-
-| Method | Endpoint      | Description    |
-| ------ | ------------- | -------------- |
-| GET    | /harvests     | List harvests  |
-| POST   | /harvests     | Add harvest    |
-| GET    | /harvests/:id | Get harvest    |
-| PUT    | /harvests/:id | Update harvest |
-| DELETE | /harvests/:id | Delete harvest |
+**Payload note:** `crop_id` (integer) is required on create/update. Returns
+`400 crop_id is required` when missing or `<= 0`.
 
 ---
 
-## 📊 Analytics Routes
+### 4 & 5. Other entities
 
-Provides insights and visualizations.
+Present but not part of the refactored profitability flow; their routes are
+untouched:
 
-### Summary Dashboard
+**Equipment**
 
-GET /analytics/summary
+| Method | Endpoint                  | Description    |
+| ------ | ------------------------- | -------------- |
+| GET    | /equipment                | List equipment |
+| POST   | /equipment                | Add equipment  |
+| GET    | /equipment/stats/summary  | Summary        |
+| GET    | /equipment/:id            | Get            |
+| PUT    | /equipment/:id            | Update         |
+| DELETE | /equipment/:id            | Delete         |
 
-Returns total costs, revenue, and profit/loss.
+**Labor**
 
-### Cost Breakdown
-
-GET /analytics/costs?from=YYYY-MM-DD&to=YYYY-MM-DD
-
-Returns costs split by inputs, labor, and harvesting.
-
-### Revenue Trends
-
-GET /analytics/revenue-trends
-
-Shows revenue trends over time.
-
-### Yield Trends
-
-GET /analytics/yield-trends
-
-Shows harvest yield trends over time.
-
-### Activity Timeline
-
-GET /analytics/activity-timeline
-
-Timeline of farm activities.
+| Method | Endpoint              | Description  |
+| ------ | --------------------- | ------------ |
+| GET    | /labor                | List labor   |
+| POST   | /labor                | Add labor    |
+| GET    | /labor/stats/summary  | Summary      |
+| GET    | /labor/:id            | Get          |
+| PUT    | /labor/:id            | Update       |
+| DELETE | /labor/:id            | Delete       |
 
 ---
 
-## 📂 Filtering
+## 🔐 Authentication
 
-Use query parameters to filter data:
-
-GET /activities?type=harvest&from=2026-01-01&to=2026-02-01
-
----
-
-## 🔐 Authentication (Optional)
-
-If you add user accounts:
-
-| Method | Endpoint       | Description      |
-| ------ | -------------- | ---------------- |
-| POST   | /auth/register | Register user    |
-| POST   | /auth/login    | Login user       |
-| GET    | /auth/me       | Get current user |
+| Method | Endpoint       | Description         |
+| ------ | -------------- | ------------------- |
+| POST   | /auth/register | Register a user     |
+| POST   | /auth/login    | Login               |
+| GET    | /auth/me       | Get current user    |
 
 ---
 
@@ -164,55 +112,3 @@ If you add user accounts:
 | Method | Endpoint | Description   |
 | ------ | -------- | ------------- |
 | GET    | /health  | Server status |
-
----
-
-## 🧠 Suggested Go Route Grouping
-
-### `/api/v1`
-
-    /activities
-
-    /inputs
-
-    /expenses
-
-    /sales
-
-    /harvests
-
-    /analytics
-
-    /auth
-
-
----
-
-## 🚀 Example Workflow
-
-1. Record expense:
-
-   POST /expenses
-
-2. Record harvest:
-
-   POST /harvests
-
-3. Record sale:
-
-   POST /sales
-
-4. View dashboard:
-
-   GET /analytics/summary
-
----
-
-## 🔥 Pro Tips
-
-- Keep **activities as the central table**.
-- Link everything:
-  - Expenses → Activity
-  - Harvest → Activity
-  - Sales → Harvest
-- This prevents messy data relationships later.
