@@ -36,9 +36,28 @@ Manage farm resources (seeds, fertilizers, labor, machinery).
 
 ---
 
+### 2b. Crops
+
+Manage crops and compute per-crop profitability.
+
+| Method | Endpoint                | Description                                     |
+| ------ | ----------------------- | ----------------------------------------------- |
+| GET    | /crops                  | List all crops                                  |
+| POST   | /crops                  | Add crop                                        |
+| GET    | /crops/profitability    | Per-crop revenue, expenses, net, margin         |
+| GET    | /crops/:id              | Get crop                                       |
+| PUT    | /crops/:id              | Update crop                                    |
+| DELETE | /crops/:id              | Delete crop                                    |
+
+**Note:** the `/crops/profitability` route must be declared before `/crops/{id}`
+so the literal segment wins over the path parameter.
+
+---
+
 ### 3. Expenses
 
-Track costs associated with farming activities.
+Track costs. Each expense is linked to a crop and may be flagged as a shared
+(farm-wide) cost that is excluded from the crop's profitability.
 
 | Method | Endpoint      | Description       |
 | ------ | ------------- | ----------------- |
@@ -47,6 +66,12 @@ Track costs associated with farming activities.
 | GET    | /expenses/:id | Get expense       |
 | PUT    | /expenses/:id | Update expense    |
 | DELETE | /expenses/:id | Delete expense    |
+
+**Expense payload notes**
+- `crop_id` (integer, required on create/update): the crop this expense belongs to.
+  Returns `400 crop_id is required` when missing or `<= 0`.
+- `is_shared_cost` (boolean, optional): when `true`, the expense is treated as a
+  shared/farm-level cost and is excluded from the crop's profitability math.
 
 ---
 
