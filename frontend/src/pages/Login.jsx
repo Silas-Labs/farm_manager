@@ -127,7 +127,7 @@ export const Login = () => {
 
             <Button
               type="submit"
-              disabled={loading || !isOnline}
+              disabled={loading}
               className="w-full h-11 bg-green-700 hover:bg-green-800 font-medium shadow-md"
             >
               <LogIn className="w-4 h-4 mr-2 " />

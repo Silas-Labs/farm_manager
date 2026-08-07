@@ -2,6 +2,7 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { authAPI } from "../services/api";
+import { initSyncManager, resetSyncManager } from "../lib/syncManager";
 import { toast } from "sonner";
 
 const AuthContext = createContext();
@@ -19,6 +20,9 @@ export const AuthProvider = ({ children }) => {
 
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
+
+    // Initialize offline sync manager (flushes pending writes when online).
+    initSyncManager();
 
     // Check for existing session
     const storedUser = authAPI.getCurrentUser();
@@ -55,6 +59,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
+      resetSyncManager();
 
       toast.success(`Welcome back, ${user.name}!`);
       return { success: true, user };
@@ -68,6 +73,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     authAPI.logout();
     setUser(null);
+    resetSyncManager();
     toast.success("Logged out successfully");
   };
 
