@@ -45,10 +45,14 @@ export const Harvests = () => {
   };
 
   const handleHarvest = async (harvestData) => {
+    if (!harvestData.cropId) {
+      toast.error("A crop is required to record a harvest");
+      return;
+    }
     try {
       await harvestsAPI.create({
-        crop_id: harvestData.cropId || null,
-        crop_name: harvestData.cropName || "General Harvest",
+        crop_id: harvestData.cropId,
+        crop_name: harvestData.cropName,
         yield: harvestData.yield,
         unit: harvestData.unit,
         revenue: harvestData.revenue,

@@ -13,6 +13,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { toast } from "sonner";
 import dayjs from "dayjs";
+import { cropsAPI } from "../services/api";
 
 export const AddExpenseModal = ({ onClose, onSave }) => {
   // Core fields
@@ -21,6 +22,9 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
   const [date, setDate] = useState(dayjs());
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
+  const [cropId, setCropId] = useState("");
+  const [isSharedCost, setIsSharedCost] = useState(false);
+  const [crops, setCrops] = useState([]);
 
   // Category-specific fields
   const [expenseType, setExpenseType] = useState("");
@@ -30,6 +34,17 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
 
   // Validation state
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    let active = true;
+    cropsAPI
+      .getAll()
+      .then((res) => active && setCrops(res.data || []))
+      .catch(() => {}); // offline: allow retry on next open
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const inputClass = (hasError) =>
     `min-h-13 border rounded p-2 ${hasError ? "border-red-500" : "border-gray-300"}`;
@@ -42,6 +57,7 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
     if (!amount || parseFloat(amount) <= 0) newErrors.amount = true;
     if (!date) newErrors.date = true;
     if (!category) newErrors.category = true;
+    if (!cropId) newErrors.cropId = true;
 
     // Crop-specific validation
     if (category === "crop") {
@@ -76,6 +92,8 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
       date,
       category,
       notes,
+      crop_id: parseInt(cropId, 10),
+      is_shared_cost: isSharedCost,
       expense_type: category ? expenseType : undefined,
       brand: category ? brand : undefined,
       quantity: category ? parseFloat(quantity) : undefined,
@@ -143,6 +161,35 @@ export const AddExpenseModal = ({ onClose, onSave }) => {
             <option value="labor">Labor</option>
             <option value="other">Other</option>
           </select>
+
+          <div>
+            <label className="text-sm font-medium text-earth-700">
+              Crop (required)
+            </label>
+            <select
+              className={inputClass(errors.cropId)}
+              value={cropId}
+              onChange={(e) => setCropId(e.target.value)}
+            >
+              <option value="">Select a crop</option>
+              {crops.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name} ({c.variety || "no variety"})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <label className="flex items-center gap-2 text-sm text-earth-600 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isSharedCost}
+              onChange={(e) => setIsSharedCost(e.target.checked)}
+              className="w-4 h-4 rounded border-earth-300"
+            />
+            Shared / farm-wide cost (does not count toward a single crop's
+            profit)
+          </label>
 
           {/* Crop fields */}
           {category === "crop" && (

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { AddExpenseModal } from "../components/AddExpenseModal";
-import { expensesAPI } from "../services/api";
+import { expensesAPI, cropsAPI } from "../services/api";
 import {
   DollarSign,
   TrendingDown,
@@ -20,6 +20,7 @@ import dayjs from "dayjs";
 export const Expenses = () => {
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [expenses, setExpenses] = useState([]);
+  const [crops, setCrops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -31,14 +32,23 @@ export const Expenses = () => {
   const loadExpenses = async () => {
     setLoading(true);
     try {
-      const response = await expensesAPI.getAll();
-      setExpenses(response.data || []);
+      const [expenseRes, cropsRes] = await Promise.all([
+        expensesAPI.getAll(),
+        cropsAPI.getAll().catch(() => ({ data: [] })),
+      ]);
+      setExpenses(expenseRes.data || []);
+      setCrops(cropsRes.data || []);
     } catch (error) {
       console.error("Error loading expenses:", error);
       toast.error("Failed to load expenses");
     } finally {
       setLoading(false);
     }
+  };
+
+  const cropNameById = (id) => {
+    const crop = crops.find((c) => c.id === id);
+    return crop ? crop.name : null;
   };
 
   const handleSave = async (expenseData) => {
@@ -181,6 +191,9 @@ export const Expenses = () => {
                   Category
                 </th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-farm-700">
+                  Crop
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-farm-700">
                   Date
                 </th>
                 <th className="px-6 py-4 text-right text-sm font-semibold text-farm-700">
@@ -212,6 +225,16 @@ export const Expenses = () => {
                       {expense.category}
                     </span>
                   </td>
+                  <td className="px-6 py-4">
+                    <span className="text-earth-700">
+                      {cropNameById(expense.crop_id) || "No crop"}
+                    </span>
+                    {expense.is_shared_cost && (
+                      <span className="ml-2 text-xs text-earth-400">
+                        (shared)
+                      </span>
+                    )}
+                  </td>
                   <td className="px-6 py-4 text-earth-600">
                     {dayjs(expense.date).format("DD MMM YYYY")}
                   </td>
@@ -237,7 +260,7 @@ export const Expenses = () => {
               {filteredExpenses.length === 0 && (
                 <tr>
                   <td
-                    colSpan="5"
+                    colSpan="6"
                     className="px-6 py-12 text-center text-earth-400"
                   >
                     <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-30" />
