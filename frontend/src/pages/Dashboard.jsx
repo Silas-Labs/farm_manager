@@ -52,6 +52,23 @@ export const Dashboard = () => {
     return all;
   }, [crops, expenses, harvests]);
 
+  const cropProfitability = useMemo(() => {
+    return crops
+      .map((crop) => {
+        const cropExpenses = expenses
+          .filter((e) => e.crop_id === crop.id && !e.is_shared_cost)
+          .reduce((sum, e) => sum + (e.amount || 0), 0);
+        const revenue = harvests
+          .filter((h) => h.crop_id === crop.id)
+          .reduce((sum, h) => sum + (h.revenue || 0), 0);
+        const net = revenue - cropExpenses;
+        const margin =
+          revenue > 0 ? (net / revenue) * 100 : cropExpenses > 0 ? -100 : 0;
+        return { id: crop.id, name: crop.name, revenue, expenses: cropExpenses, net, margin };
+      })
+      .sort((a, b) => b.net - a.net);
+  }, [crops, expenses, harvests]);
+
   const StatCard = ({ title, value, icon: Icon, trend, color }) => (
     <Card className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <div className={`absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br ${color} opacity-10 rounded-full -translate-y-12 translate-x-12 group-hover:translate-x-8 transition-transform duration-500`} />
@@ -193,6 +210,76 @@ export const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Crop profitability ranking */}
+      <Card>
+        <CardTitle className="p-5 pb-0 flex items-center gap-2 text-gray-800">
+          <Activity className="w-5 h-5 text-green-600" />
+          Crop Profitability Ranking
+        </CardTitle>
+        <CardContent className="p-5">
+          {cropProfitability.length === 0 ? (
+            <p className="text-center text-gray-400 py-8 text-sm">
+              No crops yet. Plant a crop to see which ones pay off.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {cropProfitability.map((crop, idx) => {
+                const positive = crop.net >= 0;
+                const isBest = idx === 0 && cropProfitability.length > 1;
+                const isWorst =
+                  idx === cropProfitability.length - 1 &&
+                  cropProfitability.length > 1;
+                return (
+                  <div
+                    key={crop.id}
+                    className="flex items-center gap-3"
+                  >
+                    <span className="w-6 text-center text-sm font-semibold text-gray-400">
+                      {idx + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-medium text-gray-800 truncate">
+                          {crop.name}
+                          {isBest && (
+                            <span className="ml-2 text-[10px] font-semibold text-green-700 uppercase">
+                              Best
+                            </span>
+                          )}
+                          {isWorst && (
+                            <span className="ml-2 text-[10px] font-semibold text-red-600 uppercase">
+                              Worst
+                            </span>
+                          )}
+                        </p>
+                        <p
+                          className={`text-sm font-bold ${
+                            positive ? "text-green-600" : "text-red-600"
+                          }`}
+                        >
+                          ${crop.net.toLocaleString()}
+                          <span className="text-xs text-gray-400 ml-1">
+                            ({Math.round(crop.margin)}%)
+                          </span>
+                        </p>
+                      </div>
+                      <div className="mt-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${positive ? "bg-green-500" : "bg-red-500"}`}
+                          style={{
+                            width: `${Math.min(Math.abs(crop.margin), 100)}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
