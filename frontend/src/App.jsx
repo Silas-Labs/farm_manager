@@ -7,12 +7,9 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Dashboard } from "./pages/Dashboard";
 import { Crops } from "./pages/Crops";
-import Weather from "./pages/Weather";
-import { Equipment } from "./pages/Equipment";
-import { Labour } from "./pages/Labour";
-import { Reports } from "./pages/Reports";
 import { Expenses } from "./pages/Expenses";
 import { Harvests } from "./pages/Harvests";
+import { Reports } from "./pages/Reports";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -44,9 +41,6 @@ function AppRoutes() {
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="crops" element={<Crops />} />
-        <Route path="weather" element={<Weather />} />
-        <Route path="equipment" element={<Equipment />} />
-        <Route path="labor" element={<Labour />} />
         <Route path="expenses" element={<Expenses />} />
         <Route path="harvests" element={<Harvests />} />
         <Route path="reports" element={<Reports />} />

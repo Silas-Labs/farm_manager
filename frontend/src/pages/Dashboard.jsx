@@ -4,6 +4,7 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { cropsAPI, expensesAPI, harvestsAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useEntityData } from '../lib/useEntityData';
+import { WeatherWidget } from '../components/WeatherWidget';
 import { Sprout, TrendingUp, TrendingDown, DollarSign, Calendar, Activity, Leaf } from "lucide-react";
 
 export const Dashboard = () => {
@@ -110,6 +111,9 @@ export const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Weather widget */}
+      <WeatherWidget />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

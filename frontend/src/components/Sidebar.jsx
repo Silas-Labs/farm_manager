@@ -4,9 +4,6 @@ import { Link, useLocation } from "react-router";
 import {
   LayoutDashboard,
   Sprout,
-  CloudSun,
-  Tractor,
-  BicepsFlexed,
   ChartNoAxesCombined,
   User2,
   ChevronUp,
@@ -70,24 +67,6 @@ export const SideBar = () => {
       name: "Crop Management",
       icon: Sprout,
       color: "text-green-600",
-    },
-    {
-      path: "/weather",
-      name: "Weather",
-      icon: CloudSun,
-      color: "text-sky-600",
-    },
-    {
-      path: "/equipment",
-      name: "Equipment",
-      icon: Tractor,
-      color: "text-amber-600",
-    },
-    {
-      path: "/labor",
-      name: "Labor",
-      icon: BicepsFlexed,
-      color: "text-orange-600",
     },
     {
       path: "/expenses",
