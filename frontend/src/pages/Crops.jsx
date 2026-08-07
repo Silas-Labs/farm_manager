@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { AddCropModal } from "../components/AddCropModal";
 import { AddExpenseModal } from "../components/AddExpenseModal";
 import { HarvestModal } from "../components/HarvestModal";
 import { UpdateStageModal } from "../components/UpdateStageModal";
-import { cropsAPI } from "../services/api";
+import { cropsAPI, expensesAPI, harvestsAPI } from "../services/api";
 import { dataActions } from "../lib/dataActions";
 import { useEntityData } from "../lib/useEntityData";
 import { SyncBadge } from "../components/SyncBadge";
@@ -16,6 +16,8 @@ import {
   Calendar,
   Clock,
   TrendingUp,
+  TrendingDown,
+  Wallet,
 } from "lucide-react";
 import dayjs from "dayjs";
 import { toast } from "sonner";
@@ -29,6 +31,18 @@ export const Crops = () => {
   const crops =
     useEntityData("crops", () => cropsAPI.getAll(), (res) => res.data || []) ||
     [];
+  const expenses =
+    useEntityData(
+      "expenses",
+      () => expensesAPI.getAll(),
+      (res) => res.data || [],
+    ) || [];
+  const harvests =
+    useEntityData(
+      "harvests",
+      () => harvestsAPI.getAll(),
+      (res) => res.data || [],
+    ) || [];
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -142,6 +156,35 @@ export const Crops = () => {
     ready: crops.filter((c) => c.stage === "Ready to Harvest").length,
   };
 
+  const profitability = useMemo(() => {
+    return crops
+      .map((crop) => {
+        const cropExpenses = expenses
+          .filter((e) => e.crop_id === crop.id && !e.is_shared_cost)
+          .reduce((sum, e) => sum + (e.amount || 0), 0);
+        const revenue = harvests
+          .filter((h) => h.crop_id === crop.id)
+          .reduce((sum, h) => sum + (h.revenue || 0), 0);
+        const net = revenue - cropExpenses;
+        const margin =
+          revenue > 0
+            ? (net / revenue) * 100
+            : cropExpenses > 0
+              ? -100
+              : 0;
+        return {
+          id: crop.id,
+          name: crop.name,
+          expenses: cropExpenses,
+          revenue,
+          net,
+          margin,
+          stage: crop.stage,
+        };
+      })
+      .sort((a, b) => b.net - a.net);
+  }, [crops, expenses, harvests]);
+
   const StatCard = ({ title, value, icon: Icon, color, gradient }) => (
     <Card className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <div
@@ -222,6 +265,65 @@ export const Crops = () => {
           gradient="from-green-500 to-green-600"
         />
       </div>
+
+      {/* Per-crop profitability */}
+      <Card className="p-4 sm:p-5">
+        <CardTitle className="flex items-center gap-2 text-lg text-earth-800">
+          <Wallet className="w-5 h-5 text-farm-600" />
+          Crop Profitability
+        </CardTitle>
+        <p className="text-sm text-earth-500 mt-1 mb-4">
+          Whether each crop was worth planting: revenue minus linked expenses.
+        </p>
+        {profitability.length === 0 ? (
+          <p className="text-sm text-earth-400 py-6 text-center">
+            No crops yet. Plant a crop to start tracking profitability.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {profitability.map((p) => {
+              const positive = p.net >= 0;
+              return (
+                <Card
+                  key={p.id}
+                  className={`p-4 border-l-4 ${
+                    positive ? "border-l-green-500" : "border-l-red-500"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="font-medium text-earth-800 truncate">
+                      {p.name}
+                    </p>
+                    {p.net >= 0 ? (
+                      <TrendingUp className="w-4 h-4 text-green-600" />
+                    ) : (
+                      <TrendingDown className="w-4 h-4 text-red-600" />
+                    )}
+                  </div>
+                  <p
+                    className={`text-lg font-bold ${
+                      positive ? "text-green-700" : "text-red-600"
+                    }`}
+                  >
+                    ${p.net.toLocaleString()}
+                    <span
+                      className={`ml-1 text-xs font-medium ${
+                        positive ? "text-green-600" : "text-red-500"
+                      }`}
+                    >
+                      ({Math.round(p.margin)}%)
+                    </span>
+                  </p>
+                  <div className="mt-2 flex justify-between text-xs text-earth-500">
+                    <span>Revenue: ${p.revenue.toLocaleString()}</span>
+                    <span>Expenses: ${p.expenses.toLocaleString()}</span>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </Card>
 
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
